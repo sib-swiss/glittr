@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('website')->nullable();
             $table->foreignId('author_id')->nullable()->index();
             $table->unsignedInteger('stargazers')->nullable();
-            $table->date('last_push')->nullable();
+            $table->dateTime('last_push')->nullable();
 
             $table->boolean('enabled')->default(true);
             $table->dateTime('refreshed_at')->nullable();

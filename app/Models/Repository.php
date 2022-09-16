@@ -18,6 +18,10 @@ class Repository extends Model
     protected $casts = [
         'url' => Url::class,
         'website' => Url::class,
+        'stargazers' => 'integer',
+        'enabled' => 'boolean',
+        'last_push' => 'datetime:Y-m-d H:i:s',
+        'refreshed_at' => 'datetime:Y-m-d H:i:s',
     ];
 
     public function author()
