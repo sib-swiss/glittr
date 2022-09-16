@@ -14,8 +14,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    dd(url('https://www.google.com'));
-
     return view('welcome');
 });
 
