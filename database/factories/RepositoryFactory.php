@@ -51,7 +51,7 @@ class RepositoryFactory extends Factory
 
     public function enabled(bool $enabled = true): Factory
     {
-        return $this->state(function (array $attritubes) use($enabled) {
+        return $this->state(function (array $attritubes) use ($enabled) {
             return [
                 'enabled' => $enabled,
             ];
@@ -60,11 +60,10 @@ class RepositoryFactory extends Factory
 
     public function valid(bool $valid = true): Factory
     {
-        return $this->state(function (array $attritubes) use($valid) {
+        return $this->state(function (array $attritubes) use ($valid) {
             return [
                 'url' => self::getRandomRepositories($valid),
             ];
         });
     }
-
 }

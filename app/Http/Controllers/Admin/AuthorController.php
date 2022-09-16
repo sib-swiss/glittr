@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Models\Repository;
+use App\Models\Author;
 use Illuminate\Http\Request;
 
-class RepositoryController extends Controller
+class AuthorController extends AdminController
 {
     /**
      * Display a listing of the resource.
@@ -41,10 +41,10 @@ class RepositoryController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Repository  $repository
+     * @param  \App\Models\Author  $author
      * @return \Illuminate\Http\Response
      */
-    public function show(Repository $repository)
+    public function show(Author $author)
     {
         //
     }
@@ -52,10 +52,10 @@ class RepositoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Repository  $repository
+     * @param  \App\Models\Author  $author
      * @return \Illuminate\Http\Response
      */
-    public function edit(Repository $repository)
+    public function edit(Author $author)
     {
         //
     }
@@ -64,10 +64,10 @@ class RepositoryController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Repository  $repository
+     * @param  \App\Models\Author  $author
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Repository $repository)
+    public function update(Request $request, Author $author)
     {
         //
     }
@@ -75,10 +75,10 @@ class RepositoryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Repository  $repository
+     * @param  \App\Models\Author  $author
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Repository $repository)
+    public function destroy(Author $author)
     {
         //
     }

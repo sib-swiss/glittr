@@ -22,6 +22,11 @@ class Tag extends Model implements Sortable
         return $this->belongsToMany(Repository::class)->using(RepositoryTag::class);
     }
 
+    public function submissions()
+    {
+        return $this->belongsToMany(Submission::class)->using(SubmissionTag::class);
+    }
+
     public function category()
     {
         return $this->belongsTo(Category::class);
