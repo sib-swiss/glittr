@@ -14,7 +14,7 @@ class AuthorController extends AdminController
      */
     public function index()
     {
-        //
+        return view('admin.authors.index');
     }
 
     /**

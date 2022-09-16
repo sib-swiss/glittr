@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Models\Category;
+use App\Models\Repository;
 use Illuminate\Http\Request;
 
-class CategoryController extends AdminController
+class SubmissionController extends AdminController
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +14,7 @@ class CategoryController extends AdminController
      */
     public function index()
     {
-        return view('admin.categories.index');
+        return view('admin.submissions.index');
     }
 
     /**
@@ -41,10 +41,10 @@ class CategoryController extends AdminController
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Category  $category
+     * @param  \App\Models\Repository  $repository
      * @return \Illuminate\Http\Response
      */
-    public function show(Category $category)
+    public function show(Repository $repository)
     {
         //
     }
@@ -52,10 +52,10 @@ class CategoryController extends AdminController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Category  $category
+     * @param  \App\Models\Repository  $repository
      * @return \Illuminate\Http\Response
      */
-    public function edit(Category $category)
+    public function edit(Repository $repository)
     {
         //
     }
@@ -64,10 +64,10 @@ class CategoryController extends AdminController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Category  $category
+     * @param  \App\Models\Repository  $repository
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Category $category)
+    public function update(Request $request, Repository $repository)
     {
         //
     }
@@ -75,10 +75,10 @@ class CategoryController extends AdminController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Category  $category
+     * @param  \App\Models\Repository  $repository
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Category $category)
+    public function destroy(Repository $repository)
     {
         //
     }

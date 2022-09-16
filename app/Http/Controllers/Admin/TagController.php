@@ -14,7 +14,7 @@ class TagController extends AdminController
      */
     public function index()
     {
-        //
+        return view('admin.tags.index');
     }
 
     /**

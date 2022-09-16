@@ -14,7 +14,7 @@ class RepositoryController extends AdminController
      */
     public function index()
     {
-        //
+        return view('admin.repositories.index');
     }
 
     /**

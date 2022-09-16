@@ -5,7 +5,7 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('admin.dashboard') }}">
+                    <a href="{{ route('homepage') }}">
                         <x-jet-application-mark class="block h-9 w-auto" />
                     </a>
                 </div>
@@ -16,8 +16,14 @@
                         {{ __('Dashboard') }}
                     </x-jet-nav-link>
 
-                    <x-jet-nav-link href="{{ route('admin.authors.index') }}" :active="request()->routeIs('admin.authors.*')">
-                        {{ __('Auhtors') }}
+                    <x-jet-nav-link href="{{ route('admin.submissions.index') }}" :active="request()->routeIs('admin.submissions.*')">
+                        {{ __('Submissions') }}
+                    </x-jet-nav-link>
+                    <x-jet-nav-link href="{{ route('admin.repositories.index') }}" :active="(request()->routeIs('admin.repositories.*') || request()->routeIs('admin.authors.*'))">
+                        {{ __('Repositories') }}
+                    </x-jet-nav-link>
+                    <x-jet-nav-link href="{{ route('admin.tags.index') }}" :active="(request()->routeIs('admin.tags.*') || request()->routeIs('admin.categories.*'))">
+                        {{ __('Tags') }}
                     </x-jet-nav-link>
 
                 </div>
@@ -143,6 +149,16 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-jet-responsive-nav-link href="{{ route('admin.dashboard') }}" :active="request()->routeIs('admin.dashboard')">
                 {{ __('Dashboard') }}
+            </x-jet-responsive-nav-link>
+
+            <x-jet-responsive-nav-link href="{{ route('admin.submissions.index') }}" :active="request()->routeIs('admin.submissions.*')">
+                {{ __('Submissions') }}
+            </x-jet-responsive-nav-link>
+            <x-jet-responsive-nav-link href="{{ route('admin.repositories.index') }}" :active="(request()->routeIs('admin.repositories.*') || request()->routeIs('admin.authors.*'))">
+                {{ __('Repositories') }}
+            </x-jet-responsive-nav-link>
+            <x-jet-responsive-nav-link href="{{ route('admin.tags.index') }}" :active="(request()->routeIs('admin.tags.*') || request()->routeIs('admin.categories.*'))">
+                {{ __('Tags') }}
             </x-jet-responsive-nav-link>
         </div>
 
