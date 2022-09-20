@@ -17,6 +17,10 @@ class Tag extends Model implements Sortable
         'sort_when_creating' => true,
     ];
 
+    protected $fillable = [
+        'name',
+    ];
+
     public function repositories()
     {
         return $this->belongsToMany(Repository::class)->using(RepositoryTag::class);

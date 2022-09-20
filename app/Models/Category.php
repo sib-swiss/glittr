@@ -16,6 +16,11 @@ class Category extends Model implements Sortable
         'sort_when_creating' => true,
     ];
 
+    protected $fillable = [
+        'name',
+        'color',
+    ];
+
     public function tags()
     {
         return $this->hasMany(Tag::class);

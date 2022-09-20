@@ -16,8 +16,7 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('bg_color')->nullable();
-            $table->string('text_color')->nullable();
+            $table->string('color')->nullable();
             $table->integer('order_column');
             $table->timestamps();
         });
