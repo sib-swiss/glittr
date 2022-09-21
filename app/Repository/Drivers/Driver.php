@@ -2,7 +2,7 @@
 
 namespace App\Repository\Drivers;
 
-use App\Repository\Contracts\DriverContract;;
+use App\Repository\Contracts\DriverContract;
 
 abstract class Driver implements DriverContract
 {

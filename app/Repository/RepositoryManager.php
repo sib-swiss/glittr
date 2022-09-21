@@ -24,7 +24,7 @@ class RepositoryManager extends Manager
 
     public function createGitlabDriver(): DriverContract
     {
-        return new GitlabDriver($this->container->make(GitLabManager::class))
+        return new GitlabDriver($this->container->make(GitLabManager::class));
     }
 
     public function getDefaultDriver()
