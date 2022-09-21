@@ -40,17 +40,73 @@ class TagsList extends Component
      */
     public $categoryAddIncrement = 0;
 
+    /**
+     * Show confirm dialog for category deletion
+     *
+     * @var bool
+     */
     public $confirmingCategoryDeletion = false;
 
+    /**
+     * Category id for deletion modal action
+     *
+     * @var int
+     */
     public $categoryIdBeingDeleted;
+
+    /**
+     * Display category edit form modal
+     *
+     * @var bool
+     */
+    public $showEditTag = false;
+
+    /**
+     * Display category add form modal
+     *
+     * @var bool
+     */
+    public $showAddTag = false;
+
+    /**
+     * Id of the tag editing
+     *
+     * @var int
+     */
+    public $tagIdBeingUpdated = null;
+
+    /**
+     * Auto-increment to create new empty render of form after each save/cancel
+     *
+     * @var int
+     */
+    public $tagAddIncrement = 0;
+
+    /**
+     * Show confirm dialog for tag deletion
+     *
+     * @var bool
+     */
+    public $confirmingTagDeletion = false;
+
+    /**
+     * tag id for deletion modal action
+     *
+     * @var int
+     */
+    public $TagIdBeingDeleted;
 
     protected $listeners = [
         'editCategoryCancel',
         'addCategoryCancel',
         'editCategorySuccess',
         'addCategorySuccess',
-    ];
 
+        'editTagCancel',
+        'addTagCancel',
+        'editTagSuccess',
+        'addTagSuccess',
+    ];
 
     public function addCategoryCancel(): void
     {
@@ -82,17 +138,8 @@ class TagsList extends Component
 
     public function editCategory(int $categoryId): void
     {
-
         $this->showEditCategory = true;
         $this->categoryIdBeingUpdated = $categoryId;
-    }
-
-    public function sortCategories(array $categoryIds): void
-    {
-        if (! empty($categoryIds)) {
-            Category::setNewOrder($categoryIds);
-            $this->notify(__('Categories order successfully updated.'));
-        }
     }
 
     public function confirmCategoryDeletion(int $categoryId): void
@@ -107,10 +154,74 @@ class TagsList extends Component
 
         if ($category && $category->delete()) {
             $this->notify("Category {$category->name} successfully deleted.");
+        } else {
+            $this->errorNotification("There was a problem deleting category");
         }
 
         $this->confirmingCategoryDeletion = false;
         $this->categoryIdBeingDeleted = null;
+    }
+
+    public function sortCategories(array $categoryIds): void
+    {
+        if (! empty($categoryIds)) {
+            Category::setNewOrder($categoryIds);
+            $this->notify(__('Categories order successfully updated.'));
+        }
+    }
+
+    public function addTagCancel(): void
+    {
+        $this->showAddTag = false;
+        $this->tagAddIncrement++;
+    }
+
+    public function editTagCancel(): void
+    {
+        $this->tagIdBeingUpdated = null;
+        $this->showEditTag = false;
+    }
+
+    public function addTagSuccess(Tag $tag): void
+    {
+        $this->notify(__("Tag {$tag->name} created successfully."));
+
+        $this->showAddTag = false;
+        $this->tagAddIncrement++;
+    }
+
+    public function editTagSuccess(Tag $tag): void
+    {
+        $this->notify(__("Tag {$tag->name} updated successfully."));
+
+        $this->tagIdBeingUpdated = null;
+        $this->showEditTag = false;
+    }
+
+    public function editTag(int $tagId): void
+    {
+        $this->showEditTag = true;
+        $this->tagIdBeingUpdated = $tagId;
+    }
+
+    public function confirmTagDeletion(int $tagId): void
+    {
+        $this->confirmingTagDeletion = true;
+        $this->tagIdBeingDeleted = $tagId;
+    }
+
+    public function deleteTag(): void
+    {
+        $tag = Tag::find($this->tagIdBeingDeleted);
+
+        if ($tag && $tag->delete()) {
+            $this->notify("Tag {$tag->name} successfully deleted.");
+        } else {
+            $this->errorNotification("There was a problem deleting tag");
+        }
+
+        $this->confirmingTagDeletion = false;
+        $this->tagIdBeingDeleted = null;
     }
 
     public function sortTags(array $tagIds)

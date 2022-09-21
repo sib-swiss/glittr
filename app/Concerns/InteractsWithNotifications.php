@@ -4,7 +4,6 @@ namespace App\Concerns;
 
 trait InteractsWithNotifications
 {
-
     protected function notify(string $message, string $title = '', string $type = 'success', $persisted = false)
     {
         $this->dispatchBrowserEvent('notify', [

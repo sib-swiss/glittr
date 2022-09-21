@@ -1,6 +1,10 @@
 <div>
     <x-header title="List of tags">
         <x-header.actions>
+            <x-jet-button wire:click="$set('showAddTag', true)" class="space-x-2">
+                <x-heroicon-o-plus class="w-6 h-6" />
+                <span>{{ __('Add a tag') }}</span>
+            </x-jet-button>
             <x-jet-button wire:click="$set('showAddCategory', true)" class="space-x-2">
                 <x-heroicon-o-plus class="w-6 h-6" />
                 <span>{{ __('Add a category') }}</span>
@@ -68,11 +72,11 @@
                                 <div class="flex-1">{{ $tag->name }}</div>
                                 <div class="flex items-center justify-end space-x-2">
                                     @if (0 === $tag->repositories_count)
-                                        <x-jet-danger-button>
+                                        <x-jet-danger-button wire:click="confirmTagDeletion({{ $tag->id }})">
                                             <x-heroicon-m-trash class="w-4 h-4" />
                                         </x-jet-danger-button>
                                     @endif
-                                    <x-jet-button >
+                                    <x-jet-button wire:click="editTag({{ $tag->id }})">
                                         <x-heroicon-m-pencil class="w-4 h-4" />
                                     </x-jet-button>
                                     <x-jet-secondary-button class="tag-drag-handle">
@@ -91,13 +95,13 @@
     <!-- Edit Category Form Modal -->
     <x-jet-modal wire:model="showEditCategory">
         @if ($categoryIdBeingUpdated)
-            @livewire('admin.categories-form', [$categoryIdBeingUpdated, 'editCategoryCancel'], key($categoryIdBeingUpdated))
+            @livewire('admin.category-form', [$categoryIdBeingUpdated, 'editCategoryCancel'], key("CategoryUpdate-{$categoryIdBeingUpdated}"))
         @endif
     </x-jet-modal>
 
     <!-- Add Category Form Modal -->
     <x-jet-modal wire:model="showAddCategory">
-        @livewire('admin.categories-form', [null, 'addCategoryCancel'], key($categoryAddIncrement))
+        @livewire('admin.category-form', [null, 'addCategoryCancel'], key("categoryAdd-{$categoryAddIncrement}"))
     </x-jet-modal>
 
     <!-- Delete Category Confirmation Modal -->
@@ -116,6 +120,39 @@
             </x-jet-secondary-button>
 
             <x-jet-danger-button class="ml-3" wire:click="deleteCategory" wire:loading.attr="disabled">
+                {{ __('Delete') }}
+            </x-jet-danger-button>
+        </x-slot>
+    </x-jet-confirmation-modal>
+
+     <!-- Edit Tag Form Modal -->
+     <x-jet-modal wire:model="showEditTag">
+        @if ($tagIdBeingUpdated)
+            @livewire('admin.tag-form', [$tagIdBeingUpdated, 'editTagCancel'], key("tagUpdate-{$tagIdBeingUpdated}"))
+        @endif
+    </x-jet-modal>
+
+    <!-- Add Tag Form Modal -->
+    <x-jet-modal wire:model="showAddTag">
+        @livewire('admin.tag-form', [null, 'addTagCancel'], key("tagAdd-{$tagAddIncrement}"))
+    </x-jet-modal>
+
+    <!-- Delete Tag Confirmation Modal -->
+    <x-jet-confirmation-modal wire:model="confirmingTagDeletion">
+        <x-slot name="title">
+            {{ __('Delete Tag') }}
+        </x-slot>
+
+        <x-slot name="content">
+            {{ __('Are you sure you would like to delete this tag?') }}
+        </x-slot>
+
+        <x-slot name="footer">
+            <x-jet-secondary-button wire:click="$set('confirmingTagDeletion', false)" wire:loading.attr="disabled">
+                {{ __('Cancel') }}
+            </x-jet-secondary-button>
+
+            <x-jet-danger-button class="ml-3" wire:click="deleteTag" wire:loading.attr="disabled">
                 {{ __('Delete') }}
             </x-jet-danger-button>
         </x-slot>

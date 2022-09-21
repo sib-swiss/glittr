@@ -19,6 +19,7 @@ class Tag extends Model implements Sortable
 
     protected $fillable = [
         'name',
+        'category_id',
     ];
 
     public function repositories()

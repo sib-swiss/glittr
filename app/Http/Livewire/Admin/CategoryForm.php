@@ -7,7 +7,7 @@ use App\Models\Category;
 use Laravel\Jetstream\InteractsWithBanner;
 use Livewire\Component;
 
-class CategoriesForm extends Component
+class CategoryForm extends Component
 {
     use InteractsWithBanner;
 
@@ -30,7 +30,6 @@ class CategoriesForm extends Component
             $this->action = 'add';
             $this->title = 'Add tags category';
         }
-
         $this->cancelEvent = $cancelEvent;
     }
 
@@ -52,6 +51,6 @@ class CategoriesForm extends Component
 
     public function render()
     {
-        return view('livewire.admin.categories-form');
+        return view('livewire.admin.category-form');
     }
 }
