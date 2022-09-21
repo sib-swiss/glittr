@@ -155,7 +155,7 @@ class TagsList extends Component
         if ($category && $category->delete()) {
             $this->notify("Category {$category->name} successfully deleted.");
         } else {
-            $this->errorNotification("There was a problem deleting category");
+            $this->errorNotification('There was a problem deleting category');
         }
 
         $this->confirmingCategoryDeletion = false;
@@ -217,7 +217,7 @@ class TagsList extends Component
         if ($tag && $tag->delete()) {
             $this->notify("Tag {$tag->name} successfully deleted.");
         } else {
-            $this->errorNotification("There was a problem deleting tag");
+            $this->errorNotification('There was a problem deleting tag');
         }
 
         $this->confirmingTagDeletion = false;

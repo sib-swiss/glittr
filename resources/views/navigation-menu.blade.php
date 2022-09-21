@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('homepage') }}">
-                        <x-jet-application-mark class="block h-9 w-auto" />
+                        <x-jet-application-mark class="block h-9 w-auto hover:text-primary-500" />
                     </a>
                 </div>
 

@@ -9,17 +9,42 @@ use Livewire\Component;
 
 class TagForm extends Component
 {
-
+    /**
+     * List of categories for form select
+     *
+     * @var array
+     */
     public $categories = [];
+
+    /**
+     * Tag data array
+     *
+     * @var array
+     */
     public $tag = [];
 
+    /**
+     * add or update form action depnding on recieved id
+     *
+     * @var string
+     */
     public $action = 'add';
 
+    /**
+     * Modal title
+     *
+     * @var string
+     */
     public $title = '';
 
+    /**
+     * Cancel button event to emit
+     *
+     * @var string
+     */
     public $cancelEvent = '';
 
-    public function mount(?int $tagId, string $cancelEvent)
+    public function mount(?int $tagId, ?string $cancelEvent)
     {
         if ($tagId) {
             $this->tag = TagData::from(Tag::find($tagId))->toArray();

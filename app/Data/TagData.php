@@ -11,5 +11,6 @@ class TagData extends Data
         public int $category_id,
         public string $name,
         public ?int $order_column,
-    ) {}
+    ) {
+    }
 }

@@ -3,11 +3,11 @@
         <x-header.actions>
             <x-jet-button wire:click="$set('showAddTag', true)" class="space-x-2">
                 <x-heroicon-o-plus class="w-6 h-6" />
-                <span>{{ __('Add a tag') }}</span>
+                <span>{{ __('Tag') }}</span>
             </x-jet-button>
             <x-jet-button wire:click="$set('showAddCategory', true)" class="space-x-2">
                 <x-heroicon-o-plus class="w-6 h-6" />
-                <span>{{ __('Add a category') }}</span>
+                <span>{{ __('Category') }}</span>
             </x-jet-button>
         </x-header.actions>
     </x-header>
@@ -29,25 +29,25 @@
         ">
             @foreach ($categories as $category)
                 <div class="category" data-id="{{ $category->id }}">
-                    <div class="flex items-center bg-gray-50 border rounded space-x-4">
-                        <div class="w-12 self-stretch rounded-l" style="background-color: {{ $category->color }};"></div>
-                        <div class="py-4 flex-1 font-semibold text-lg">{{ $category->name }}</div>
+                    <div class="flex items-center bg-gray-50 border rounded space-x-4 pr-2">
+                        <div class="w-4 lg:w-12 self-stretch rounded-l" style="background-color: {{ $category->color }};"></div>
+                        <div class="py-4 flex-1 font-semibold md:text-lg">{{ $category->name }}</div>
                         <div class="flex items-center">
                             @if (0 === count($category->tags))
-                                <x-jet-danger-button class="mr-4" wire:click="confirmCategoryDeletion({{ $category->id }})">
+                                <x-jet-danger-button class="mr-2" wire:click="confirmCategoryDeletion({{ $category->id }})">
                                     <x-heroicon-o-trash class="w-6 h-6" />
                                 </x-jet-danger-button>
                             @endif
-                            <x-jet-button class="mr-4" type="button" title="{{ __('Edit category') }}" wire:click="editCategory({{ $category->id}})">
-                                <x-heroicon-o-pencil-square class="w-6 h-6" />
+                            <x-jet-button class="mr-2" type="button" title="{{ __('Edit category') }}" wire:click="editCategory({{ $category->id}})">
+                                Edit Category
                             </x-jet-button>
-                            <x-jet-secondary-button class="mr-4 category-drag-handle" type="button" title="{{ __('Reorder categories') }}">
-                                <x-heroicon-o-chevron-up-down class="w-6 h-6" />
+                            <x-jet-secondary-button class="mr-2 category-drag-handle" type="button" title="{{ __('Reorder categories') }}">
+                                <x-heroicon-o-chevron-up-down class="w-4 h-4" />
                             </x-jet-secondary-button>
                         </div>
                     </div>
                     <div
-                        class="ml-8 lg:ml-12"
+                        class="ml-4 lg:ml-8 lg:ml-12"
                         data-category="{{ $category->id }}"
                         x-init="
                         new Sortable($el, {
@@ -65,7 +65,7 @@
                         @foreach ($category->tags as $tag)
                             <div class="bg-white hover:bg-blue-50 py-2 px-4 border-t tag flex space-x-4" data-id="{{ $tag->id }}">
                                 <div class="w-10">
-                                    <span class="text-xs font-semibold p-2 rounded {{ $tag->repositories_count > 0 ? 'bg-green-200' : 'bg-orange-200'}}">
+                                    <span class="text-xs font-semibold py-1 px-3 rounded-lg {{ $tag->repositories_count > 0 ? 'bg-green-100 text-green-800' : 'bg-orange-100 text-orange-800'}}">
                                         {{ $tag->repositories_count }}
                                     </span>
                                 </div>
@@ -93,14 +93,14 @@
     </x-admin.container>
 
     <!-- Edit Category Form Modal -->
-    <x-jet-modal wire:model="showEditCategory">
+    <x-jet-modal wire:model="showEditCategory" persisted="true">
         @if ($categoryIdBeingUpdated)
             @livewire('admin.category-form', [$categoryIdBeingUpdated, 'editCategoryCancel'], key("CategoryUpdate-{$categoryIdBeingUpdated}"))
         @endif
     </x-jet-modal>
 
     <!-- Add Category Form Modal -->
-    <x-jet-modal wire:model="showAddCategory">
+    <x-jet-modal wire:model="showAddCategory" persisted="true">
         @livewire('admin.category-form', [null, 'addCategoryCancel'], key("categoryAdd-{$categoryAddIncrement}"))
     </x-jet-modal>
 
@@ -126,14 +126,14 @@
     </x-jet-confirmation-modal>
 
      <!-- Edit Tag Form Modal -->
-     <x-jet-modal wire:model="showEditTag">
+     <x-jet-modal wire:model="showEditTag" persisted="true">
         @if ($tagIdBeingUpdated)
             @livewire('admin.tag-form', [$tagIdBeingUpdated, 'editTagCancel'], key("tagUpdate-{$tagIdBeingUpdated}"))
         @endif
     </x-jet-modal>
 
     <!-- Add Tag Form Modal -->
-    <x-jet-modal wire:model="showAddTag">
+    <x-jet-modal wire:model="showAddTag" persisted="true">
         @livewire('admin.tag-form', [null, 'addTagCancel'], key("tagAdd-{$tagAddIncrement}"))
     </x-jet-modal>
 

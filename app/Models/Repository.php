@@ -10,6 +10,12 @@ class Repository extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'url',
+        'website',
+        'author_id',
+    ];
+
     /**
      * The attributes that should be cast.
      *
