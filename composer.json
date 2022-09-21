@@ -7,6 +7,8 @@
     "require": {
         "php": "^8.0.2",
         "blade-ui-kit/blade-heroicons": "^2.0",
+        "graham-campbell/github": "^11.0",
+        "graham-campbell/gitlab": "^6.0",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^9.19",
         "laravel/jetstream": "^2.12",

@@ -67,7 +67,7 @@ class RepositoryForm extends Component
 
     public function tagsUpdated(array $tagIds): void
     {
-        $this->errorNotification("Test");
+        $this->errorNotification('Test');
 
         $this->repository['tags'] = $tagIds;
     }
@@ -81,14 +81,13 @@ class RepositoryForm extends Component
             if ($repository) {
                 $repository->tags()->sync($validatedData['repository']['tags']);
                 $this->notify("Repository {$displayName} successfully added.");
-                $this->emitUp("AddRepositorySuccess", [
+                $this->emitUp('AddRepositorySuccess', [
                     'repository' => $repository->id,
                 ]);
             } else {
                 $this->errorNotification("Error trying to create repository {$displayName}.");
             }
         }
-
     }
 
     public function render(): View
