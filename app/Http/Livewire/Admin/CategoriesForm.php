@@ -15,15 +15,23 @@ class CategoriesForm extends Component
 
     public $action = 'add';
 
-    public function mount(?int $categoryId, string $action)
+    public $title = '';
+
+    public $cancelEvent = '';
+
+    public function mount(?int $categoryId, string $cancelEvent)
     {
         if ($categoryId) {
             $this->category = CategoryData::from(Category::find($categoryId))->toArray();
+            $this->action = 'edit';
+            $this->title = 'Edit tags category';
         } else {
             $this->category = CategoryData::empty();
+            $this->action = 'add';
+            $this->title = 'Add tags category';
         }
 
-        $this->action = $action;
+        $this->cancelEvent = $cancelEvent;
     }
 
     public function save()
@@ -32,18 +40,14 @@ class CategoriesForm extends Component
 
         $data = CategoryData::from($this->category);
 
-        Category::updateOrCreate(
+        $category = Category::updateOrCreate(
             ['id' => $data->id],
             $data->toArray()
         );
 
-        $this->banner('Sucess');
-        $this->emitUp($this->action.'CategorySuccess');
-    }
-
-    public function cancel()
-    {
-        $this->emitUp($this->action.'CategoryCancel');
+        $this->emitUp("{$this->action}CategorySuccess", [
+            'category' => $category->id,
+        ]);
     }
 
     public function render()

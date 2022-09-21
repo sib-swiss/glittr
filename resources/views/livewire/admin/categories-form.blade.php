@@ -1,4 +1,4 @@
-<x-modal.content title="{{ Str::headline($action. ' Category') }}">
+<x-modal.content title="{{ $title }}">
     <div class="space-y-4">
         <div>
             <x-jet-label for="name" value="{{ __('Name') }}" />
@@ -12,7 +12,9 @@
         </div>
     </div>
     <x-slot name="footer">
-        <x-jet-secondary-button wire:click="cancel">{{ __('Cancel') }}</x-jet-seconday-button>
+        @if($cancelEvent != '')
+            <x-jet-secondary-button wire:click="$emit('{{ $cancelEvent }}')">{{ __('Cancel') }}</x-jet-seconday-button>
+        @endif
         <x-jet-button wire:click="save">{{ Str::headline($action) }}</x-jet-button>
     </x-slot>
 </x-modal.content>
