@@ -6,7 +6,7 @@
         },
     }"
     @notify.window="let message = $event.detail; messages.push(message); if(!$event.detail.persisted) { setTimeout(() => { remove(message) }, 5000) }"
-    class="fixed inset-0 z-50 flex flex-col items-end justify-center px-4 py-6 space-y-4 pointer-events-none sm:p-6 sm:justify-start"
+    class="fixed inset-0 z-50 flex flex-col items-end justify-start px-4 py-6 space-y-4 pointer-events-none sm:p-6"
 >
     <template x-for="(message, messageIndex) in messages" :key="messageIndex" hidden>
         <div
