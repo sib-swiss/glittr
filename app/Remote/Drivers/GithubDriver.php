@@ -5,19 +5,17 @@ namespace App\Remote\Drivers;
 use App\Data\AuthorData;
 use App\Data\RemoteData;
 use App\Remote\Helpers;
-use Exception;
 use GrahamCampbell\GitHub\GitHubManager;
 
 class GithubDriver extends Driver
 {
-
     protected $connection;
 
     /**
      * Undocumented function
      *
-     * @param GitHubManager $client
-     * @param array $config
+     * @param  GitHubManager  $client
+     * @param  array  $config
      */
     public function __construct($client = null, $config = null)
     {
@@ -33,27 +31,31 @@ class GithubDriver extends Driver
      */
     public function getData(): ?RemoteData
     {
-
         if ($this->repository && $this->repository->url) {
-            list ($username, $repository_name) = Helpers::getRepositoryUserAndName($this->repository->url);
+            [$username, $repository_name] = Helpers::getRepositoryUserAndName($this->repository->url);
             $repoData = $this->getClient()->repo()->show($username, $repository_name);
+
             return RemoteData::fromGithub($repoData);
         }
 
         return null;
-
     }
 
     public function getAuthorData(): ?AuthorData
     {
-        if ($this->repository && $this->repository->url) {
-            list($username, $repository_name) = Helpers::getRepositoryUserAndName($this->repository->url);
-            $userData = $this->getClient()->user()->show($username);
+        $userData = null;
 
-            if (isset($userData['name']) && isset($userData['login'])) {
-                return AuthorData::fromGithub($userData);
-            }
+        if ($this->author && $this->author->name != '') {
+            $userData = $this->getClient()->user()->show($this->author->name);
+        } elseif ($this->repository && $this->repository->url) {
+            [$username, $repository_name] = Helpers::getRepositoryUserAndName($this->repository->url);
+            $userData = $this->getClient()->user()->show($username);
         }
+
+        if (isset($userData['name']) && isset($userData['login'])) {
+            return AuthorData::fromGithub($userData);
+        }
+
         return null;
     }
 
@@ -64,7 +66,6 @@ class GithubDriver extends Driver
      */
     protected function getClient()
     {
-
         return $this->connection ? $this->client->connection($this->connection) : $this->client;
     }
 }

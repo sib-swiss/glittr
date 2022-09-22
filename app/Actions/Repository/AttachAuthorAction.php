@@ -12,15 +12,14 @@ class AttachAuthorAction
     {
         //Look if author exist
         $author = Author::where('remote_id', $data->remote_id)->where('api', $repository->api)->first();
-        if ($author) {
-            $repository->author()->associate($author);
-        } else {
-            $repository->author()->create([
+        if (! $author) {
+            $author = Author::create([
                 ...$data->toArray(),
                 'api' => $repository->api,
             ]);
         }
 
+        $repository->author_id = $author->id;
         $repository->save();
     }
 }

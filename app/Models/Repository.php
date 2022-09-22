@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Casts\Url;
+use App\Facades\Remote;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,7 +16,7 @@ class Repository extends Model
         'website',
         'stargazers',
         'title',
-        'decription',
+        'description',
         'license',
         'last_push',
         'url',
@@ -49,5 +50,19 @@ class Repository extends Model
 
     public function getClient()
     {
+    }
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::creating(function (Repository $repository) {
+            if (! $repository->api || empty($repository->api)) {
+                $repository->api = Remote::resolveAPI($repository);
+            }
+        });
     }
 }

@@ -13,6 +13,7 @@ class Author extends Model
     protected $fillable = [
         'api',
         'remote_id',
+        'url',
         'name',
         'display_name',
         'location',

@@ -3,14 +3,14 @@
 namespace App\Remote;
 
 use App\Models\Repository;
-use Illuminate\Support\Str;
-use InvalidArgumentException;
-use Illuminate\Support\Manager;
+use App\Remote\Contracts\DriverContract;
 use App\Remote\Drivers\GithubDriver;
 use App\Remote\Drivers\GitLabDriver;
-use App\Remote\Contracts\DriverContract;
 use GrahamCampbell\GitHub\GitHubManager;
 use GrahamCampbell\GitLab\GitLabManager;
+use Illuminate\Support\Manager;
+use Illuminate\Support\Str;
+use InvalidArgumentException;
 
 class RemoteManager extends Manager
 {
@@ -93,7 +93,6 @@ class RemoteManager extends Manager
                     return $this->$method($config);
                 }
             }
-
         }
 
         throw new InvalidArgumentException("Driver [$driver] not supported.");

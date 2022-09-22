@@ -41,7 +41,7 @@ return [
     'connections' => [
 
         'main' => [
-            'token' => 'your-token',
+            'token' => env('GITLAB_TOKEN', ''),
             'method' => 'token',
             // 'backoff' => false,
             // 'cache'   => false,

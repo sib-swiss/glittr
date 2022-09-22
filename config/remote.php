@@ -25,7 +25,7 @@ return [
             'driver' => 'gitlab',
             'connection' => 'main',
             'hosts' => [
-                'gitblab.com',
+                'gitlab.com',
                 'www.gitlab.com',
             ],
         ],

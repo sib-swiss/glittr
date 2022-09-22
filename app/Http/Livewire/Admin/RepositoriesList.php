@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Admin;
 
+use App\Models\Repository;
 use Livewire\Component;
 
 class RepositoriesList extends Component
@@ -12,8 +13,13 @@ class RepositoriesList extends Component
 
     protected $listeners = [
         'addRepositoryCancel',
-        'addRepositorySuccess',
+        'AddRepositorySuccess',
     ];
+
+    public function AddRepositorySuccess(Repository $repository)
+    {
+        $this->showAdd = false;
+    }
 
     public function addRepositoryCancel()
     {

@@ -6,11 +6,10 @@ use Spatie\Url\Url;
 
 class Helpers
 {
-
     /**
      * Extract username and repository name from repository url
      *
-     * @param Url $url
+     * @param  Url  $url
      * @return array [?string author, ?string repository_name]
      */
     public static function getRepositoryUserAndName(Url $url)

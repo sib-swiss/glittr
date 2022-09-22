@@ -67,8 +67,6 @@ class RepositoryForm extends Component
 
     public function tagsUpdated(array $tagIds): void
     {
-        $this->errorNotification('Test');
-
         $this->repository['tags'] = $tagIds;
     }
 
