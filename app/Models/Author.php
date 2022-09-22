@@ -10,6 +10,21 @@ class Author extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'api',
+        'remote_id',
+        'name',
+        'display_name',
+        'location',
+        'type',
+        'company',
+        'email',
+        'bio',
+        'avatar_url',
+        'twitter_username',
+        'website',
+    ];
+
     /**
      * The attributes that should be cast.
      *

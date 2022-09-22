@@ -11,9 +11,16 @@ class Repository extends Model
     use HasFactory;
 
     protected $fillable = [
-        'url',
+        'name',
         'website',
+        'stargazers',
+        'title',
+        'decription',
+        'license',
+        'last_push',
+        'url',
         'author_id',
+        'refreshed_at',
     ];
 
     /**
@@ -32,11 +39,15 @@ class Repository extends Model
 
     public function author()
     {
-        return $this->hasMany(Repository::class);
+        return $this->belongsTo(Author::class);
     }
 
     public function tags()
     {
         return $this->belongsToMany(Tag::class)->using(RepositoryTag::class);
+    }
+
+    public function getClient()
+    {
     }
 }

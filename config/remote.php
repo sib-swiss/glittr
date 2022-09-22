@@ -12,11 +12,11 @@ return [
     |
     |
     */
-    'sources' => [
+    'apis' => [
         'github' => [
             'driver' => 'github',
             'connection' => 'main',
-            'domains' => [
+            'hosts' => [
                 'github.com',
                 'www.github.com',
             ],
@@ -24,7 +24,7 @@ return [
         'gitlab' => [
             'driver' => 'gitlab',
             'connection' => 'main',
-            'domains' => [
+            'hosts' => [
                 'gitblab.com',
                 'www.gitlab.com',
             ],
