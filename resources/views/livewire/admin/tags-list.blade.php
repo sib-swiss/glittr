@@ -47,7 +47,7 @@
                         </div>
                     </div>
                     <div
-                        class="ml-4 lg:ml-8 lg:ml-12"
+                        class="ml-4 lg:ml-12"
                         data-category="{{ $category->id }}"
                         x-init="
                         new Sortable($el, {

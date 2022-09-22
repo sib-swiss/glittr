@@ -2,6 +2,7 @@
 
 namespace App\Remote;
 
+use App\Models\Author;
 use App\Models\Repository;
 use App\Remote\Contracts\DriverContract;
 use App\Remote\Drivers\GithubDriver;
@@ -15,18 +16,18 @@ use InvalidArgumentException;
 class RemoteManager extends Manager
 {
     /**
-     * Get Driver instance for given repository
+     * Get Driver instance for given repository or author
      */
-    public function for(Repository $repository): ?DriverContract
+    public function for(Repository|Author $model): ?DriverContract
     {
-        if ($repository->api != '') {
-            $driver = $this->driver($repository->api);
+        if ($model->api != '') {
+            $driver = $this->driver($model->api);
         }
 
-        $driver = $this->driver($this->resolveAPI($repository));
-
-        if (method_exists($driver, 'setRepository')) {
-            $driver->setRepository($repository);
+        if (($model instanceof Repository) && method_exists($driver, 'setRepository')) {
+            $driver->setRepository($model);
+        } elseif (($model instanceof Author) && method_exists($driver, 'setAuthor')) {
+            $driver->setAuthor($model);
         }
 
         return $driver;

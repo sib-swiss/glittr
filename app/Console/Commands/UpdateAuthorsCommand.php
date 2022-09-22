@@ -29,15 +29,17 @@ class UpdateAuthorsCommand extends Command
      */
     public function handle()
     {
-        $this->comment('Start updating repositories data.');
+        $this->comment('Start updating authors data.');
 
         foreach (Author::whereNotNull('api')->get() as $author) {
             $this->comment("Updating author {$author->name} with api {$author->api}.");
-            $authorData = Remote::driver($author->api)->setAuthor($author)->getAuthorData();
+            $authorData = Remote::for($author)->getAuthorData();
             if ($authorData) {
                 $author->update($authorData->toArray());
             }
         }
+
+        $this->comment('Finished updating authors data.');
 
         return 0;
     }

@@ -8,11 +8,36 @@
         </x-header.actions>
     </x-header>
     <x-admin.container>
-        TABLE
+        <x-table class="mb-4">
+            <thead>
+                <x-table.header>ID</x-table.header>
+                <x-table.header></x-table.header>
+            </thead>
+            <tbody>
+                @foreach($repositories as $repository)
+                <x-table.row>
+                    <x-table.cell>{{ $repository->id }}</x-table.cell>
+                    <x-table.cell width="60">
+                        <x-jet-button wire:click="editRepository({{ $repository->id }})">
+                            <x-heroicon-m-pencil class="w-4 h-4" />
+                        </x-jet-button>
+                    </x-table.cell>
+                </x-table.row>
+                @endforeach
+            </tbody>
+        </x-table>
+        {{ $repositories->links() }}
     </x-admin.container>
 
-    <!-- Add Category Form Modal -->
+    <!-- Add Repository Form Modal -->
     <x-jet-modal wire:model="showAdd" persisted="true">
-        @livewire('admin.repository-form', [null, 'addRepositoryCancel'], key("epositoryAdd-{$addIncrement}"))
+        @livewire('admin.repository-form', [null, 'addRepositoryCancel'], key("repositoryAdd-{$addIncrement}"))
     </x-jet-modal>
+    <!-- Edit Repository Form Modal -->
+    <x-jet-modal wire:model="showEdit" persisted="true">
+        @if($repositoryBeingUpdated)
+            @livewire('admin.repository-form', [$repositoryBeingUpdated, 'editRepositoryCancel'], key("repositoryEdit-{$repositoryBeingUpdated}"))
+        @endif
+    </x-jet-modal>
+
 </div>

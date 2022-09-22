@@ -55,9 +55,4 @@ abstract class Driver implements DriverContract
 
         return $this;
     }
-
-    protected function getClient()
-    {
-        return $this->client;
-    }
 }

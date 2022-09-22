@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Casts\Url;
 use App\Facades\Remote;
+use App\Jobs\UpdateRepositoryData;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -45,11 +46,7 @@ class Repository extends Model
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class)->using(RepositoryTag::class);
-    }
-
-    public function getClient()
-    {
+        return $this->belongsToMany(Tag::class)->using(RepositoryTag::class)->ordered();
     }
 
     /**
@@ -59,9 +56,28 @@ class Repository extends Model
      */
     protected static function booted()
     {
+        /**
+         * Automatic api resolve from url
+         */
         static::creating(function (Repository $repository) {
             if (! $repository->api || empty($repository->api)) {
                 $repository->api = Remote::resolveAPI($repository);
+            }
+        });
+
+        static::created(function (Repository $repository) {
+            UpdateRepositoryData::dispatch($repository);
+        });
+
+        /**
+         * If url changed the author might have changed need to recheck
+         */
+        static::updating(function (Repository $repository) {
+            $dirty = $repository->getDirty();
+            if (isset($dirty['url'])) {
+                $repository->api = Remote::resolveAPI($repository);
+                $repository->author_id = null;
+                UpdateRepositoryData::dispatch($repository);
             }
         });
     }

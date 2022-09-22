@@ -38,9 +38,9 @@ class TagSelect extends Component
      * @param  array  $selected Array of ordered selected tag ids [2, 1, 5]
      * @return void
      */
-    public function mount(array $selected = [], ?string $eventName = 'tagsUpdated'): void
+    public function mount(array $values = [], ?string $eventName = 'tagsUpdated'): void
     {
-        foreach ($selected as $tagId) {
+        foreach ($values as $tagId) {
             $this->addTag($tagId, false);
         }
         $this->eventName = $eventName;

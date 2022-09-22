@@ -7,7 +7,7 @@
         </div>
         <div class="flex flex-wrap items-center space-x-1">
             <x-jet-label for="tags" value="{{ __('Tags') }}" />
-            @livewire('tag-select', ['selected' => $repository['tags']])
+            @livewire('tag-select', ['values' => $repository['tags']])
             <x-jet-input-error for="repository.tags" class="mt-2 w-full" />
         </div>
 
