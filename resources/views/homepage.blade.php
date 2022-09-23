@@ -1,3 +1,3 @@
 <x-guest-layout>
-    Hello world!
+    @livewire('repositories')
 </x-guest-layout>

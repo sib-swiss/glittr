@@ -12,13 +12,33 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+
         <!-- Styles -->
+        <style>
+            [x-cloak] { display: none; }
+            <x-categories-colors />
+        </style>
         @livewireStyles
+        @stack('head')
     </head>
-    <body>
-        <div class="font-sans text-gray-900 antialiased">
-            {{ $slot }}
+    <body class="font-sans text-gray-800 antialiased min-h-screen flex flex-col text-sm lg:text-base">
+        <header class="bg-white shadow" id="header">
+            <div class="container flex items-center space-x-4 py-2">
+                <img src="{{ url('/sib-emblem.svg') }}" class="max-w-full h-12" />
+                <h1 class="text-lg lg:text-xl font-semibold tracking-tight">
+                    {{ __('Training Collection') }}
+                </h1>
+                @livewire('search-bar')
+            </div>
+        </header>
+        <div class="flex-1 bg-gray-100 py-8 lg:py-12">
+            <div class="container">
+                {{ $slot }}
+            </div>
         </div>
+        <footer class="bg-primary text-white text-sm text-center p-2">
+            footer
+        </footer>
         @livewireScripts
     </body>
 </html>

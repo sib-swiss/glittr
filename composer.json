@@ -13,8 +13,10 @@
         "laravel/framework": "^9.19",
         "laravel/jetstream": "^2.12",
         "laravel/sanctum": "^3.0",
+        "laravel/scout": "^9.4",
         "laravel/tinker": "^2.7",
         "livewire/livewire": "^2.5",
+        "mexitek/phpcolors": "dev-master",
         "spatie/eloquent-sortable": "^4.0",
         "spatie/laravel-data": "^2.0",
         "spatie/url": "^2.1"

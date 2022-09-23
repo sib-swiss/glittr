@@ -5,12 +5,15 @@ namespace App\Models;
 use App\Casts\Url;
 use App\Facades\Remote;
 use App\Jobs\UpdateRepositoryData;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Scout\Searchable;
 
 class Repository extends Model
 {
     use HasFactory;
+    use Searchable;
 
     protected $fillable = [
         'name',
@@ -47,6 +50,31 @@ class Repository extends Model
     public function tags()
     {
         return $this->belongsToMany(Tag::class)->using(RepositoryTag::class)->ordered();
+    }
+
+    public function scopeWithTags(Builder $query): void
+    {
+        $query->with('tags.category');
+    }
+
+    public function scopeEnabled(Builder $query): void
+    {
+        $query->where('enabled', true);
+    }
+
+    public function scopeSearch(Builder $query, string $search): void
+    {
+        $query->where(function($query) use($search) {
+            $terms = explode(" ", $search);
+            foreach ($terms as $term) {
+                $query->where(function($query) use($term) {
+                    $query->where('url', 'like', '%' . $term . '%')
+                        ->orWhereHas('tags', function (Builder $query) use($term) {
+                            $query->where('name', 'like', '%' . $term . '%');
+                        });
+                });
+            }
+        });
     }
 
     /**
