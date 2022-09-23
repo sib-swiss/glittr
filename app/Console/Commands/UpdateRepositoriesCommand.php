@@ -3,7 +3,8 @@
 namespace App\Console\Commands;
 
 use App\Actions\Repository\AttachAuthorAction;
-use App\Jobs\UpdateRepositoryData;
+use App\Actions\Repository\UpdateRemoteAction;
+use App\Facades\Remote;
 use App\Models\Repository;
 use Illuminate\Console\Command;
 
@@ -30,29 +31,47 @@ class UpdateRepositoriesCommand extends Command
      * @param  AttachAuthorAction  $attachAuthorAction
      * @return int
      */
-    public function handle()
+    public function handle(UpdateRemoteAction $updateRemoteAction, AttachAuthorAction $attachAuthorAction)
     {
-        $this->comment('Start updating repositories job queuing.');
+        $this->comment('Start updating repositories data.');
 
         if ($this->hasArgument('repository') && $this->argument('repository')) {
             $repository = Repository::find($this->argument('repository'));
             if ($repository) {
                 $this->comment("Updating repository {$repository->url}");
-                UpdateRepositoryData::dispatch($repository);
+                $this->updateRepository($repository, $updateRemoteAction, $attachAuthorAction);
             } else {
                 $this->error("Repository not found {$this->argument('repository')}");
             }
         } else {
-            Repository::chunk(100, function ($repositories) {
+            $updated = 0;
+            Repository::chunk(100, function ($repositories) use ($updateRemoteAction, $attachAuthorAction) {
                 foreach ($repositories as $repository) {
                     $this->comment("Updating repository {$repository->url}");
-                    UpdateRepositoryData::dispatch($repository);
+                    $this->updateRepository($repository, $updateRemoteAction, $attachAuthorAction);
                 }
             });
 
-            $this->comment('Finished queuing jobs.');
+            $this->comment("Finished procesing repositories ({$updated} updated).");
         }
 
         return 0;
+    }
+
+    protected function updateRepository(Repository $repository, UpdateRemoteAction $updateRemoteAction, AttachAuthorAction $attachAuthorAction)
+    {
+        if ($repository->api) {
+            $data = Remote::for($repository)->getData();
+            if ($data) {
+                $updateRemoteAction->execute($repository, $data);
+            }
+            // Attach author if not linked.
+            if (! $repository->author) {
+                $authorData = Remote::for($repository)->getAuthorData();
+                if ($authorData) {
+                    $attachAuthorAction->execute($repository, $authorData);
+                }
+            }
+        }
     }
 }

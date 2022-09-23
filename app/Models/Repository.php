@@ -8,6 +8,7 @@ use App\Jobs\UpdateRepositoryData;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 use Laravel\Scout\Searchable;
 
 class Repository extends Model
@@ -52,9 +53,28 @@ class Repository extends Model
         return $this->belongsToMany(Tag::class)->using(RepositoryTag::class)->ordered();
     }
 
+    public function getPushStatusClass()
+    {
+        if ($this->last_push) {
+            $days = $this->last_push->diff(Carbon::now())->days;
+            if ($days <= 30) {
+                return 'bg-green-400';
+            } elseif ($days <= 90) {
+                return 'bg-yellow-400';
+            } elseif ($days <= 365) {
+                return 'bg-orange-400';
+            } else {
+                return 'bg-red-400';
+            }
+        }
+
+        return 'bg-gray-400';
+
+    }
+
     public function scopeWithTags(Builder $query): void
     {
-        $query->with('tags.category');
+        $query->with('tags');
     }
 
     public function scopeEnabled(Builder $query): void
@@ -68,7 +88,13 @@ class Repository extends Model
             $terms = explode(" ", $search);
             foreach ($terms as $term) {
                 $query->where(function($query) use($term) {
-                    $query->where('url', 'like', '%' . $term . '%')
+                    $query
+                        ->where('url', 'like', '%' . $term . '%')
+                        ->orWhere('description', 'like', '%' . $term . '%')
+                        ->orWhereHas('author', function(Builder $query) use($term) {
+                            $query->where('name', 'like', '%' . $term . '%')
+                            ->orWhere('display_name', 'like', '%' . $term . '%');
+                        })
                         ->orWhereHas('tags', function (Builder $query) use($term) {
                             $query->where('name', 'like', '%' . $term . '%');
                         });

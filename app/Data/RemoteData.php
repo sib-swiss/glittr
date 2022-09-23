@@ -29,13 +29,14 @@ class RemoteData extends Data
      */
     public static function fromGithub(array $repoData): static
     {
+
         return new self(
             name: $repoData['full_name'] ?? '',
             website: $repoData['homepage'] ?? Optional::create(), // May be manually added if not present
             stargazers: isset($repoData['stargazers_count']) ? intval($repoData['stargazers_count']) : Optional::create(),
             title: $repoData['name'] ?? '',
             description: $repoData['description'] ?? '',
-            license: isset($repoData['license']['name']) && $repoData['license']['name'] ? $repoData['license']['name'] : Optional::create(),
+            license: isset($repoData['license']['key']) && $repoData['license']['key'] ? $repoData['license']['key'] : Optional::create(),
             last_push: isset($repoData['pushed_at']) && $repoData['pushed_at'] ? CarbonImmutable::parse($repoData['pushed_at']) : Optional::create(),
         );
     }

@@ -16,10 +16,14 @@ class Repositories extends Component
 
     public $tags = [];
     public $categories= [];
+
     public $search;
+    public $selected_tags;
+    public $selected_categories;
+    public $author;
 
     protected $listeners = ['searchUpdated'];
-    protected $queryString = ['search'];
+    protected $queryString = ['search', 'selected_tags', 'selected_categories', 'author'];
 
     public function mount()
     {
@@ -32,7 +36,8 @@ class Repositories extends Component
                 'name' => $cat->name,
                 'color' => $cat->color,
                 'order' => $cat->order_column,
-                'all_selected' => false,
+                'selected' => false,
+                'total' => 0,
             ];
             foreach ($cat->tags as $tag) {
                 $this->tags[] = [
@@ -50,6 +55,32 @@ class Repositories extends Component
     public function searchUpdated(string $value): void
     {
         $this->search = $value;
+        $this->resetPage();
+    }
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function toggleCategory(int $categoryId): void
+    {
+        $status = null;
+
+        if (isset($this->categories[$categoryId])) {
+            $this->categories[$categoryId]['selected'] = !$this->categories[$categoryId]['selected'];
+            $status = $this->categories[$categoryId]['selected'];
+        }
+
+        if (!is_null($status)) {
+            foreach($this->tags as $tagId => $tag) {
+                if ($tag['cid'] == $categoryId) {
+                    $this->tags[$tagId]['selected'] = $status;
+                }
+            }
+        }
+
+        $this->resetPage();
     }
 
     public function toggleTag(int $tagIndex): void
@@ -57,6 +88,8 @@ class Repositories extends Component
         if (isset($this->tags[$tagIndex])) {
             $this->tags[$tagIndex]['selected'] = !$this->tags[$tagIndex]['selected'];
         }
+
+        $this->resetPage();
     }
 
     public function render()
@@ -71,20 +104,25 @@ class Repositories extends Component
         $ids = $repositories->clone()->select('id')->get()->pluck('id')->toArray();
 
         //Filter tags
-        $countTags = Tag::select('id')->withCount('repositories')->whereHas('repositories', function (Builder $query) use($ids) {
+        $countTags = Tag::select('id', 'category_id')
+        ->withCount(['repositories' => function(Builder $query) use($ids) {
             $query->whereIn('id', $ids);
-        })
+        }])
+        ->having('repositories_count', '>', 0)
         ->get()
-        ->mapWithKeys(fn($item) => [$item->id => $item->repositories_count])
+        ->mapWithKeys(fn($item) => [$item->id => ['nb' => $item->repositories_count, 'cid' => $item->category_id]])
         ->all();
 
         foreach($this->tags as $tid => $tag) {
-            $nb = $countTags[$tag['id']] ?? 0;
+            $nb = $countTags[$tag['id']]['nb'] ?? 0;
             $this->tags[$tid]['filtered'] = $nb;
-            // deselect tags fitleted out by search terms?
-            //if (0 === $nb) {
-            //    $this->tags[$tid]['selected'] = false;
-            //}
+        }
+
+        // Categories repositories count
+        foreach(collect($countTags)->pluck('cid')->unique() as $cid) {
+            $this->categories[$cid]['total'] = Repository::whereHas('tags.category', function(Builder $query) use($cid) {
+                $query->where('id', $cid);
+            })->whereIn('id', $ids)->count();
         }
 
         $tags = collect($this->tags);
@@ -100,7 +138,8 @@ class Repositories extends Component
         // apply selected tags to selection
         $selected_tags = collect($this->tags)
             ->filter(fn($tag) => $tag['selected'])
-            ->pluck('id')->toArray();
+            ->pluck('id');
+
 
         if (count($selected_tags) > 0) {
             $repositories->whereHas('tags', function (Builder $query) use($selected_tags) {
