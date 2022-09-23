@@ -6,8 +6,8 @@ use Livewire\Component;
 
 class SearchBar extends Component
 {
-
     public $search;
+
     protected $queryString = ['search'];
 
     public function updatedSearch($value)

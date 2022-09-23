@@ -60,6 +60,12 @@
                 </div>
                 <div class="lg:align-middle lg:table-cell bg-gray-800 p-2 text-white text-sm tracking-wider">
                     <div class="flex items-center justify-between">
+                        <span>Description</span>
+                        <x-heroicon-o-chevron-up-down class="w-4 h-4" />
+                    </div>
+                </div>
+                <div class="lg:align-middle lg:table-cell bg-gray-800 p-2 text-white text-sm tracking-wider">
+                    <div class="flex items-center justify-between">
                         <span>Author</span>
                         <x-heroicon-o-chevron-up-down class="w-4 h-4" />
                     </div>
@@ -91,12 +97,26 @@
             @foreach($repositories as $repository)
                 <div class="lg:table-row border-b hover:bg-gray-50">
                     <div class="lg:table-cell p-2 lg:border-b lg:align-middle leading-tight">
-                        <h3 class="font-bold tracking-tight">
-                            {{ $repository->title }}
-                        </h3>
-                        <div class="text-sm text-gray-800">
+                        <div class="flex space-x-2">
+                            <a class="text-blue-500 hover:text-blue-600 font-bold tracking-tight underline flex items-center space-x-1" href="{{ $repository->url }}" target="_blank">
+                                <span>{{ $repository->name }}</span>
+                                <x-heroicon-m-arrow-top-right-on-square class="w-3 h-3" />
+                            </a>
+                        </div>
+                        <div class="text-sm text-gray-600">
                             {{ $repository->description }}
                         </div>
+                    </div>
+                    <div class="lg:table-cell p-2 lg:border-b lg:align-middle">
+                        <div class="flex space-x-2">
+
+                            @if ($repository->website != "")
+                                <a class="text-xs uppercase tracking-wider py-2 px-4 rounded bg-blue-500 hover:bg-blue-700 text-white" href="{{ $repository->website }}" target="_blank">
+                                    <span>Website</span>
+                                </a>
+                            @endif
+                        </div>
+
                     </div>
                     <div class="lg:table-cell p-2 lg:border-b lg:align-middle">
                         @if ($repository->author)
@@ -136,7 +156,7 @@
                         </div>
                         @endif
                     </div>
-                    <div class="lg:table-cell p-2 lg:border-b lg:align-middle text-sm">
+                    <div class="lg:table-cell p-2 lg:border-b lg:align-middle text-xs text-gray-600">
                         @if ($repository->last_push)
                             <div class="flex items-center space-x-2">
                                 <div class="w-2 h-2 rounded-full {{ $repository->getPushStatusClass() }}"></div>
@@ -144,7 +164,7 @@
                             </div>
                         @endif
                     </div>
-                    <div class="lg:table-cell p-2 lg:border-b lg:align-middle text-sm">
+                    <div class="lg:table-cell p-2 lg:border-b lg:align-middle text-sm font-semibold">
                         {{ $repository->license }}
                     </div>
                 </div>

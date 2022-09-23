@@ -11,18 +11,22 @@ use Livewire\WithPagination;
 
 class Repositories extends Component
 {
-
     use WithPagination;
 
     public $tags = [];
-    public $categories= [];
+
+    public $categories = [];
 
     public $search;
+
     public $selected_tags;
+
     public $selected_categories;
+
     public $author;
 
     protected $listeners = ['searchUpdated'];
+
     protected $queryString = ['search', 'selected_tags', 'selected_categories', 'author'];
 
     public function mount()
@@ -68,12 +72,12 @@ class Repositories extends Component
         $status = null;
 
         if (isset($this->categories[$categoryId])) {
-            $this->categories[$categoryId]['selected'] = !$this->categories[$categoryId]['selected'];
+            $this->categories[$categoryId]['selected'] = ! $this->categories[$categoryId]['selected'];
             $status = $this->categories[$categoryId]['selected'];
         }
 
-        if (!is_null($status)) {
-            foreach($this->tags as $tagId => $tag) {
+        if (! is_null($status)) {
+            foreach ($this->tags as $tagId => $tag) {
                 if ($tag['cid'] == $categoryId) {
                     $this->tags[$tagId]['selected'] = $status;
                 }
@@ -86,7 +90,7 @@ class Repositories extends Component
     public function toggleTag(int $tagIndex): void
     {
         if (isset($this->tags[$tagIndex])) {
-            $this->tags[$tagIndex]['selected'] = !$this->tags[$tagIndex]['selected'];
+            $this->tags[$tagIndex]['selected'] = ! $this->tags[$tagIndex]['selected'];
         }
 
         $this->resetPage();
@@ -105,31 +109,31 @@ class Repositories extends Component
 
         //Filter tags
         $countTags = Tag::select('id', 'category_id')
-        ->withCount(['repositories' => function(Builder $query) use($ids) {
+        ->withCount(['repositories' => function (Builder $query) use ($ids) {
             $query->whereIn('id', $ids);
         }])
         ->having('repositories_count', '>', 0)
         ->get()
-        ->mapWithKeys(fn($item) => [$item->id => ['nb' => $item->repositories_count, 'cid' => $item->category_id]])
+        ->mapWithKeys(fn ($item) => [$item->id => ['nb' => $item->repositories_count, 'cid' => $item->category_id]])
         ->all();
 
-        foreach($this->tags as $tid => $tag) {
+        foreach ($this->tags as $tid => $tag) {
             $nb = $countTags[$tag['id']]['nb'] ?? 0;
             $this->tags[$tid]['filtered'] = $nb;
         }
 
         // Categories repositories count
-        foreach(collect($countTags)->pluck('cid')->unique() as $cid) {
-            $this->categories[$cid]['total'] = Repository::whereHas('tags.category', function(Builder $query) use($cid) {
+        foreach (collect($countTags)->pluck('cid')->unique() as $cid) {
+            $this->categories[$cid]['total'] = Repository::whereHas('tags.category', function (Builder $query) use ($cid) {
                 $query->where('id', $cid);
             })->whereIn('id', $ids)->count();
         }
 
         $tags = collect($this->tags);
         $filter_tags = $tags
-            ->filter(fn($tag) => $tag['filtered'] > 0 && isset($this->categories[$tag['cid']]))
+            ->filter(fn ($tag) => $tag['filtered'] > 0 && isset($this->categories[$tag['cid']]))
             ->groupBy('cid', true)
-            ->map(fn($tags, $cid) => [
+            ->map(fn ($tags, $cid) => [
                 'category' => $this->categories[$cid],
                 'tags' => $tags,
                 'order' => $this->categories[$cid]['order'],
@@ -137,12 +141,11 @@ class Repositories extends Component
 
         // apply selected tags to selection
         $selected_tags = collect($this->tags)
-            ->filter(fn($tag) => $tag['selected'])
+            ->filter(fn ($tag) => $tag['selected'])
             ->pluck('id');
 
-
         if (count($selected_tags) > 0) {
-            $repositories->whereHas('tags', function (Builder $query) use($selected_tags) {
+            $repositories->whereHas('tags', function (Builder $query) use ($selected_tags) {
                 $query->whereIn('id', $selected_tags);
             });
         }

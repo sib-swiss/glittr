@@ -9,12 +9,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
-use Laravel\Scout\Searchable;
 
 class Repository extends Model
 {
     use HasFactory;
-    use Searchable;
 
     protected $fillable = [
         'name',
@@ -69,7 +67,6 @@ class Repository extends Model
         }
 
         return 'bg-gray-400';
-
     }
 
     public function scopeWithTags(Builder $query): void
@@ -84,19 +81,20 @@ class Repository extends Model
 
     public function scopeSearch(Builder $query, string $search): void
     {
-        $query->where(function($query) use($search) {
-            $terms = explode(" ", $search);
+        $query->where(function ($query) use ($search) {
+            $terms = explode(' ', $search);
             foreach ($terms as $term) {
-                $query->where(function($query) use($term) {
+                $query->where(function ($query) use ($term) {
                     $query
-                        ->where('url', 'like', '%' . $term . '%')
-                        ->orWhere('description', 'like', '%' . $term . '%')
-                        ->orWhereHas('author', function(Builder $query) use($term) {
-                            $query->where('name', 'like', '%' . $term . '%')
-                            ->orWhere('display_name', 'like', '%' . $term . '%');
+                        ->where('url', 'like', '%'.$term.'%')
+                        ->orWhere('description', 'like', '%'.$term.'%')
+                        ->orWhere('license', 'like', '%'.$term.'%')
+                        ->orWhereHas('author', function (Builder $query) use ($term) {
+                            $query->where('name', 'like', '%'.$term.'%')
+                            ->orWhere('display_name', 'like', '%'.$term.'%');
                         })
-                        ->orWhereHas('tags', function (Builder $query) use($term) {
-                            $query->where('name', 'like', '%' . $term . '%');
+                        ->orWhereHas('tags', function (Builder $query) use ($term) {
+                            $query->where('name', 'like', '%'.$term.'%');
                         });
                 });
             }

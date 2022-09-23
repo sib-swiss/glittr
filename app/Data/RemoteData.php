@@ -29,7 +29,6 @@ class RemoteData extends Data
      */
     public static function fromGithub(array $repoData): static
     {
-
         return new self(
             name: $repoData['full_name'] ?? '',
             website: $repoData['homepage'] ?? Optional::create(), // May be manually added if not present

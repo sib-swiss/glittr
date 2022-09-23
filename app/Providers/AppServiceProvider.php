@@ -27,11 +27,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $categories_colors = Cache::rememberForever('categories_colors', function() {
+        $categories_colors = Cache::rememberForever('categories_colors', function () {
             $values = [];
             foreach (Category::all() as $cat) {
                 $color = new Color($cat->color);
-                while(!$color->isDark()) {
+                while (! $color->isDark()) {
                     $color = new Color($color->darken());
                 }
                 $values[$cat->id] = [
@@ -40,6 +40,7 @@ class AppServiceProvider extends ServiceProvider
                     'isDark' => $color->isDark(),
                 ];
             }
+
             return $values;
         });
         View::share('categories_colors', $categories_colors);
