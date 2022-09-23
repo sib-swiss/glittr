@@ -19,15 +19,23 @@ class Repositories extends Component
 
     public $search;
 
-    public $selected_tags;
+    public $per_page = 20;
 
-    public $selected_categories;
+    public $sort_by = 'name';
 
-    public $author;
+    public $sort_direction = 'asc';
 
     protected $listeners = ['searchUpdated'];
 
-    protected $queryString = ['search', 'selected_tags', 'selected_categories', 'author'];
+    protected $queryString = ['search', 'per_page', 'sort_by', 'sort_direction'];
+
+    protected $sortColumns = [
+        'name',
+        'author',
+        'stargazers',
+        'last_push',
+        'license',
+    ];
 
     public function mount()
     {
@@ -54,6 +62,10 @@ class Repositories extends Component
                 ];
             }
         }
+    }
+
+    public function sortBy(string $column): void
+    {
     }
 
     public function searchUpdated(string $value): void

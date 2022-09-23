@@ -9,7 +9,7 @@
             <button
                 wire:click="toggleCategory({{ $cid }})"
                 class="
-                    text-sm inline-flex mr-2 space-x-2 p-3 border-l border-r border-t rounded-t tag-category-{{ $cid }}
+                    text-sm inline-flex ml-2 space-x-2 p-3 border-l border-r border-t rounded-t tag-category-{{ $cid }}
                     {{ $category['category']['selected'] ?
                     'bg-category-color text-white hover:bg-category-color/80' :
                     'bg-category-color/10 text-category-color border-category-color hover:bg-category-color/60 hover:text-white hover:border-category-color' }}"
@@ -45,24 +45,21 @@
         </div>
 
         <div class="flex justify-between mt-4 lg:mt-8">
-            <!--<h2 class="flex items-center mr-auto self-center uppercase text-gray-400 text-lg tracking-wider">
-                <x-heroicon-o-archive-box class="w-6 h6 mr-2" />
-                <span>Repositories</span>
-            </h2>-->
+
         </div>
-        <div class="repositories-list mt-3 bg-white shadow w-full lg:table">
+        <div class="space-y-4 lg:space-y-0 repositories-list mt-3 lg:bg-white lg:shadow w-full lg:table">
             <div class="hidden lg:table-header-group">
-                <div class="lg:align-middle lg:table-cell bg-gray-800 p-2 text-white text-sm tracking-wider">
+                <div wire:click="sortBy('name')" role="button" title="Sort by name" class="cursor-pointer lg:align-middle lg:table-cell bg-gray-800 p-2 text-white text-sm tracking-wider">
                     <div class="flex items-center justify-between">
                         <span>Repository</span>
                         <x-heroicon-o-chevron-up-down class="w-4 h-4" />
                     </div>
                 </div>
                 <div class="lg:align-middle lg:table-cell bg-gray-800 p-2 text-white text-sm tracking-wider">
-                    <div class="flex items-center justify-between">
+                    <!--<div class="flex items-center justify-between">
                         <span>Description</span>
                         <x-heroicon-o-chevron-up-down class="w-4 h-4" />
-                    </div>
+                    </div>-->
                 </div>
                 <div class="lg:align-middle lg:table-cell bg-gray-800 p-2 text-white text-sm tracking-wider">
                     <div class="flex items-center justify-between">
@@ -95,8 +92,8 @@
                 </div>
             </div>
             @foreach($repositories as $repository)
-                <div class="lg:table-row border-b hover:bg-gray-50">
-                    <div class="lg:table-cell p-2 lg:border-b lg:align-middle leading-tight">
+                <div class="lg:table-row border-b hover:bg-gray-50 bg-white shadow lg:shadow-none">
+                    <div class="lg:table-cell pt-4 lg:pt-2 p-2 lg:border-b lg:align-middle leading-tight">
                         <div class="flex space-x-2">
                             <a class="text-blue-500 hover:text-blue-600 font-bold tracking-tight underline flex items-center space-x-1" href="{{ $repository->url }}" target="_blank">
                                 <span>{{ $repository->name }}</span>
