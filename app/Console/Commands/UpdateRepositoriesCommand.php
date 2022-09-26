@@ -4,9 +4,12 @@ namespace App\Console\Commands;
 
 use App\Actions\Repository\AttachAuthorAction;
 use App\Actions\Repository\UpdateRemoteAction;
-use App\Facades\Remote;
+use App\Jobs\UpdateRepositoryData;
 use App\Models\Repository;
 use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
+use Sammyjo20\LaravelHaystack\Models\Haystack;
 
 class UpdateRepositoriesCommand extends Command
 {
@@ -33,45 +36,36 @@ class UpdateRepositoriesCommand extends Command
      */
     public function handle(UpdateRemoteAction $updateRemoteAction, AttachAuthorAction $attachAuthorAction)
     {
-        $this->comment('Start updating repositories data.');
-
         if ($this->hasArgument('repository') && $this->argument('repository')) {
+            $this->comment('Start updating repository.');
             $repository = Repository::find($this->argument('repository'));
             if ($repository) {
                 $this->comment("Updating repository {$repository->url}");
-                $this->updateRepository($repository, $updateRemoteAction, $attachAuthorAction);
+                $updateRemoteAction->execute($repository);
             } else {
                 $this->error("Repository not found {$this->argument('repository')}");
+
+                return 1;
             }
         } else {
-            $updated = 0;
-            Repository::chunk(100, function ($repositories) use ($updateRemoteAction, $attachAuthorAction) {
+            $haystack = Haystack::build()
+                ->withDelay(10)
+                ->then(function () {
+                    Cache::forever('last_updated_at', Carbon::now());
+                });
+
+            Repository::chunk(500, function ($repositories) use ($haystack) {
                 foreach ($repositories as $repository) {
-                    $this->comment("Updating repository {$repository->url}");
-                    $this->updateRepository($repository, $updateRemoteAction, $attachAuthorAction);
+                    $this->comment("Adding repository to the stack {$repository->url}");
+                    $haystack->addJob(new UpdateRepositoryData($repository));
                 }
             });
 
-            $this->comment("Finished procesing repositories ({$updated} updated).");
+            $haystack->dispatch();
+
+            $this->comment('Finished stacking repositories for update.');
         }
 
         return 0;
-    }
-
-    protected function updateRepository(Repository $repository, UpdateRemoteAction $updateRemoteAction, AttachAuthorAction $attachAuthorAction)
-    {
-        if ($repository->api) {
-            $data = Remote::for($repository)->getData();
-            if ($data) {
-                $updateRemoteAction->execute($repository, $data);
-            }
-            // Attach author if not linked.
-            if (! $repository->author) {
-                $authorData = Remote::for($repository)->getAuthorData();
-                if ($authorData) {
-                    $attachAuthorAction->execute($repository, $authorData);
-                }
-            }
-        }
     }
 }

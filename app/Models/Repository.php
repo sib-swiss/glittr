@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class Repository extends Model
 {
@@ -69,11 +70,6 @@ class Repository extends Model
         return 'bg-gray-400';
     }
 
-    public function scopeWithTags(Builder $query): void
-    {
-        $query->with('tags');
-    }
-
     public function scopeEnabled(Builder $query): void
     {
         $query->where('enabled', true);
@@ -86,9 +82,9 @@ class Repository extends Model
             foreach ($terms as $term) {
                 $query->where(function ($query) use ($term) {
                     $query
-                        ->where('url', 'like', '%'.$term.'%')
-                        ->orWhere('description', 'like', '%'.$term.'%')
-                        ->orWhere('license', 'like', '%'.$term.'%')
+                        ->where('repositories.url', 'like', '%'.$term.'%')
+                        ->orWhere('repositories.description', 'like', '%'.$term.'%')
+                        ->orWhere('repositories.license', 'like', '%'.$term.'%')
                         ->orWhereHas('author', function (Builder $query) use ($term) {
                             $query->where('name', 'like', '%'.$term.'%')
                             ->orWhere('display_name', 'like', '%'.$term.'%');
@@ -99,6 +95,17 @@ class Repository extends Model
                 });
             }
         });
+    }
+
+    public function scopeOrderedBy(Builder $query, string $column, string $direction = 'asc'): void
+    {
+        if ($column == 'author') {
+            $query->select('repositories.*');
+            $query->join('authors', 'repositories.author_id', '=', 'authors.id');
+            $column = 'authors.display_name';
+        }
+
+        $query->orderBy($column, $direction);
     }
 
     /**
@@ -119,6 +126,10 @@ class Repository extends Model
 
         static::created(function (Repository $repository) {
             UpdateRepositoryData::dispatch($repository);
+        });
+
+        static::saved(function (Repository $repository) {
+            Cache::tags('repositories')->flush();
         });
 
         /**

@@ -30,7 +30,6 @@
                         {{ __('Training Collection') }}
                     </h1>
                 </a>
-                @livewire('search-bar')
             </div>
         </header>
         <div class="flex-1 bg-gray-100 py-8 lg:py-12">
@@ -39,7 +38,12 @@
             </div>
         </div>
         <footer class="bg-primary text-white text-sm text-center p-2">
-            footer
+            footer info...
+            @if ($last_updated_at)
+            <div>
+                Data updated at: {{ $last_updated_at->format('Y-m-d H:i:s') }}
+            </div>
+            @endif
         </footer>
         @livewireScripts
     </body>

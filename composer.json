@@ -5,7 +5,7 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "require": {
-        "php": "^8.0.2",
+        "php": "^8.1",
         "blade-ui-kit/blade-heroicons": "^2.0",
         "graham-campbell/github": "^11.0",
         "graham-campbell/gitlab": "^6.0",
@@ -17,6 +17,7 @@
         "laravel/tinker": "^2.7",
         "livewire/livewire": "^2.5",
         "mexitek/phpcolors": "dev-master",
+        "sammyjo20/laravel-haystack": "^0.7.6",
         "spatie/eloquent-sortable": "^4.0",
         "spatie/laravel-data": "^2.0",
         "spatie/url": "^2.1"

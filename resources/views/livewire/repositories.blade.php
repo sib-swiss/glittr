@@ -1,11 +1,19 @@
 <div x-data>
+    {{-- Header --}}
+    <div class="mb-4 lg:mb-6">
+        <div x-data @keydown.slash.window.prevent="$refs.input.focus()" class="flex-1">
+            {{-- ("/" === e.key || "p" === e.key && e.metaKey || "k" === e.key && e.metaKey || "k" === e.key && e.ctrlKey) --}}
+            <input class="w-full border-gray-400 rounded-full" type="text" placeholder="{{ __('Global search ("/" to focus)') }}" x-ref="input" wire:model.debounce.500ms="search" />
+        </div>
+    </div>
+
     @if(count($repositories) > 0)
         <div class="hidden lg:flex items-end">
             <h2 class="flex items-center mr-auto self-center uppercase text-gray-400 text-lg tracking-wider">
                 <x-heroicon-o-tag class="w-6 h6 mr-2" />
-                <span>Categories & Topics</span>
+                <span>{{ __('Categories & Topics') }}</span>
             </h2>
-            @foreach($filter_tags as $cid => $category)
+            @foreach($grouped_tags as $cid => $category)
             <button
                 wire:click="toggleCategory({{ $cid }})"
                 class="
@@ -19,11 +27,10 @@
                     <span class="font-bold">{{ $category['category']['total'] }}</span>
             </button>
             @endforeach
-
         </div>
         <div class="hidden lg:block bg-white border-t border-gray-200 shadow p-4">
             <div class="flex flex-wrap -mx-2">
-                @foreach($filter_tags as $cid => $category)
+                @foreach($grouped_tags as $cid => $category)
                     @foreach($category['tags'] as $tagIndex => $tag)
                     <div class="p-2 tag-category-{{ $cid }}">
                         <button
@@ -49,47 +56,13 @@
         </div>
         <div class="space-y-4 lg:space-y-0 repositories-list mt-3 lg:bg-white lg:shadow w-full lg:table">
             <div class="hidden lg:table-header-group">
-                <div wire:click="sortBy('name')" role="button" title="Sort by name" class="cursor-pointer lg:align-middle lg:table-cell bg-gray-800 p-2 text-white text-sm tracking-wider">
-                    <div class="flex items-center justify-between">
-                        <span>Repository</span>
-                        <x-heroicon-o-chevron-up-down class="w-4 h-4" />
-                    </div>
-                </div>
-                <div class="lg:align-middle lg:table-cell bg-gray-800 p-2 text-white text-sm tracking-wider">
-                    <!--<div class="flex items-center justify-between">
-                        <span>Description</span>
-                        <x-heroicon-o-chevron-up-down class="w-4 h-4" />
-                    </div>-->
-                </div>
-                <div class="lg:align-middle lg:table-cell bg-gray-800 p-2 text-white text-sm tracking-wider">
-                    <div class="flex items-center justify-between">
-                        <span>Author</span>
-                        <x-heroicon-o-chevron-up-down class="w-4 h-4" />
-                    </div>
-                </div>
-                <div class="lg:align-middle lg:table-cell bg-gray-800 p-2 text-white text-sm tracking-wider">
-                    <div class="flex items-center justify-between">
-                        <span>Topics</span>
-                    </div>
-                </div>
-                <div class="lg:align-middle lg:table-cell bg-gray-800 p-2 text-white text-sm tracking-wider">
-                    <div class="flex items-center justify-between">
-                        <span>Stargazers</span>
-                        <x-heroicon-o-chevron-up-down class="w-4 h-4" />
-                    </div>
-                </div>
-                <div class="lg:align-middle lg:table-cell bg-gray-800 p-2 text-white text-sm tracking-wider">
-                    <div class="flex items-center justify-between">
-                        <span>Last push</span>
-                        <x-heroicon-o-chevron-up-down class="w-4 h-4" />
-                    </div>
-                </div>
-                <div class="lg:align-middle lg:table-cell bg-gray-800 p-2 text-white text-sm tracking-wider">
-                    <div class="flex items-center justify-between">
-                        <span>License</span>
-                        <x-heroicon-o-chevron-up-down class="w-4 h-4" />
-                    </div>
-                </div>
+                <x-list.header title="{{ __('Repository') }}" sort_by='name' sortable current_sort_by="{{ $sort_by }}" current_sort_direction="{{ $sort_direction }}" />
+                <x-list.header title="" />
+                <x-list.header title="{{ __('Author') }}" sort_by='author' sortable current_sort_by="{{ $sort_by }}" current_sort_direction="{{ $sort_direction }}" />
+                <x-list.header title="{{ __('Topics') }}"  />
+                <x-list.header title="{{ __('Stargazers') }}" sort_by='stargazers' sortable current_sort_by="{{ $sort_by }}" current_sort_direction="{{ $sort_direction }}" />
+                <x-list.header title="{{ __('Last push') }}" sort_by='last_push' sortable current_sort_by="{{ $sort_by }}" current_sort_direction="{{ $sort_direction }}" />
+                <x-list.header title="{{ __('License') }}" sort_by='license' sortable current_sort_by="{{ $sort_by }}" current_sort_direction="{{ $sort_direction }}" />
             </div>
             @foreach($repositories as $repository)
                 <div class="lg:table-row border-b hover:bg-gray-50 bg-white shadow lg:shadow-none">
@@ -123,13 +96,13 @@
                             <div class="flex space-x-2">
                                 @if ($repository->author->url != "")
                                     <a class="text-xs text-blue-500 hover:text-blue-700 underline flex items-center space-x-1" href="{{ url($repository->author->url) }}" target="_blank">
-                                        <span>Profile</span>
+                                        <span>{{ __('Profile') }}</span>
                                         <x-heroicon-m-arrow-top-right-on-square class="w-3 h-3" />
                                     </a>
                                 @endif
                                 @if ($repository->author->website != "")
                                     <a class="text-xs text-blue-500 hover:text-blue-700 underline flex items-center space-x-1" href="{{ url($repository->author->website) }}" target="_blank">
-                                        <span>Website</span>
+                                        <span>{{ __('Website') }}</span>
                                         <x-heroicon-m-arrow-top-right-on-square class="w-3 h-3" />
                                     </a>
                                 @endif
@@ -171,6 +144,8 @@
             {{ $repositories->links() }}
         </div>
     @else
-        <div class="bg-orange-100 border border-orange-600 rounded text-orange-600 p-4">No results</div>
+        <div class="bg-orange-100 border border-orange-600 rounded text-orange-600 p-4">
+            {{ __('No results.')}}
+        </div>
     @endif
 </div>

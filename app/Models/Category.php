@@ -35,7 +35,7 @@ class Category extends Model implements Sortable
     protected static function booted()
     {
         static::saved(function (Category $category) {
-            Cache::forget('categories_colors');
+            Cache::tags('categories')->flush();
         });
     }
 }

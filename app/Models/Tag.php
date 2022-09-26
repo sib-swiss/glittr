@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
 
@@ -43,5 +44,17 @@ class Tag extends Model implements Sortable
     public function buildSortQuery(): Builder
     {
         return static::query()->where('category_id', $this->category_id);
+    }
+
+    /**
+     * The "booted" method of the model.
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::saved(function (Tag $tag) {
+            Cache::tags(['tags'])->flush();
+        });
     }
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8f86eebd11d6ecab76e25d138922bd02",
+    "content-hash": "807b4b69577fc18d25244765e55b02d1",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -5072,6 +5072,124 @@
                 }
             ],
             "time": "2022-09-16T03:22:46+00:00"
+        },
+        {
+            "name": "sammyjo20/laravel-chunkable-jobs",
+            "version": "v0.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Sammyjo20/laravel-chunkable-jobs.git",
+                "reference": "e61ad15925f7d37ed62d94b2ec32c3b9cca41784"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Sammyjo20/laravel-chunkable-jobs/zipball/e61ad15925f7d37ed62d94b2ec32c3b9cca41784",
+                "reference": "e61ad15925f7d37ed62d94b2ec32c3b9cca41784",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.1"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.5",
+                "orchestra/testbench": "^6.24|^7.7",
+                "pestphp/pest": "^1.21",
+                "spatie/ray": "^1.33"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sammyjo20\\ChunkableJobs\\": "src/",
+                    "Sammyjo20\\ChunkableJobs\\Tests\\": "tests/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sammyjo20",
+                    "email": "29132017+Sammyjo20@users.noreply.github.com"
+                }
+            ],
+            "description": "Split a job into multiple separate job chunks",
+            "support": {
+                "issues": "https://github.com/Sammyjo20/laravel-chunkable-jobs/issues",
+                "source": "https://github.com/Sammyjo20/laravel-chunkable-jobs/tree/v0.1.2"
+            },
+            "time": "2022-09-21T21:31:08+00:00"
+        },
+        {
+            "name": "sammyjo20/laravel-haystack",
+            "version": "v0.7.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Sammyjo20/laravel-haystack.git",
+                "reference": "b14e0c95dce5569f97271d5cc3d3b3f7f94427fe"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Sammyjo20/laravel-haystack/zipball/b14e0c95dce5569f97271d5cc3d3b3f7f94427fe",
+                "reference": "b14e0c95dce5569f97271d5cc3d3b3f7f94427fe",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "^8.0 || ^9.0",
+                "illuminate/contracts": "^8.0 || ^9.0",
+                "illuminate/database": "^8.0 || ^9.0",
+                "illuminate/queue": "^8.0 || ^9.0",
+                "illuminate/support": "^8.0 || ^9.0",
+                "laravel/serializable-closure": "^1.2",
+                "php": "^8.1",
+                "sammyjo20/laravel-chunkable-jobs": "^0.1.1",
+                "spatie/laravel-package-tools": "^1.9.2"
+            },
+            "require-dev": {
+                "jessarcher/laravel-castable-data-transfer-object": "^2.2",
+                "laravel/pint": "^1.0",
+                "orchestra/testbench": "^7.0",
+                "pestphp/pest": "^1.21",
+                "pestphp/pest-plugin-laravel": "^1.2",
+                "spatie/laravel-ray": "^1.26"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Sammyjo20\\LaravelHaystack\\LaravelHaystackServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Sammyjo20\\LaravelHaystack\\": "src",
+                    "Sammyjo20\\LaravelHaystack\\Database\\Factories\\": "database/factories"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Sammyjo20",
+                    "email": "29132017+Sammyjo20@users.noreply.github.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Beautifully simple, database-driven job chains.",
+            "homepage": "https://github.com/sammyjo20/laravel-haystack",
+            "keywords": [
+                "laravel",
+                "laravel-haystack",
+                "sammyjo20"
+            ],
+            "support": {
+                "issues": "https://github.com/Sammyjo20/laravel-haystack/issues",
+                "source": "https://github.com/Sammyjo20/laravel-haystack/tree/v0.7.6"
+            },
+            "time": "2022-09-18T20:36:23+00:00"
         },
         {
             "name": "spatie/eloquent-sortable",
@@ -10873,7 +10991,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.0.2"
+        "php": "^8.1"
     },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"

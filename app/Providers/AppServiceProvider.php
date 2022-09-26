@@ -27,7 +27,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $categories_colors = Cache::rememberForever('categories_colors', function () {
+        /**
+         * List of categories colors for custom css injection.
+         */
+        $categories_colors = Cache::tags('categories')->rememberForever('categories_colors', function () {
             $values = [];
             foreach (Category::all() as $cat) {
                 $color = new Color($cat->color);
@@ -44,5 +47,7 @@ class AppServiceProvider extends ServiceProvider
             return $values;
         });
         View::share('categories_colors', $categories_colors);
+
+        View::share('last_updated_at', Cache::get('last_updated_at', null));
     }
 }
