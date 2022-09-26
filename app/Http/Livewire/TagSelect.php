@@ -21,7 +21,7 @@ class TagSelect extends Component
     /**
      * Livewire model attached to select categorie to add new tags
      *
-     * @var string|int
+     * @var ?int
      */
     public $add;
 
@@ -31,6 +31,10 @@ class TagSelect extends Component
      * @var string
      */
     public $eventName;
+
+    protected $rules = [
+        'add' => 'required|int',
+    ];
 
     /**
      * Undocumented function
@@ -46,9 +50,10 @@ class TagSelect extends Component
         $this->eventName = $eventName;
     }
 
-    public function updatedAdd(string $value): void
+    public function add(): void
     {
-        $this->addTag(intval($value));
+        $validatedData = $this->validate();
+        $this->addTag(intval($validatedData['add']));
         $this->add = null;
     }
 

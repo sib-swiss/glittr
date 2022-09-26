@@ -7,7 +7,7 @@
 
     <x-admin.container>
         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-
+            @livewire('admin.pending-submissions')
         </div>
     </x-admin.container>
 </x-app-layout>

@@ -5,7 +5,9 @@ namespace App\Remote\Drivers;
 use App\Data\AuthorData;
 use App\Data\RemoteData;
 use App\Remote\Helpers;
+use Exception;
 use GrahamCampbell\GitLab\GitLabManager;
+use Spatie\Url\Url;
 
 class GitLabDriver extends Driver
 {
@@ -29,10 +31,14 @@ class GitLabDriver extends Driver
      *
      * @return RemoteData|null
      */
-    public function getData(): ?RemoteData
+    public function getData(?Url $url = null): ?RemoteData
     {
-        if ($this->repository && $this->repository->url) {
-            [$username, $repository_name] = Helpers::getRepositoryUserAndName($this->repository->url);
+        if (!$url && $this->repository){
+            $url = $this->repository->url;
+        }
+
+        if ($url) {
+            [$username, $repository_name] = Helpers::getRepositoryUserAndName($url);
             $repoData = $this->getClient()->projects()->show($username.'/'.$repository_name);
 
             return RemoteData::fromGitLab($repoData);
@@ -41,16 +47,22 @@ class GitLabDriver extends Driver
         return null;
     }
 
-    public function getAuthorData(): ?AuthorData
+    public function getAuthorData(?Url $url = null): ?AuthorData
     {
-        if ($this->author && $this->author->remote_id != '') {
+        if (!$url && $this->author && $this->author->remote_id != '') {
             $userData = $this->getClient()->users()->show($this->author->remote_id);
-        } elseif ($this->repository && $this->repository->url) {
-            [$username, $repository_name] = Helpers::getRepositoryUserAndName($this->repository->url);
+        } elseif ($url || ($this->repository && $this->repository->url)) {
+            if (!$url) {
+                $url = $this->repository->url;
+            }
+            [$username, $repository_name] = Helpers::getRepositoryUserAndName($url);
             $userData = $this->getClient()->users()->all(['username' => $username]);
+
             if (isset($userData[0]) && isset($userData[0]['id'])) {
                 $userId = $userData[0]['id'];
                 $userData = $this->getClient()->users()->show($userId);
+            } else {
+                throw new Exception("Empty response returned.");
             }
         }
 

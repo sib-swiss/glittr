@@ -60,7 +60,7 @@ class RepositoriesList extends Component
         $repositories = Repository::orderByDesc('id')->with('tags.category');
 
         return view('livewire.admin.repositories-list', [
-            'repositories' => $repositories->paginate(2),
+            'repositories' => $repositories->paginate(25),
         ]);
     }
 }

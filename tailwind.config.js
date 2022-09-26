@@ -8,6 +8,7 @@ module.exports = {
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
         './app/Models/Repository.php',
+        './app/Http/Livewire/Admin/RepositoryForm.php',
     ],
 
     theme: {

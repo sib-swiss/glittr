@@ -15,10 +15,9 @@
                     <x-jet-nav-link href="{{ route('admin.dashboard') }}" :active="request()->routeIs('admin.dashboard')">
                         {{ __('Dashboard') }}
                     </x-jet-nav-link>
-
-                    <x-jet-nav-link href="{{ route('admin.submissions.index') }}" :active="request()->routeIs('admin.submissions.*')">
+                    {{--<x-jet-nav-link href="{{ route('admin.submissions.index') }}" :active="request()->routeIs('admin.submissions.*')">
                         {{ __('Submissions') }}
-                    </x-jet-nav-link>
+                    </x-jet-nav-link>--}}
                     <x-jet-nav-link href="{{ route('admin.repositories.index') }}" :active="(request()->routeIs('admin.repositories.*') || request()->routeIs('admin.authors.*'))">
                         {{ __('Repositories') }}
                     </x-jet-nav-link>
@@ -150,10 +149,9 @@
             <x-jet-responsive-nav-link href="{{ route('admin.dashboard') }}" :active="request()->routeIs('admin.dashboard')">
                 {{ __('Dashboard') }}
             </x-jet-responsive-nav-link>
-
-            <x-jet-responsive-nav-link href="{{ route('admin.submissions.index') }}" :active="request()->routeIs('admin.submissions.*')">
+            {{-- <x-jet-responsive-nav-link href="{{ route('admin.submissions.index') }}" :active="request()->routeIs('admin.submissions.*')">
                 {{ __('Submissions') }}
-            </x-jet-responsive-nav-link>
+            </x-jet-responsive-nav-link>--}}
             <x-jet-responsive-nav-link href="{{ route('admin.repositories.index') }}" :active="(request()->routeIs('admin.repositories.*') || request()->routeIs('admin.authors.*'))">
                 {{ __('Repositories') }}
             </x-jet-responsive-nav-link>

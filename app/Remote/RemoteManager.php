@@ -12,6 +12,7 @@ use GrahamCampbell\GitLab\GitLabManager;
 use Illuminate\Support\Manager;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use Spatie\Url\Url;
 
 class RemoteManager extends Manager
 {
@@ -36,13 +37,19 @@ class RemoteManager extends Manager
     /**
      * Resolve driver name based on repository url
      */
-    public function resolveAPI(Repository $repository): ?string
+    public function resolveAPI(Repository $repository = null, string $url = null): ?string
     {
         $apis = $this->getConfiguredAPIs();
 
+        if ($repository) {
+            $host = $repository->url->getHost();
+        } else {
+            $host = Url::fromString($url)->getHost();
+        }
+
         foreach ($apis as $api => $config) {
             if (isset($config['hosts']) && ! empty($config['hosts'])) {
-                if (in_array($repository->url->getHost(), $config['hosts'])) {
+                if (in_array($host, $config['hosts'])) {
                     return $api;
                 }
             }

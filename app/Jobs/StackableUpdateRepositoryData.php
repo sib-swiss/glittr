@@ -9,10 +9,12 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Sammyjo20\LaravelHaystack\Concerns\Stackable;
+use Sammyjo20\LaravelHaystack\Contracts\StackableJob;
 
-class UpdateRepositoryData implements ShouldQueue
+class StackableUpdateRepositoryData implements ShouldQueue, StackableJob
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, Stackable;
 
     /**
      * The repository to udpate

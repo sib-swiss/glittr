@@ -5,12 +5,19 @@
     'sort_by' => '',
     'title',
 ])
-
+@php
+    $class = '';
+    if ($sortable) {
+        $class = 'cursor-pointer';
+    }
+    $class .= 'lg:align-middle lg:table-cell bg-gray-800 px-2 py-4 text-white text-sm tracking-wider';
+@endphp
 <div
+    {!! $attributes->merge(['class' => $class]) !!}
     @if ($sortable) wire:click="sortBy('{{ $sort_by }}')" role="button" title="Sort by {{ $title }}" @endif
-    class="@if ($sortable) cursor-pointer @endif lg:align-middle lg:table-cell bg-gray-800 p-2 text-white text-sm tracking-wider">
+    >
     <div class="flex items-center justify-between">
-        <span class="mr-1">{{ $title }}</span>
+        <span class="lg:whitespace-nowrap mr-1">{{ $title }}</span>
         @if ($sortable)
             @if ($current_sort_by == $sort_by)
                 @if ($current_sort_direction == 'asc')

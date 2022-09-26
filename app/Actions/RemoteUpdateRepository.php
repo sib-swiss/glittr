@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Actions\Repository;
+namespace App\Actions;
 
 use App\Facades\Remote;
 use App\Models\Repository;
 use Illuminate\Support\Carbon;
 
-class UpdateRemoteAction
+class RemoteUpdateRepository
 {
     /**
      * Attach author action
      *
      * @var AttachAuthorAction
      */
-    protected $attachAuthorAction;
+    protected $attachAuthor;
 
-    public function __construct(AttachAuthorAction $attachAuthorAction)
+    public function __construct(AttachAuthor $attachAuthorAction)
     {
         $this->attachAuthorAction = $attachAuthorAction;
     }

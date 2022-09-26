@@ -23,7 +23,7 @@
     </head>
     <body class="font-sans text-gray-800 antialiased min-h-screen flex flex-col text-sm lg:text-base">
         <header class="bg-white border-b" id="header">
-            <div class="container flex items-center space-x-4 py-2">
+            <div class="container flex items-center  py-2">
                 <a href="{{ route('homepage')}}" class="flex items-center space-x-2">
                     <img src="{{ url('/sib-emblem.svg') }}" class="max-w-full h-12" />
                     <h1 class="text-lg lg:text-xl font-semibold tracking-tight">

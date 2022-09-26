@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Actions\Repository;
+namespace App\Actions;
 
 use App\Data\AuthorData;
 use App\Models\Author;
 use App\Models\Repository;
 
-class AttachAuthorAction
+class AttachAuthor
 {
     public function execute(Repository $repository, AuthorData $data)
     {

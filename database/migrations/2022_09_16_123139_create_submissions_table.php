@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('submissions', function (Blueprint $table) {
             $table->id();
             $table->string('url');
-            $table->string('website');
+            $table->string('website')->nullable();
             $table->string('email');
             $table->text('comment')->nullable();
 

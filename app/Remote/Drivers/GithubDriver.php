@@ -6,6 +6,7 @@ use App\Data\AuthorData;
 use App\Data\RemoteData;
 use App\Remote\Helpers;
 use GrahamCampbell\GitHub\GitHubManager;
+use Spatie\Url\Url;
 
 class GithubDriver extends Driver
 {
@@ -29,10 +30,14 @@ class GithubDriver extends Driver
      *
      * @return RemoteData|null
      */
-    public function getData(): ?RemoteData
+    public function getData(?Url $url = null): ?RemoteData
     {
-        if ($this->repository && $this->repository->url) {
-            [$username, $repository_name] = Helpers::getRepositoryUserAndName($this->repository->url);
+        if (!$url && $this->repository) {
+            $url = $this->repository->url;
+        }
+
+        if ($url) {
+            [$username, $repository_name] = Helpers::getRepositoryUserAndName($url);
             $repoData = $this->getClient()->repo()->show($username, $repository_name);
 
             return RemoteData::fromGithub($repoData);
@@ -41,14 +46,17 @@ class GithubDriver extends Driver
         return null;
     }
 
-    public function getAuthorData(): ?AuthorData
+    public function getAuthorData(?Url $url = null): ?AuthorData
     {
         $userData = null;
 
-        if ($this->author && $this->author->name != '') {
+        if (!$url && $this->author && $this->author->name != '') {
             $userData = $this->getClient()->user()->show($this->author->name);
-        } elseif ($this->repository && $this->repository->url) {
-            [$username, $repository_name] = Helpers::getRepositoryUserAndName($this->repository->url);
+        } elseif ($url || ($this->repository && $this->repository->url)) {
+            if (!$url) {
+                $url = $this->repository->url;
+            }
+            [$username, $repository_name] = Helpers::getRepositoryUserAndName($url);
             $userData = $this->getClient()->user()->show($username);
         }
 

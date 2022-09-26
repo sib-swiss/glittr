@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace App\Http\Livewire\Admin;
 
 use App\Concerns\InteractsWithNotifications;
+use App\Facades\Remote;
 use App\Models\Repository;
+use Exception;
 use Illuminate\View\View;
 use Livewire\Component;
+use Spatie\Url\Url;
 
 class RepositoryForm extends Component
 {
@@ -24,6 +27,9 @@ class RepositoryForm extends Component
         'website' => '',
         'tags' => [],
     ];
+
+    public $showTests = false;
+    public $tests = [];
 
     /**
      * Cancel button event to emit
@@ -63,11 +69,57 @@ class RepositoryForm extends Component
         if ($cancelEvent) {
             $this->cancelEvent = $cancelEvent;
         }
+
+        $this->resetTests();
     }
 
     public function tagsUpdated(array $tagIds): void
     {
         $this->repository['tags'] = $tagIds;
+    }
+
+    public function testRemote()
+    {
+        if ($this->repository['url'] != '') {
+            $url = Url::fromString($this->repository['url']);
+            $api = Remote::resolveAPI(url: $url);
+            if ($api) {
+                $tests['api'] = $api;
+                try {
+                    $repo = Remote::driver($api)->getData($url);
+                    $this->tests['repo'] = true;
+                } catch(Exception $e) {
+                    $this->tests['errors'][] = 'REPO: ' . $e->getMessage();
+                }
+                try {
+                    $author = Remote::driver($api)->getAuthorData($url);
+                    $this->tests['author'] = true;
+                } catch(Exception $e) {
+                    $this->tests['errors'][] = 'AUTHOR: ' . $e->getMessage();
+                }
+                if ($this->tests['repo'] && $this->tests['author']) {
+                    $this->tests['class'] = 'bg-green-50 text-green-500 border-green-500';
+                } elseif ($this->tests['repo'] && !$this->tests['author']) {
+                    $this->tests['class'] = 'bg-orange-50 text-orange-500 border-orange-500';
+                }
+            } else {
+                $this->tests['errors'][] = 'No api resolved for the url';
+            }
+        } else {
+            $this->tests['errors'][] = 'No url defined';
+        }
+        $this->showTests = true;
+    }
+
+    protected function resetTests()
+    {
+        $this->tests = [
+            'api' => '',
+            'repo' => false,
+            'author' => false,
+            'errors' => [],
+            'class' => 'bg-red-50 text-red-500 border-red-500',
+        ];
     }
 
     public function save(): void

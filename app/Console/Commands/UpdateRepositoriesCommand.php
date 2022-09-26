@@ -2,9 +2,9 @@
 
 namespace App\Console\Commands;
 
-use App\Actions\Repository\AttachAuthorAction;
-use App\Actions\Repository\UpdateRemoteAction;
-use App\Jobs\UpdateRepositoryData;
+use App\Actions\AttachAuthor;
+use App\Actions\RemoteUpdateRepository;
+use App\Jobs\StackableUpdateRepositoryData;
 use App\Models\Repository;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
@@ -30,18 +30,18 @@ class UpdateRepositoriesCommand extends Command
     /**
      * Execute the console command.
      *
-     * @param  UpdateRepositoryDataAction  $updateRepositoryDataAction
-     * @param  AttachAuthorAction  $attachAuthorAction
+     * @param  RemoteUpdateRepository  $remoteUpdateRepository
+     * @param  AttachAuthor  $attachAuthorAction
      * @return int
      */
-    public function handle(UpdateRemoteAction $updateRemoteAction, AttachAuthorAction $attachAuthorAction)
+    public function handle(RemoteUpdateRepository $remoteUpdateRepository, AttachAuthor $attachAuthorAction)
     {
         if ($this->hasArgument('repository') && $this->argument('repository')) {
             $this->comment('Start updating repository.');
             $repository = Repository::find($this->argument('repository'));
             if ($repository) {
                 $this->comment("Updating repository {$repository->url}");
-                $updateRemoteAction->execute($repository);
+                $remoteUpdateRepository->execute($repository);
             } else {
                 $this->error("Repository not found {$this->argument('repository')}");
 
@@ -57,7 +57,7 @@ class UpdateRepositoriesCommand extends Command
             Repository::chunk(500, function ($repositories) use ($haystack) {
                 foreach ($repositories as $repository) {
                     $this->comment("Adding repository to the stack {$repository->url}");
-                    $haystack->addJob(new UpdateRepositoryData($repository));
+                    $haystack->addJob(new StackableUpdateRepositoryData($repository));
                 }
             });
 
