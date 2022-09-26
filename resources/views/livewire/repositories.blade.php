@@ -9,10 +9,7 @@
 
     @if(count($repositories) > 0)
         <div class="hidden lg:flex items-end">
-            <h2 class="flex items-center mr-auto self-center uppercase text-gray-400 text-lg tracking-wider">
-                <x-heroicon-o-tag class="w-6 h6 mr-2" />
-                <span>{{ __('Categories & Topics') }}</span>
-            </h2>
+
             @foreach($grouped_tags as $cid => $category)
             <button
                 wire:click="toggleCategory({{ $cid }})"

@@ -18,7 +18,10 @@ class AuthorFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'description' => fake()->optional(0.2)->text(),
+            'api' => '',
+            'display_name' => fake()->name(),
+            'location' => fake()->optional(0.4)->city(),
+            'bio' => fake()->optional(0.2)->text(),
             'url' => fake()->optional(0.9)->url(),
             'website' => fake()->optional(0.6)->url(),
         ];

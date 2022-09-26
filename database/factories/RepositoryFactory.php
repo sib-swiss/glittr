@@ -22,6 +22,14 @@ class RepositoryFactory extends Factory
         'https://gitlab.com/test/notworking',
     ];
 
+    public $licences = [
+        'MIT',
+        'OCC-1',
+        'OCC-2',
+        'TEST 2',
+        'OTHER Test',
+    ];
+
     /**
      * Get a random repository url
      **/
@@ -41,6 +49,9 @@ class RepositoryFactory extends Factory
     {
         return [
             'url' => fake()->url(),
+            'name' => fake()->text(20),
+            'description' => fake()->optional(0.95)->text(120),
+            'license' => fake()->optional(0.8)->randomElement($this->licences),
             'website' => fake()->optional(0.9)->url(),
             'stargazers' => fake()->numberBetween(0, 4000),
             'enabled' => fake()->boolean(95),

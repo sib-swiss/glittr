@@ -49,7 +49,7 @@ class UpdateRepositoriesCommand extends Command
             }
         } else {
             $haystack = Haystack::build()
-                ->withDelay(10)
+                ->withDelay(1)
                 ->then(function () {
                     Cache::forever('last_updated_at', Carbon::now());
                 });
