@@ -83,6 +83,7 @@ class Repository extends Model
                 $query->where(function ($query) use ($term) {
                     $query
                         ->where('repositories.url', 'like', '%'.$term.'%')
+                        ->orwhere('repositories.name', 'like', '%'.$term.'%')
                         ->orWhere('repositories.description', 'like', '%'.$term.'%')
                         ->orWhere('repositories.license', 'like', '%'.$term.'%')
                         ->orWhereHas('author', function (Builder $query) use ($term) {

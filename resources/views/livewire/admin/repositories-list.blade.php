@@ -9,7 +9,7 @@
     </x-header>
     <x-admin.container>
         <div class="my-4 bg-white border-gray-400">
-            <x-jet-input placeholder="Search" class="w-full p-4" wire:model.debounce.500ms="search" />
+            <x-jet-input placeholder="Search" class="w-full p-4" autofocus wire:model.debounce.500ms="search" />
         </div>
         <x-table class="mb-4">
             <thead>
@@ -70,7 +70,7 @@
                             <x-jet-button title="{{ __('Edit repository') }}" wire:click="editRepository({{ $repository->id }})">
                                 <x-heroicon-m-pencil class="w-4 h-4" />
                             </x-jet-button>
-                            <x-jet-danger-button title="{{ __('Remove repository') }}"wire:click="confirmRepositoryDeletion({{ $repository->id }})">
+                            <x-jet-danger-button title="{{ __('Remove repository') }}" wire:click="confirmRepositoryDeletion({{ $repository->id }})">
                                 <x-heroicon-o-trash class="w-4 h-4" />
                             </x-jet-danger-button>
                         </div>

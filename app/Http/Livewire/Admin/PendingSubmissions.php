@@ -2,6 +2,7 @@
 
 namespace App\Http\Livewire\Admin;
 
+use App\Models\Submission;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -11,7 +12,9 @@ class PendingSubmissions extends Component
 
     public function render()
     {
-        //$submissions = Submission::
-        return view('livewire.admin.pending-submissions');
+        $submissions = Submission::pending();
+        return view('livewire.admin.pending-submissions', [
+            'submissions' => $submissions->paginate(25),
+        ]);
     }
 }

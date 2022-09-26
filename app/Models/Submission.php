@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Casts\Url;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -39,7 +40,8 @@ class Submission extends Model
         return $this->belongsToMany(Tag::class)->using(SubmissionTag::class);
     }
 
-    public function scopePending()
+    public function scopePending(Builder $query): void
     {
+        $query->whereNull('validated_at');
     }
 }

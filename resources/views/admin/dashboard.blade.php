@@ -6,8 +6,6 @@
     </x-slot>
 
     <x-admin.container>
-        <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-            @livewire('admin.pending-submissions')
-        </div>
+        @livewire('admin.pending-submissions')
     </x-admin.container>
 </x-app-layout>

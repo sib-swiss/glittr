@@ -1,10 +1,7 @@
 @component('mail::message')
-# Introduction
-
-The body of your message.
-
-@component('mail::button', ['url' => ''])
-Button Text
+# A new repository has been submitted!
+@component('mail::button', ['url' => route('admin.dashboard')])
+Go to the dashboard
 @endcomponent
 
 Thanks,<br>
