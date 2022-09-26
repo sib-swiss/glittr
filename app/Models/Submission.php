@@ -38,4 +38,8 @@ class Submission extends Model
     {
         return $this->belongsToMany(Tag::class)->using(SubmissionTag::class);
     }
+
+    public function scopePending()
+    {
+    }
 }

@@ -33,7 +33,7 @@ class GitLabDriver extends Driver
      */
     public function getData(?Url $url = null): ?RemoteData
     {
-        if (!$url && $this->repository){
+        if (! $url && $this->repository) {
             $url = $this->repository->url;
         }
 
@@ -49,10 +49,10 @@ class GitLabDriver extends Driver
 
     public function getAuthorData(?Url $url = null): ?AuthorData
     {
-        if (!$url && $this->author && $this->author->remote_id != '') {
+        if (! $url && $this->author && $this->author->remote_id != '') {
             $userData = $this->getClient()->users()->show($this->author->remote_id);
         } elseif ($url || ($this->repository && $this->repository->url)) {
-            if (!$url) {
+            if (! $url) {
                 $url = $this->repository->url;
             }
             [$username, $repository_name] = Helpers::getRepositoryUserAndName($url);
@@ -62,7 +62,7 @@ class GitLabDriver extends Driver
                 $userId = $userData[0]['id'];
                 $userData = $this->getClient()->users()->show($userId);
             } else {
-                throw new Exception("Empty response returned.");
+                throw new Exception('Empty response returned.');
             }
         }
 

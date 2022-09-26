@@ -8,32 +8,43 @@
         </x-header.actions>
     </x-header>
     <x-admin.container>
+        <div class="my-4 bg-white border-gray-400">
+            <x-jet-input placeholder="Search" class="w-full p-4" wire:model.debounce.500ms="search" />
+        </div>
         <x-table class="mb-4">
             <thead>
-                <x-table.header>ID</x-table.header>
-                <x-table.header>URL</x-table.header>
-                <x-table.header>API</x-table.header>
-                <x-table.header>Website</x-table.header>
-                <x-table.header>Author</x-table.header>
-                <x-table.header>Updated</x-table.header>
+                <x-table.header>{{ __('ID') }}</x-table.header>
+                <x-table.header>{{ __('API') }}</x-table.header>
+                <x-table.header>{{ __('URL') }}</x-table.header>
+                <x-table.header>{{ __('Tags') }}</x-table.header>
+                <x-table.header>{{ __('Author') }}</x-table.header>
+                <x-table.header>{{ __('Updated') }}</x-table.header>
                 <x-table.header></x-table.header>
             </thead>
             <tbody>
                 @foreach($repositories as $repository)
                 <x-table.row class="{{ $repository->enabled ? 'bg-white':'bg-red-50' }}">
-                    <x-table.cell>{{ $repository->id }}</x-table.cell>
+                    <x-table.cell class="text-sm font-medium">{{ $repository->id }}</x-table.cell>
                     <x-table.cell>
                         <div class="text-xs tracking-wider uppercase">
                             {{ $repository->api }}
                         </div>
                     </x-table.cell>
                     <x-table.cell>
-                        {{ $repository->url }}
+                        <a href="{{ $repository->url }}" class="underline" target="_blank">{{ $repository->url }}</a>
                         <div class="text-sm text-gray-600">
                             {{ $repository->description }}
                         </div>
+                        @if ($repository->website)
+                        <a class="text-sm text-blue-500 underline" href="{{ $repository->website}}" target="_blank">
+                            {{ $repository->website }}
+                        </a>
+                        @endif
                     </x-table.cell>
-                    <x-table.cell>{{ $repository->website }}</x-table.cell>
+                    <x-table.cell class="text-sm">
+                        {{ $repository->tags->implode('name', ', ') }}
+                    </x-table.cell>
+
                     <x-table.cell>{{ $repository->author ? $repository->author->display_name : '-' }}</x-table.cell>
                     <x-table.cell>
                         @if ($repository->refreshed_at)
@@ -48,18 +59,18 @@
                     <x-table.cell width="60">
                         <div class="flex items-center space-x-2">
                             @if ($repository->enabled)
-                                <x-jet-secondary-button title="Disable repository" wire:click="disableRepository({{ $repository->id }})">
+                                <x-jet-secondary-button title="{{ __('Disable repository') }}" wire:click="disableRepository({{ $repository->id }})">
                                     <x-heroicon-m-eye-slash class="w-4 h-4" />
                                 </x-jet-secondary-button>
                             @else
-                                <x-jet-secondary-button title="Disable repository" wire:click="enableRepository({{ $repository->id }})">
+                                <x-jet-secondary-button title="{{ __('Enable repository') }}" wire:click="enableRepository({{ $repository->id }})">
                                     <x-heroicon-m-eye class="w-4 h-4" />
                                 </x-jet-secondary-button>
                             @endif
-                            <x-jet-button wire:click="editRepository({{ $repository->id }})">
+                            <x-jet-button title="{{ __('Edit repository') }}" wire:click="editRepository({{ $repository->id }})">
                                 <x-heroicon-m-pencil class="w-4 h-4" />
                             </x-jet-button>
-                            <x-jet-danger-button wire:click="confirmRepositoryDeletion({{ $repository->id }})">
+                            <x-jet-danger-button title="{{ __('Remove repository') }}"wire:click="confirmRepositoryDeletion({{ $repository->id }})">
                                 <x-heroicon-o-trash class="w-4 h-4" />
                             </x-jet-danger-button>
                         </div>

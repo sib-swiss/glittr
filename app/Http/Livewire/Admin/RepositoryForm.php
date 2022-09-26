@@ -29,6 +29,7 @@ class RepositoryForm extends Component
     ];
 
     public $showTests = false;
+
     public $tests = [];
 
     /**
@@ -89,17 +90,17 @@ class RepositoryForm extends Component
                     $repo = Remote::driver($api)->getData($url);
                     $this->tests['repo'] = true;
                 } catch(Exception $e) {
-                    $this->tests['errors'][] = 'REPO: ' . $e->getMessage();
+                    $this->tests['errors'][] = 'REPO: '.$e->getMessage();
                 }
                 try {
                     $author = Remote::driver($api)->getAuthorData($url);
                     $this->tests['author'] = true;
                 } catch(Exception $e) {
-                    $this->tests['errors'][] = 'AUTHOR: ' . $e->getMessage();
+                    $this->tests['errors'][] = 'AUTHOR: '.$e->getMessage();
                 }
                 if ($this->tests['repo'] && $this->tests['author']) {
                     $this->tests['class'] = 'bg-green-50 text-green-500 border-green-500';
-                } elseif ($this->tests['repo'] && !$this->tests['author']) {
+                } elseif ($this->tests['repo'] && ! $this->tests['author']) {
                     $this->tests['class'] = 'bg-orange-50 text-orange-500 border-orange-500';
                 }
             } else {

@@ -23,7 +23,7 @@ class RepositoriesList extends Component
     /**
      * Auto increment to create new empty render form in create modal
      *
-     * @var integer
+     * @var int
      */
     public $addIncrement = 0;
 
@@ -41,7 +41,6 @@ class RepositoriesList extends Component
      */
     public $repositoryBeingUpdated;
 
-
     /**
      * Show confirm dialog for repository deletion
      *
@@ -56,13 +55,14 @@ class RepositoriesList extends Component
      */
     public $repositoryIdBeingDeleted;
 
-
     protected $listeners = [
         'addRepositoryCancel',
         'addRepositorySuccess',
         'editRepositorySuccess',
         'editRepositoryCancel',
     ];
+
+    public $search;
 
     public function addRepositorySuccess(Repository $repository): void
     {
@@ -131,7 +131,11 @@ class RepositoriesList extends Component
 
     public function render(): View
     {
-        $repositories = Repository::orderByDesc('id')->with('tags.category');
+        $repositories = Repository::with(['author', 'tags'])->orderByDesc('id');
+
+        if ($this->search != '') {
+            $repositories->search($this->search);
+        }
 
         return view('livewire.admin.repositories-list', [
             'repositories' => $repositories->paginate(25),

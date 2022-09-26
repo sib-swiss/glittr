@@ -32,7 +32,7 @@ class GithubDriver extends Driver
      */
     public function getData(?Url $url = null): ?RemoteData
     {
-        if (!$url && $this->repository) {
+        if (! $url && $this->repository) {
             $url = $this->repository->url;
         }
 
@@ -50,10 +50,10 @@ class GithubDriver extends Driver
     {
         $userData = null;
 
-        if (!$url && $this->author && $this->author->name != '') {
+        if (! $url && $this->author && $this->author->name != '') {
             $userData = $this->getClient()->user()->show($this->author->name);
         } elseif ($url || ($this->repository && $this->repository->url)) {
-            if (!$url) {
+            if (! $url) {
                 $url = $this->repository->url;
             }
             [$username, $repository_name] = Helpers::getRepositoryUserAndName($url);

@@ -11,6 +11,7 @@ class PendingSubmissions extends Component
 
     public function render()
     {
+        //$submissions = Submission::
         return view('livewire.admin.pending-submissions');
     }
 }
