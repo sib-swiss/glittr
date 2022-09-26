@@ -51,5 +51,11 @@ return [
                 'Data management',
             ],
         ],
+        'Others' => [
+            'color' => '#9d9d9d',
+            'tags' => [
+                'Other',
+            ],
+        ],
     ],
 ];

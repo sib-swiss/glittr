@@ -46,9 +46,23 @@
                         @endif
                     </x-table.cell>
                     <x-table.cell width="60">
-                        <x-jet-button wire:click="editRepository({{ $repository->id }})">
-                            <x-heroicon-m-pencil class="w-4 h-4" />
-                        </x-jet-button>
+                        <div class="flex items-center space-x-2">
+                            @if ($repository->enabled)
+                                <x-jet-secondary-button title="Disable repository" wire:click="disableRepository({{ $repository->id }})">
+                                    <x-heroicon-m-eye-slash class="w-4 h-4" />
+                                </x-jet-secondary-button>
+                            @else
+                                <x-jet-secondary-button title="Disable repository" wire:click="enableRepository({{ $repository->id }})">
+                                    <x-heroicon-m-eye class="w-4 h-4" />
+                                </x-jet-secondary-button>
+                            @endif
+                            <x-jet-button wire:click="editRepository({{ $repository->id }})">
+                                <x-heroicon-m-pencil class="w-4 h-4" />
+                            </x-jet-button>
+                            <x-jet-danger-button wire:click="confirmRepositoryDeletion({{ $repository->id }})">
+                                <x-heroicon-o-trash class="w-4 h-4" />
+                            </x-jet-danger-button>
+                        </div>
                     </x-table.cell>
                 </x-table.row>
                 @endforeach
@@ -67,5 +81,25 @@
             @livewire('admin.repository-form', [$repositoryBeingUpdated, 'editRepositoryCancel'], key("repositoryEdit-{$repositoryBeingUpdated}"))
         @endif
     </x-jet-modal>
+    <!-- Confirm Repository removal -->
+    <x-jet-confirmation-modal wire:model="confirmingRepositoryDeletion">
+        <x-slot name="title">
+            {{ __('Delete Repository') }}
+        </x-slot>
+
+        <x-slot name="content">
+            {{ __('Are you sure you would like to delete this repository?') }}
+        </x-slot>
+
+        <x-slot name="footer">
+            <x-jet-secondary-button wire:click="$toggle('confirmingRepositoryDeletion')" wire:loading.attr="disabled">
+                {{ __('Cancel') }}
+            </x-jet-secondary-button>
+
+            <x-jet-danger-button class="ml-3" wire:click="deleteRepository" wire:loading.attr="disabled">
+                {{ __('Delete') }}
+            </x-jet-danger-button>
+        </x-slot>
+    </x-jet-confirmation-modal>
 
 </div>

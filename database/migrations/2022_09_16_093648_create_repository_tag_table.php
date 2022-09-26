@@ -14,8 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('repository_tag', function (Blueprint $table) {
-            $table->foreignId('repository_id');
-            $table->foreignId('tag_id');
+            $table->foreignId('repository_id')->references('id')->on('repositories')->onDelete('cascade');
+            $table->foreignId('tag_id')->references('id')->on('tags')->onDelete('cascade');
             $table->integer('order_column')->default(0);
         });
     }
