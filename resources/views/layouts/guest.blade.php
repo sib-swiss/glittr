@@ -21,30 +21,10 @@
         @livewireStyles
         @stack('head')
     </head>
-    <body class="font-sans text-gray-800 antialiased min-h-screen flex flex-col text-sm lg:text-base">
-        <header class="bg-white border-b" id="header">
-            <div class="container flex items-center  py-2">
-                <a href="{{ route('homepage')}}" class="flex items-center space-x-2">
-                    <img src="{{ url('/sib-emblem.svg') }}" class="max-w-full h-12" />
-                    <h1 class="text-lg lg:text-xl font-semibold tracking-tight">
-                        {{ __('Training Collection') }}
-                    </h1>
-                </a>
-            </div>
-        </header>
-        <div class="flex-1 bg-gray-100 py-8 lg:py-12">
-            <div class="container">
-                {{ $slot }}
-            </div>
+    <body class="font-sans bg-white text-gray-800 antialiased min-h-screen flex flex-col text-sm lg:text-base">
+        <div class="flex-1">
+            {{ $slot }}
         </div>
-        <footer class="bg-primary text-white text-sm text-center p-2">
-            footer info...
-            @if ($last_updated_at)
-            <div>
-                Data updated at: {{ $last_updated_at->format('Y-m-d H:i:s') }}
-            </div>
-            @endif
-        </footer>
         @livewireScripts
     </body>
 </html>

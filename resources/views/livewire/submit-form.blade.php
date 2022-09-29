@@ -1,7 +1,7 @@
 <div>
     @if ($submitted)
     @else
-        <x-jet-form-section submit="save">
+        <x-form-section submit="save">
             <x-slot name="title">
                 {{ __('Submit a repository') }}
             </x-slot-name>

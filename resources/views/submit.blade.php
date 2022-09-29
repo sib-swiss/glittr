@@ -1,5 +1,8 @@
 <x-guest-layout>
     <div class="max-w-5xl mx-auto">
-        @livewire('submit-form')
+        <x-page-header></x-page-header>
+        <div class="mt-4 lg:mt-12">
+            @livewire('submit-form')
+        </div>
     </div>
 </x-guest-layout>

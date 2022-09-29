@@ -68,7 +68,7 @@ class Repositories extends Component
                 'total' => 0,
             ];
             foreach ($cat->tags as $tag) {
-                $this->tags[] = [
+                $this->tags[$tag->id] = [
                     'id' => $tag->id,
                     'name' => $tag->name,
                     'total' => $tag->repositories_count,
