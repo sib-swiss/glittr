@@ -17,13 +17,13 @@
             }
         }
     }"
-    class="flex"
+    class="flex flex-col flex-1"
 >
     @php
     $now = Carbon\Carbon::now();
     @endphp
-    <div class="flex-1 2xl:pr-[20%]">
-        <div class="container">
+    <div class="flex-1 2xl:pr-[360px] relative flex flex-col">
+        <div class="container flex-1">
             {{-- Header --}}
             <x-page-header>
                 <x-slot name="text">
@@ -156,7 +156,7 @@
                             </div>
                             <div class="@if(!$repository->author) hidden @endif  border-t border-b  lg:table-cell order-last lg:order-none col-span-2 lg:col-span-1 py-4 lg:py-2 px-2  lg:border-t-0 lg:align-middle bg-gray-50 lg:bg-transparent">
                                 @if ($repository->author)
-                                    <div class="lg:hidden text-xs font-medium text-gray-600 tracking-wide uppercase mb-1">{{ __('Author') }}</div>
+                                    <div class="lg:hid8en text-xs font-medium text-gray-600 tracking-wide uppercase mb-1">{{ __('Author') }}</div>
                                     <div class="font-bold tracking-tight">
                                         {{ $repository->author->display_name }}
                                     </div>
@@ -224,12 +224,14 @@
                     </p>
                 </div>
             @endif
-
         </div>
+        <x-page-footer>
+
+        </x-page-footer>
     </div>
     <div x-cloak class="2xl:hidden fixed inset-0 z-10 bg-white/60 backdrop-blur-sm" x-show="filterOpen" @click="toggleFilter"></div>
     <div x-cloak
-        class="fixed z-20 inset-y-0 right-0 w-full max-w-[80%] sm:max-w-sm 2xl:w-[20%] transition bg-gray-50 2xl:translate-x-0 duration-300 border-l shadow-md flex flex-col"
+        class="fixed z-20 inset-y-0 right-0 w-full max-w-[80%] 2xl:w-[360px] transition bg-gray-50 2xl:translate-x-0 duration-300 border-l shadow-md flex flex-col"
         :class="filterOpen ? 'translate-x-0' : 'translate-x-full'"
         >
         @if (count($repositories) > 0)

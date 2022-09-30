@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Category;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -48,6 +49,6 @@ class AppServiceProvider extends ServiceProvider
         });
         View::share('categories_colors', $categories_colors);
 
-        View::share('last_updated_at', Cache::get('last_updated_at', null));
+        View::share('last_updated_at', Cache::get('last_updated_at', Carbon::now()));
     }
 }

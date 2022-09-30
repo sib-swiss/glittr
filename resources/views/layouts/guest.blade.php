@@ -22,7 +22,7 @@
         @stack('head')
     </head>
     <body class="font-sans antialiased bg-white text-gray-800 min-h-screen flex flex-col text-sm lg:text-base">
-        <div class="flex-1 border-t-2 border-primary">
+        <div class="flex-1 flex flex-col border-t-2 border-primary">
             {{ $slot }}
         </div>
         @livewireScripts

@@ -1,6 +1,6 @@
 @props(['text' => false])
-<header class="py-4" id="header">
-    <div class="flex flex-wrap lg:flex-nowrap items-center justify-center lg:justify-between my-4 space-y-4 lg:space-y-0">
+<header {!! $attributes->merge(['class' => 'py-4']) !!} id="header">
+    <div class="container flex flex-wrap lg:flex-nowrap items-center justify-center lg:justify-between my-4 space-y-4 lg:space-y-0">
         <a href="{{ route('homepage')}}" class="hidden lg:block">
             <img src="{{ url('/sib-web-logo.svg') }}" class="max-w-full h-20" />
         </a>

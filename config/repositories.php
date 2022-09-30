@@ -7,10 +7,18 @@ return [
     'notification_emails' => [
         'test@test.com',
     ],
+
     //TODO: status reporting for CRON update
     'support_emails' => [],
 
-    //TODO: implement configurable default sort and pagination
+    /**
+     * Current app code repository for footer link
+     */
+    'repository_link' => 'https://gitlab.sib.swiss/yhaeflig/training-collection-app',
+
+    /**
+     * Repositories fontend list configuration
+     */
     'default_sort_by' => 'stargazers',
     'default_sort_direction' => 'desc',
     'default_per_page' => 20,
