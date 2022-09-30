@@ -49,7 +49,7 @@ class Repository extends Model
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class)->using(RepositoryTag::class)->ordered();
+        return $this->belongsToMany(Tag::class)->using(RepositoryTag::class);
     }
 
     public function getPushStatusClass()

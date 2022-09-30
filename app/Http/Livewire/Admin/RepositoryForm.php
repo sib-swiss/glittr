@@ -179,9 +179,9 @@ class RepositoryForm extends Component
         } else {
             $repository = Repository::find($this->repository['id']);
             $repository->update($validatedData['repository']);
-
             //re-attach tags for ordering
             $repository->tags()->detach();
+            //dd($validatedData['repository']['tags']);
             $repository->tags()->sync($validatedData['repository']['tags']);
 
             $this->notify("Repository {$displayName} successfully updated.");

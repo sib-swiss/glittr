@@ -95,6 +95,8 @@ class TagSelect extends Component
 
         ksort($sortArray);
         array_multisort($sortArray, SORT_ASC, SORT_NUMERIC, $this->selected);
+
+        $this->emitUpdate();
     }
 
     public function remove(int $index): void
