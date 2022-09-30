@@ -13,10 +13,10 @@ return [
     //TODO: implement configurable default sort and pagination
     'default_sort_by' => 'stargazers',
     'default_sort_direction' => 'desc',
-    'default_per_page' => 25,
+    'default_per_page' => 20,
     'paginations' => [
         10,
-        25,
+        20,
         50,
         100,
     ],

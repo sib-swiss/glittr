@@ -21,7 +21,7 @@
         @livewireStyles
         @stack('head')
     </head>
-    <body class="font-sans bg-white text-gray-800 antialiased min-h-screen flex flex-col text-sm lg:text-base">
+    <body class="font-sans antialiased bg-white text-gray-800 antialiased min-h-screen flex flex-col text-sm lg:text-base">
         <div class="flex-1">
             {{ $slot }}
         </div>

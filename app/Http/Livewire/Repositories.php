@@ -37,11 +37,11 @@ class Repositories extends Component
 
     public $search;
 
-    public $per_page = 20;
+    public $per_page;
 
-    public $sort_by = 'name';
+    public $sort_by;
 
-    public $sort_direction = 'asc';
+    public $sort_direction;
 
     protected $queryString = ['search', 'per_page', 'sort_by', 'sort_direction'];
 
@@ -55,6 +55,10 @@ class Repositories extends Component
 
     public function mount()
     {
+        $this->sort_by = config('repositories.default_sort_by', 'name');
+        $this->sort_direction = config('repositories.default_sort_direction', 'asc');
+        $this->per_page = config('repositories.default_per_page', 20);
+
         $categories = Category::with(['tags' => function ($query) {
             $query->ordered()->withCount('repositories');
         }])->ordered()->get();
@@ -104,15 +108,18 @@ class Repositories extends Component
         $this->updateGroupedTags();
     }
 
-    public function toggleCategory(int $categoryId): void
-    {
-        $status = null;
-
-        if (isset($this->categories[$categoryId])) {
-            $this->categories[$categoryId]['selected'] = ! $this->categories[$categoryId]['selected'];
-            $status = $this->categories[$categoryId]['selected'];
+    public function updated($name, $value) {
+        $splitted = explode('.', $name);
+        if (count($splitted) === 3 && $splitted[0] == 'categories' && $splitted[2] == 'selected') {
+            $this->toggleCategory(intval($splitted[1]), $value);
+        } elseif (count($splitted) === 3 && $splitted[0] == 'tags' && $splitted[2] == 'selected') {
+            $this->resetPage();
+            $this->groupTags();
         }
+    }
 
+    public function toggleCategory(int $categoryId, $status): void
+    {
         if (! is_null($status)) {
             foreach ($this->tags as $tagId => $tag) {
                 if ($tag['cid'] == $categoryId) {
@@ -125,14 +132,18 @@ class Repositories extends Component
         $this->groupTags();
     }
 
-    public function toggleTag(int $tagIndex): void
+    public function clearTags()
     {
-        if (isset($this->tags[$tagIndex])) {
-            $this->tags[$tagIndex]['selected'] = ! $this->tags[$tagIndex]['selected'];
+        foreach($this->tags as $tagIndex => $tag) {
+            if ($tag['selected']) {
+                $this->tags[$tagIndex]['selected'] = false;
+            }
         }
-
-        $this->resetPage();
-        $this->groupTags();
+        foreach($this->categories as $cid => $category) {
+            if ($category['selected']) {
+                $this->categories[$cid]['selected'] = false;
+            }
+        }
     }
 
     public function render()
@@ -145,12 +156,12 @@ class Repositories extends Component
 
         // Apply selected tags to selection.
         $selected_tags = collect($this->tags)
-            ->filter(fn ($tag) => $tag['selected'])
-            ->pluck('id');
+            ->filter(fn ($tag) => $tag['selected']);
 
         if (count($selected_tags) > 0) {
-            $repositories->whereHas('tags', function (Builder $query) use ($selected_tags) {
-                $query->whereIn('id', $selected_tags);
+            $selectedTagIds = $selected_tags->pluck('id');
+            $repositories->whereHas('tags', function (Builder $query) use ($selectedTagIds) {
+                $query->whereIn('id', $selectedTagIds);
             });
         }
 
@@ -161,6 +172,7 @@ class Repositories extends Component
 
         return view('livewire.repositories', [
             'repositories' => $repositories->paginate(intval($this->per_page)),
+            'selected_tags' => $selected_tags,
         ]);
     }
 

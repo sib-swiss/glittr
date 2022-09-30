@@ -16,6 +16,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+    'tagline' => 'Curated list of Bioinformatics training materials',
 
     /*
     |--------------------------------------------------------------------------
