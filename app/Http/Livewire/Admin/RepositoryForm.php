@@ -7,7 +7,10 @@ namespace App\Http\Livewire\Admin;
 use App\Concerns\InteractsWithNotifications;
 use App\Facades\Remote;
 use App\Models\Repository;
+use App\Models\Submission;
 use Exception;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 use Livewire\Component;
 use Spatie\Url\Url;
@@ -46,11 +49,25 @@ class RepositoryForm extends Component
      */
     public $action = 'add';
 
+    /**
+     * Optional submission for createion
+     *
+     * @var int
+     */
+    public $submissionId;
+
+    /**
+     * Submisssion validation message
+     *
+     * @var string
+     */
+    public $submissionMessage = '';
+
     protected $listeners = [
         'tagsUpdated',
     ];
 
-    public function mount(?int $id, ?string $cancelEvent): void
+    public function mount(?int $id, ?string $cancelEvent, ?int $fromSubmissionId = null): void
     {
         if ($id) {
             $r = Repository::find($id);
@@ -65,6 +82,15 @@ class RepositoryForm extends Component
             $this->action = 'edit';
         } else {
             $this->action = 'add';
+        }
+
+        if ($fromSubmissionId && $this->action == 'add') {
+            $submission = Submission::find($fromSubmissionId);
+            if ($submission) {
+                $this->submissionId = $submission->id;
+                $this->repository['url'] = (string) $submission->url;
+                $this->repository['tags'] = $submission->tags->pluck('id')->toArray();
+            }
         }
 
         if ($cancelEvent) {
@@ -131,6 +157,18 @@ class RepositoryForm extends Component
             $repository = Repository::create($validatedData['repository']);
             if ($repository) {
                 $repository->tags()->sync($validatedData['repository']['tags']);
+
+                // Mark submission as validated
+                if ($this->submissionId) {
+                    $submission = Submission::find($this->submissionId);
+                    $submission->repository_id = $repository->id;
+                    $submission->validated = true;
+                    $submission->validation_message = $this->submissionMessage;
+                    $submission->validated_by = Auth::user()->id;
+                    $submission->validated_at = Carbon::now();
+                    $submission->save();
+                }
+
                 $this->notify("Repository {$displayName} successfully added.");
                 $this->emitUp('addRepositorySuccess', [
                     'repository' => $repository->id,

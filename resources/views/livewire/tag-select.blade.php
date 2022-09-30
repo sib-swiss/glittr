@@ -10,7 +10,7 @@
         })
     ">
         @foreach ($selected as $index => $sel)
-            <li class="flex items-center space-x-2 p-2 border tag" data-id="{{ $index }}">
+            <li class="flex items-center space-x-2 p-2 bg-white border tag" data-id="{{ $index }}">
                 <div class="flex-1 flex items-center cursor-move">
                     <x-heroicon-o-chevron-up-down class="w-6 h-6 mr-4" />
                     <div class="leading-tight">

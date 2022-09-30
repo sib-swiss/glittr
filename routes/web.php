@@ -24,9 +24,9 @@ Route::get('/', function () {
     return view('homepage');
 })->name('homepage');
 
-Route::get('submit', function () {
-    return view('submit');
-})->name('submit');
+Route::get('contribute', function () {
+    return view('contribute');
+})->name('contribute');
 /**
  * Admin routes.
  */

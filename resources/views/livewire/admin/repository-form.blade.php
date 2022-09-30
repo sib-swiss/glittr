@@ -35,6 +35,13 @@
             {{--<div class="bg-orange-50 text-orange-500 text-sm p-4 border border-orange-500">
                 ! All informations below will be updated with data from the API !
             </div>--}}
+
+            @if ($submissionId)
+                <div>
+                    <x-jet-label for="submissionMessage" value="{{ __('Optional comment to save with submission')}}" />
+                    <x-textarea class="w-full" id="submissionMessage" wire:model="submissionMessage" />
+                </div>
+            @endif
         </div>
         <x-slot name="footer">
             @if($cancelEvent != '')

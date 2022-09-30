@@ -1,10 +1,98 @@
 <div>
+    <h2 class="text-2xl font-bold tracking-tight">{{ __('Pending submissions' )}}</h2>
     @if (count($submissions) > 0)
-       @foreach($submissions as $submission)
-       @endforeach
+        <x-table class="my-4">
+            <thead>
+                <x-table.header>{{ __('URL') }}</x-table.header>
+                <x-table.header>{{ __('Proposed tags') }}</x-table.header>
+                <x-table.header>{{ __('Submitted by') }}</x-table.header>
+                <x-table.header>{{ __('Date') }}</x-table.header>
+                <x-table.header></x-table.header>
+            </thead>
+            <tbody>
+                @foreach($submissions as $submission)
+                    <x-table.row class="group">
+                        <x-table.cell class="group-hover:bg-gray-50">
+                            <a href="{{ $submission->url }}" class="font-semibold underline" target="_blank">
+                                {{ $submission->url }}
+                            </a>
+                            @if ($submission->comment != '')
+                                <div class="text-sm ">
+                                    <span class="text-xs uppercase font-semibold tracking-wide text-gray-500 mt-1">{{ __('Comment: ')}}</span>
+
+                                    {!! nl2br($submission->comment) !!}
+                                </div>
+                            @endif
+                        </x-table.cell>
+                        <x-table.cell class="group-hover:bg-gray-50">
+                            {{ $submission->tags->pluck('name')->implode(', ') }}
+                        </x-table.cell>
+                        <x-table.cell class="group-hover:bg-gray-50">
+                            {{ $submission->name }}
+                            <div class="text-sm text-gray-500">
+                                {{ $submission->email }}
+                            </div>
+                        </x-table.cell>
+                        <x-table.cell class="group-hover:bg-gray-50">
+                            {{ $submission->created_at }}
+                            @if ($submission->created_at)
+                                <div class="text-sm text-gray-500">
+                                    {{ $submission->created_at->diffForHumans() }}
+                                </div>
+                            @endif
+                        </x-table.cell>
+                        <x-table.cell class="group-hover:bg-gray-50">
+                            <div class="flex items-center space-x-2">
+                                <button
+                                    class="flex items-center text-sm flex-1 uppercase p-4 bg-green-100 text-green-600 border border-green-600 hover:bg-green-600 hover:text-white"
+                                    wire:click="acceptSubmission({{ $submission->id }})"
+                                >
+                                    <x-heroicon-o-hand-thumb-up class="w-6 h-6 mr-2" />
+                                    <span class="font-bold">Accept</span>
+
+                                </button>
+
+                                <button
+                                    class="flex items-center text-sm flex-1 p-4 uppercase bg-red-100 text-red-600 border border-red-600 hover:bg-red-600 hover:text-white"
+                                    wire:click="declineSubmission({{ $submission->id }})"
+                                >
+                                    <x-heroicon-o-hand-thumb-down class="w-6 h-6 mr-2" />
+                                    <span class="font-bold">Decline</span>
+
+                                </button>
+                            </div>
+                        </x-table.cell>
+                    </x-table.row>
+                @endforeach
+            </tbody>
+        </x-table>
        {{ $submissions->links() }}
+
+       <!-- Add Repository Form Modal -->
+        <x-jet-modal wire:model="showAccept" persisted="true">
+            @if ($acceptingSubmissionId)
+                @livewire('admin.repository-form', [null, 'addRepositoryCancel', $acceptingSubmissionId], key("submissionAccept-{$acceptingSubmissionId}"))
+            @endif
+        </x-jet-modal>
+        <!-- Edit Repository Form Modal -->
+        <x-jet-modal wire:model="showDecline" persisted="true">
+            <x-modal.content title="Decline Submission">
+                <form wire:submit.prevent="decline">
+                    <div class="space-y-4">
+                        <div>
+                            <x-jet-label for="declineComment" value="{{ __('Comment')}}" />
+                            <x-textarea wire:model="declineComment" class="w-full" />
+                        </div>
+                    </div>
+                    <x-slot name="footer">
+                        <x-jet-secondary-button wire:click.prevent="cancelDecline">{{ __('Cancel') }}</x-jet-seconday-button>
+                        <x-jet-button wire:click.prevent="decline">Confirm decline</x-jet-button>
+                    </x-slot>
+                </form>
+            </x-modal.content>
+        </x-jet-modal>
     @else
-        <div class="text-lg space-y-4 flex flex-col items-center border p-4 rounded border-green-500 text-green-500 bg-green-50">
+        <div class="text-lg space-y-4 flex flex-col items-center border p-4 rounded border-green-500 text-green-500 bg-green-50 mt-4">
             <x-heroicon-o-hand-thumb-up class="w-8 h-8" />
             <div>{{ __('No pending submissions') }}</div>
         </div>

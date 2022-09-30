@@ -7,6 +7,7 @@ use App\Models\Repository;
 use App\Models\Tag;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -55,9 +56,15 @@ class Repositories extends Component
 
     public function mount()
     {
-        $this->sort_by = config('repositories.default_sort_by', 'name');
-        $this->sort_direction = config('repositories.default_sort_direction', 'asc');
-        $this->per_page = config('repositories.default_per_page', 20);
+        if (! $this->sort_by) {
+            $this->sort_by = config('repositories.default_sort_by', 'name');
+        }
+        if (! $this->sort_direction) {
+            $this->sort_direction = config('repositories.default_sort_direction', 'asc');
+        }
+        if (! $this->per_page) {
+            $this->per_page = config('repositories.default_per_page', 20);
+        }
 
         $categories = Category::with(['tags' => function ($query) {
             $query->ordered()->withCount('repositories');
@@ -98,6 +105,14 @@ class Repositories extends Component
         }
     }
 
+    public function changeSort(string $column, string $direction)
+    {
+        if (in_array($column, $this->sortColumns) && in_array($direction, ['asc', 'desc'])) {
+            $this->sort_by = $column;
+            $this->sort_direction = $direction;
+        }
+    }
+
     public function updatingSearch()
     {
         $this->resetPage();
@@ -108,7 +123,8 @@ class Repositories extends Component
         $this->updateGroupedTags();
     }
 
-    public function updated($name, $value) {
+    public function updated($name, $value)
+    {
         $splitted = explode('.', $name);
         if (count($splitted) === 3 && $splitted[0] == 'categories' && $splitted[2] == 'selected') {
             $this->toggleCategory(intval($splitted[1]), $value);
@@ -134,12 +150,12 @@ class Repositories extends Component
 
     public function clearTags()
     {
-        foreach($this->tags as $tagIndex => $tag) {
+        foreach ($this->tags as $tagIndex => $tag) {
             if ($tag['selected']) {
                 $this->tags[$tagIndex]['selected'] = false;
             }
         }
-        foreach($this->categories as $cid => $category) {
+        foreach ($this->categories as $cid => $category) {
             if ($category['selected']) {
                 $this->categories[$cid]['selected'] = false;
             }
@@ -170,9 +186,22 @@ class Repositories extends Component
             $repositories->orderedBy($this->sort_by, $this->sort_direction);
         }
 
+        $sorting_columns = [];
+        foreach ($this->sortColumns as $column) {
+            foreach (['asc', 'desc'] as $direction) {
+                $sorting_columns[] = [
+                    'column' => $column,
+                    'direction' => $direction,
+                    'label' => Str::headline($column.' '.$direction),
+                    'selected' => ($this->sort_by == $column && $this->sort_direction == $direction),
+                ];
+            }
+        }
+
         return view('livewire.repositories', [
             'repositories' => $repositories->paginate(intval($this->per_page)),
             'selected_tags' => $selected_tags,
+            'sorting_columns' => $sorting_columns,
         ]);
     }
 

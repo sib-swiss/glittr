@@ -28,18 +28,20 @@
             <x-page-header>
                 <x-slot name="text">
                     <div class="pb-2">
-                        <p>Is your (favourite) course not in there? Is a link dead? Did you find a typo?<br />Any contribution to this list is highly appreciated!</p>
+                        <p>
+                            Is your (favourite) course not in there? Is a link dead? Did you find a typo?<br />Any contribution to this list is highly appreciated!
+                        </p>
                         <div class="absolute -bottom-4 inset-x-0 flex items-center justify-center">
                             <div class="w-2 h-2 bg-white"></div>
-                            <a class="bg-white inline-block font-semibold px-4 py-2 border no-underline hover:bg-gray-50" href="{{ route('submit') }}">Submit</a>
+                            <a class="bg-white inline-block font-semibold tracking-wide px-4 py-2 border border-primary text-primary transition no-underline hover:bg-primary uppercase hover:text-white" href="{{ route('contribute') }}">{{ __('Contribute') }}</a>
                             <div class="w-2 h-2 bg-white"></div>
                         </div>
                     </div>
                 </x-slot>
             </x-page-header>
-            <div class="mt-4 bg-gray-50 p-4 border-t border-b">
+            <div id="items-list" class="mt-4 bg-gray-50 p-4 border-t border-b">
                 <div x-data @keydown.window="handleFocus" class="relative">
-                    <input class="w-full border-gray-400 rounded pl-14 pr-14 h-14 py-4 text-lg focus:border-blue-500" type="text" placeholder="{{ __('Global search ("/" to focus)') }}" x-ref="input" wire:model.debounce.500ms="search" />
+                    <input class="w-full border-gray-400 rounded pl-14 pr-14 h-14 py-4 lg:text-lg focus:border-blue-500" type="text" placeholder="{{ __('Global search ("/" to focus)') }}" x-ref="input" wire:model.debounce.500ms="search" />
                     <div class="w-14 h-14 absolute left-0 top-0 flex items-center justify-center text-gray-400">
                         <x-heroicon-o-magnifying-glass class="w-6 h-6" />
                     </div>
@@ -51,12 +53,14 @@
                         </div>
                     @endif
                 </div>
-                <div class="mt-2 2xl:hidden">
-                    <x-jet-button type="button" class="flex text-base w-full justify-center" @click="toggleFilter">
-                        <x-heroicon-o-adjustments-horizontal class="w-6 h-6 mr-3" />
-                        <span>{{ __('Filter by topic') }}</span>
-                    </x-jet-button>
-                </div>
+                @if (count($repositories) > 0)
+                    <div class="mt-2 2xl:hidden">
+                        <x-jet-button type="button" class="flex text-sm lg:text-base w-full justify-center" @click="toggleFilter">
+                            <x-heroicon-o-adjustments-horizontal class="w-5 h-5 mr-3" />
+                            <span>{{ __('Filter by topic') }}</span>
+                        </x-jet-button>
+                    </div>
+                @endif
                 @if (count($selected_tags) > 0)
                     <div class="flex items-center mt-2 -mx-1 flex-wrap">
                         <div class="px-1 font-semibold uppercase tracking-wide text-sm">{{ __('Selected topcis')}} ({{ count($selected_tags) }})</div>
@@ -72,25 +76,53 @@
                 @endif
             </div>
             @if(count($repositories) > 0)
-                <div id="items-list" class="py-2 mt-2 flex justify-between items-center">
-                    <div>
+                <div  class="py-2 mt-2 flex flex-wrap justify-between items-center">
+                    <div class="w-full lg:w-auto lg:flex-1 pb-2 lg:pb-0 lg:text-left text-center">
                         <h2 class="text-lg font-bold">
                             {{ $repositories->total() }} {{ __('Repositories') }}
                         </h2>
                         <div class="text-sm uppercase tracking-wide text-gray-500">
-                            Page {{ $repositories->currentPage() }} / {{ $repositories->lastPage() }}
+                            {{ __('Page') }} {{ $repositories->currentPage() }} / {{ $repositories->lastPage() }}
                         </div>
                     </div>
-                    <div class="flex flex-col items-end">
-                        <label for="pagination" class="text-sm uppercase font-semibold tracking-wide">
-                            Per page
+
+                    <div class="mr-4 lg:hidden flex flex-col items-start">
+                        <label for="sortSelect" class="text-sm uppercase font-semibold tracking-wide">
+                            {{ __('Sort by') }}
                         </label>
-                        <x-select id="pagination" wire:model="per_page">
-                            @foreach (config('repositories.paginations') as $pagination_nb)
-                                <option value="{{ $pagination_nb }}">{{ $pagination_nb }}</option>
+                        <x-select
+                            class="w-full"
+                            id="sortSelect"
+                            @change="
+                                option = $el.options[$el.selectedIndex];
+                                $wire.changeSort(option.dataset.column, option.dataset.direction)
+                            "
+                        >
+                            @foreach ($sorting_columns as $sortId => $sorting_column)
+                                <option
+                                    data-column="{{ $sorting_column['column']}}"
+                                    data-direction="{{ $sorting_column['direction']}}"
+                                    value="{{ $sortId }}"
+                                    @if ($sorting_column['selected']) selected @endif
+                                >
+                                    {{ $sorting_column['label'] }}
+                                </option>
                             @endforeach
                         </x-select>
                     </div>
+
+                    @if (count(config('repositories.paginations', [])) > 0)
+                        <div class="ml-4 flex flex-col items-end text-right">
+                            <label for="paginationSelect" class="text-sm uppercase font-semibold tracking-wide">
+                                {{ __('Per page') }}
+                            </label>
+                            <x-select id="paginationSelect" class="" wire:model="per_page">
+                                @foreach (config('repositories.paginations') as $pagination_nb)
+                                    <option value="{{ $pagination_nb }}">{{ $pagination_nb }}</option>
+                                @endforeach
+                            </x-select>
+                        </div>
+                    @endif
                 </div>
                 <div  class="repositories-list  lg:bg-white w-full lg:table lg:border lg:border-gray-200">
                     <div class="hidden lg:table-header-group">
@@ -122,9 +154,9 @@
                                     </a>
                                 @endif
                             </div>
-                            <div class="@if(!$repository->author) hidden @endif  border-t border-b  lg:table-cell order-last lg:order-none col-span-2 lg:col-span-1 py-4 lg:py-2 px-2  lg:border-t-0 lg:align-middle bg-gray-50 lg:bg-white">
+                            <div class="@if(!$repository->author) hidden @endif  border-t border-b  lg:table-cell order-last lg:order-none col-span-2 lg:col-span-1 py-4 lg:py-2 px-2  lg:border-t-0 lg:align-middle bg-gray-50 lg:bg-transparent">
                                 @if ($repository->author)
-                                    <div class="text-xs font-medium text-gray-600 tracking-wide uppercase mb-1">{{ __('Author') }}</div>
+                                    <div class="lg:hidden text-xs font-medium text-gray-600 tracking-wide uppercase mb-1">{{ __('Author') }}</div>
                                     <div class="font-bold tracking-tight">
                                         {{ $repository->author->display_name }}
                                     </div>
@@ -144,7 +176,7 @@
                                     </div>
                                 @endif
                             </div>
-                            <div class="lg:table-cell bg-gray-50 lg:bg-white order-last lg:order-none col-span-2 lg:col-span-1 p-2 lg:border-b lg:align-middle">
+                            <div class="lg:table-cell bg-gray-50 lg:bg-transparent order-last lg:order-none col-span-2 lg:col-span-1 p-2 lg:border-b lg:align-middle">
                                 <div class="inline-flex flex-wrap">
                                     @foreach($repository->tags as $tag)
                                     <span class="mr-2 my-1 tag-category-{{ $tag->category_id}} text-sm font-medium tracking-wide border rounded py-1 px-2 bg-category-color/10 text-category-color border-category-color">
@@ -162,7 +194,7 @@
                                 @endif
                             </div>
                             <div class="lg:table-cell order-3 lg:order-none p-2 lg:border-b lg:align-middle">
-                                <div class="text-xs font-medium tracking-wide text-gray-400 uppercase">{{ __('Days since last push') }}</div>
+                                <div class="lg:hidden text-xs font-medium tracking-wide text-gray-400 uppercase">{{ __('Days since last push') }}</div>
                                 @if ($repository->last_push)
                                     <div class="flex items-center space-x-2">
                                         <div class="w-2 h-2 rounded-full {{ $repository->getPushStatusClass() }}"></div>
@@ -173,7 +205,7 @@
                                 @endif
                             </div>
                             <div class="lg:table-cell order-3 p-2 lg:order-none lg:border-b lg:align-middle font-semibold lg:text-left text-right">
-                                <div class="text-xs font-medium tracking-wide text-gray-400 uppercase">{{ __('License') }}</div>
+                                <div class="lg:hidden text-xs font-medium tracking-wide text-gray-400 uppercase">{{ __('License') }}</div>
                                 {{ $repository->license ?? '-' }}
                             </div>
                         </div>
@@ -183,8 +215,13 @@
                     {{ $repositories->links() }}
                 </div>
             @else
-                <div class="bg-orange-100 border border-orange-600 text-orange-600 p-4">
-                    {{ __('No results.')}}
+                <div class="bg-orange-100 border border-orange-600 text-orange-600 p-4 mt-8 text-center">
+                    {{ __('No results matched your search: ') }}<strong>{{ $search }}</strong>
+                    <p>
+                        <button type="button" class="font-bold underline mt-2" @click.prevent="$wire.set('search', '')">
+                            {{ __('Reset search term') }}
+                        </button>
+                    </p>
                 </div>
             @endif
 
@@ -192,16 +229,16 @@
     </div>
     <div x-cloak class="2xl:hidden fixed inset-0 z-10 bg-white/60 backdrop-blur-sm" x-show="filterOpen" @click="toggleFilter"></div>
     <div x-cloak
-        class="fixed z-20 inset-y-0 right-0 min-w-[340px] max-w-[80%] 2xl:w-[20%] transition bg-gray-50 2xl:translate-x-0 duration-300 border-l shadow-md flex flex-col"
+        class="fixed z-20 inset-y-0 right-0 w-full max-w-[80%] sm:max-w-sm 2xl:w-[20%] transition bg-gray-50 2xl:translate-x-0 duration-300 border-l shadow-md flex flex-col"
         :class="filterOpen ? 'translate-x-0' : 'translate-x-full'"
         >
         @if (count($repositories) > 0)
             <div class="p-4 bg-gray-800 text-white tracking-widest font-semibold uppercase flex items-center">
-                <div class="flex items-center justify-center space-x-2 opacity-80">
+                <div class="flex items-center justify-center font-semibold space-x-2 ">
                     <x-heroicon-o-tag class="w-6 h-6" />
                     <span>{{ __('Topics') }}</span>
                 </div>
-                <div class="ml-auto">
+                <div class="ml-auto 2xl:hidden">
                     <button @click="toggleFilter">
                         <x-heroicon-o-x-mark class="w-6 h-6" />
                     </button>
@@ -210,7 +247,7 @@
             <div class="flex-1  overflow-y-auto">
                 @foreach($grouped_tags as $cid => $category)
                     <div class="tag-category-{{ $cid }} ">
-                        <label for="filter-category-{{ $cid }}" class="cursor-pointer p-4 bg-category-color/10 text-category-color text-sm font-semibold flex items-center">
+                        <label for="filter-category-{{ $cid }}" class="cursor-pointer p-4 border-t border-b border-category-color bg-category-color/10 text-category-color text-sm font-semibold flex items-center">
                             <x-jet-checkbox id="filter-category-{{ $cid }}" wire:model="categories.{{ $cid }}.selected" />
                             <span class="mx-2">{{ $category['category']['name'] }}</span>
                             <span class="ml-auto font-bold">
@@ -233,7 +270,9 @@
                 @endforeach
             </div>
             <div class="p-2 2xl:hidden">
-
+                <button type="button" @click="toggleFilter" class="block w-full text-center tracking-wide text-base font-medium p-4 bg-gray-800 text-white ">
+                    {{ __('Show :nb repositories', ['nb' => $repositories->total()])}}
+                </button>
             </div>
         @endif
     </div>
