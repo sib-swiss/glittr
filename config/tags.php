@@ -47,7 +47,7 @@ return [
                 'Galaxy',
                 'CWL',
                 'High Performance Computing',
-                'Enrichment Analysis'
+                'Enrichment Analysis',
             ],
         ],
         'Statistics and machine learning' => [

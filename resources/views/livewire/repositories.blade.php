@@ -22,8 +22,9 @@
     @php
     $now = Carbon\Carbon::now();
     @endphp
-    <div class="flex-1 2xl:pr-[360px] relative flex flex-col">
-        <div class="container flex-1">
+    <x-scrolltop class="2xl:right-[360px]" />
+    <div class="flex-1 2xl:mr-[360px] relative flex flex-col">
+        <div class="container relative flex-1">
             {{-- Header --}}
             <x-page-header>
                 <x-slot name="text">

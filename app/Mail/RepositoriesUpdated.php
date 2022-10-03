@@ -4,7 +4,6 @@ namespace App\Mail;
 
 use App\Models\Update;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
@@ -18,7 +17,6 @@ class RepositoriesUpdated extends Mailable
      * @var Update
      */
     protected $update;
-
 
     /**
      * Create a new message instance.
@@ -42,6 +40,6 @@ class RepositoriesUpdated extends Mailable
             ->markdown('emails.repositories.updated', [
                 'update' => $this->update,
             ]
-        );
+            );
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Models\Category;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;

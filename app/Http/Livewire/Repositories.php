@@ -37,6 +37,7 @@ class Repositories extends Component
     public $grouped_tags = [];
 
     public $max_tags;
+
     public $split_tags_filter;
 
     public $search;

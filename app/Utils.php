@@ -20,6 +20,6 @@ class Utils
             }
         }
 
-        return '';
+        return $url;
     }
 }

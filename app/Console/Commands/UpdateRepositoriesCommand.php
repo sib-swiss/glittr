@@ -2,17 +2,17 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Update;
-use App\Models\Repository;
 use App\Actions\AttachAuthor;
-use Illuminate\Support\Carbon;
-use Illuminate\Console\Command;
-use App\Mail\RepositoriesUpdated;
-use App\Jobs\LogRepositoriesUpdate;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Cache;
 use App\Actions\RemoteUpdateRepository;
+use App\Jobs\LogRepositoriesUpdate;
 use App\Jobs\StackableUpdateRepositoryData;
+use App\Mail\RepositoriesUpdated;
+use App\Models\Repository;
+use App\Models\Update;
+use Illuminate\Console\Command;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
 use Sammyjo20\LaravelHaystack\Models\Haystack;
 
 class UpdateRepositoriesCommand extends Command
@@ -73,7 +73,7 @@ class UpdateRepositoriesCommand extends Command
                         $update->save();
 
                         // If success percentage > 90 add date to cache for footer render
-                        if ($update->percentSuccess() > 90)  {
+                        if ($update->percentSuccess() > 90) {
                             Cache::forever('last_updated_at', $update->finished_at);
                         }
 

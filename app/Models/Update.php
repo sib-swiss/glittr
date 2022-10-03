@@ -28,7 +28,7 @@ class Update extends Model
     public function percentSuccess(): int
     {
         if ($this->total > 0) {
-            return ($this->success * 100)/$this->total;
+            return ($this->success * 100) / $this->total;
         }
 
         return 100;
