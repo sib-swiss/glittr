@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\RepositoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -13,6 +14,11 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+/**
+ * Return json formatted list grouped by main category for readme generation
+ */
+Route::get('repositories', [RepositoryController::class, 'list']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

@@ -114,6 +114,16 @@ class Repository extends Model
         $query->orderBy($column, $direction);
     }
 
+    public function getMainCategoryAttribute(): ?Tag
+    {
+        return $this->tags?->first();
+    }
+
+    public function getDaysSinceLastPushAttribute(): ?int
+    {
+        return $this->last_push?->diffInDays();
+    }
+
     /**
      * The "booted" method of the model.
      *

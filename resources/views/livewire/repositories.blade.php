@@ -205,7 +205,7 @@
                                 @if ($repository->last_push)
                                     <div class="flex items-center space-x-2">
                                         <div class="w-2 h-2 rounded-full {{ $repository->getPushStatusClass() }}"></div>
-                                        <span class="text-sm font-semibold">{{ $repository->last_push->diff($now)->days }}</span>
+                                        <span class="text-sm font-semibold">{{ $repository->days_since_last_push ?? '-' }}</span>
                                     </div>
                                 @else
                                     -
