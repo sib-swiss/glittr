@@ -60,8 +60,7 @@ class UpdateRepositoriesCommand extends Command
             $this->comment('Start updating all repositories.');
             $this->newLine();
 
-            //$repositories = Repository::where('enabled', true);
-            $repositories = Repository::whereIn('id', [8,9,10]);
+            $repositories = Repository::where('enabled', true);
             $haystack = Haystack::build()
                 //->withDelay(1)
                 ->withName('Update Repositories Data')

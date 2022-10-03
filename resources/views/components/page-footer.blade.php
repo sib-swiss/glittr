@@ -16,7 +16,7 @@
                 </p>
             </div>
         </div>
-        <div class="flex flex-col text-center lg:text-right items-center lg:items-end space-y-2">
+        <div class="flex flex-col items-start lg:text-right lg:items-end space-y-2">
             @if (config('repositories.repository_link', '') != '')
                 <div>
                     <h3 class="text-primary uppercase font-semibold tracking-wide text-sm">{{ __('Source') }}</h3>
@@ -34,7 +34,7 @@
                 </div>
             @endif
         </div>
-        <div class="col-span-2 text-center border-t pt-4">
+        <div class="lg:col-span-2 text-center border-t pt-4">
             <img src="{{ url('/sib-mark.svg') }}" class="inline-block max-w-full h-6" />
         </div>
     </div>

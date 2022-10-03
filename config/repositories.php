@@ -8,7 +8,9 @@ return [
         'test@test.com',
     ],
 
-    //TODO: status reporting for CRON update
+    /**
+     * List of emails to send cron repositories update notifications
+     */
     'support_emails' => [
         'yann.haefliger@sib.swiss',
     ],
@@ -24,9 +26,9 @@ return [
     'max_tags' => 5,
 
     /**
-     * Number of columns for topics filtering panel (2 or 1, 3 will mostly break the layout...)
+     * Split tags filter display in two cols
      */
-    'topics_filter_columns' => 2,
+    'split_tags_filter' => true,
 
     /**
      * Repositories fontend list configuration

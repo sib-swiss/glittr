@@ -37,6 +37,7 @@ class Repositories extends Component
     public $grouped_tags = [];
 
     public $max_tags;
+    public $split_tags_filter;
 
     public $search;
 
@@ -69,6 +70,7 @@ class Repositories extends Component
         }
 
         $this->max_tags = config('repositories.max_tags', 10);
+        $this->split_tags_filter = config('repositories.split_tags_filter', false);
 
         $categories = Category::with(['tags' => function ($query) {
             $query->ordered()->withCount('repositories');

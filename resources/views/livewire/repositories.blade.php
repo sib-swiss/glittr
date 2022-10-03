@@ -252,7 +252,7 @@
                     </button>
                 </div>
             </div>
-            <div class="flex-1  overflow-y-auto space-y-4">
+            <div class="flex-1  overflow-y-auto {{ $split_tags_filter ? 'space-y-4' : ''}}">
                 @foreach($grouped_tags as $cid => $category)
                     <div class="tag-category-{{ $cid }} ">
                         <label for="filter-category-{{ $cid }}" class="cursor-pointer p-4 border-t border-b border-category-color bg-category-color/10 text-category-color text-sm font-semibold flex items-center">
@@ -262,7 +262,7 @@
                                 {{ $category['category']['total'] }}
                             </span>
                         </label>
-                        <div class="grid grid-cols-{{ config('repositories.topics_filter_columns', 1) }}">
+                        <div class="grid {{ $split_tags_filter ? 'grid-cols-2' : 'grid-cols-1'}}">
                             @foreach($category['tags'] as $tagIndex => $tag)
                                 <label
                                     for="filter-tag-{{ $tagIndex }}"
