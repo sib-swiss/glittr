@@ -2,6 +2,7 @@
 
 namespace App\Data;
 
+use App\Utils;
 use Carbon\CarbonImmutable;
 use Spatie\LaravelData\Attributes\Validation\Date;
 use Spatie\LaravelData\Data;
@@ -31,7 +32,7 @@ class RemoteData extends Data
     {
         return new self(
             name: $repoData['full_name'] ?? '',
-            website: $repoData['homepage'] ?? Optional::create(), // May be manually added if not present
+            website: $repoData['homepage'] ? Utils::ensureUrl($repoData['homepage']) : Optional::create(), // May be manually added if not present
             stargazers: isset($repoData['stargazers_count']) ? intval($repoData['stargazers_count']) : Optional::create(),
             title: $repoData['name'] ?? '',
             description: $repoData['description'] ?? '',

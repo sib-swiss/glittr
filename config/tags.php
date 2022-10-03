@@ -4,36 +4,50 @@ return [
     // Default tags imported with db seeder
     'default' => [
         'Scripting and languages' => [
-            'color' => '#ee7559',
+            'color' => '#ea5197',
             'tags' => [
                 'UNIX shell',
-                'Pyhton',
+                'Python',
                 'R',
+                'Rmarkdown',
+                'Quarto',
+                'Shiny',
                 'Git',
             ],
         ],
         'Sequence data analysis' => [
             'color' => '#f8bca5',
             'tags' => [
-                'General',
                 'Miscellaneous',
                 'RNA-seq',
+                'ATAC-seq',
                 'ChIP-seq',
                 'Single cell',
+                'NGS analysis',
+                'Transcriptomics',
                 'Variant analysis',
                 'Genome assembly',
+                'Genome Annotation',
+                'Comparative Genomics',
+                'Genomics',
                 'Metagenomics',
+                'Epigenetics',
+                'Multi-omics',
             ],
         ],
         'Computational methods and pipelines' => [
             'color' => '#009ee3',
             'tags' => [
                 'Containers',
+                'Docker',
+                'Singularity',
+                'Pipelines',
                 'Nextflow',
                 'Snakemake',
                 'Galaxy',
                 'CWL',
-                'High performance computing',
+                'High Performance Computing',
+                'Enrichment Analysis'
             ],
         ],
         'Statistics and machine learning' => [
@@ -54,6 +68,10 @@ return [
         'Others' => [
             'color' => '#9d9d9d',
             'tags' => [
+                'General',
+                'Visualization',
+                'Public Data',
+                'Data Science',
                 'Other',
             ],
         ],

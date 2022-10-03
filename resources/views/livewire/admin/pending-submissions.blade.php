@@ -11,8 +11,8 @@
             </thead>
             <tbody>
                 @foreach($submissions as $submission)
-                    <x-table.row class="group">
-                        <x-table.cell class="group-hover:bg-gray-50">
+                    <x-table.row class="group bg:white hover:bg-gray-50">
+                        <x-table.cell class="">
                             <a href="{{ $submission->url }}" class="font-semibold underline" target="_blank">
                                 {{ $submission->url }}
                             </a>

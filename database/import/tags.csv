@@ -89,8 +89,8 @@ carpentries-incubator/workflows-snakemake,"Pipelines, Snakemake"
 galaxyproject/training-material,"General, Genome Assembly, Epigenetics, Genome Annotation, Metagenomics, NGS analysis, Statistics, Machine Learning, Transcriptomics, RNA-seq, Variant Analysis, Visualization"
 Liubuntu/Bioc2020RCWL,"Pipelines, CWL"
 BiodataAnalysisGroup/intro-to-cwl-docker,"Pipelines, CWL, Containers, Docker"
-carpentries-incubator/hpc-intro,HPC
-ngs-docs/2021-august-remote-computing,HPC
+carpentries-incubator/hpc-intro,"High Performance Computing"
+ngs-docs/2021-august-remote-computing,"High Performance Computing"
 djnavarro/rbook,"R, Statistics "
 bioinformatics-core-shared-training/IntroductionToStats,Statistics
 bioinformatics-core-shared-training/experimental-design,Statistics

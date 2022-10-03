@@ -63,7 +63,7 @@
                         })
                     ">
                         @foreach ($category->tags as $tag)
-                            <div class="bg-white hover:bg-blue-50 py-2 px-4 border-t tag flex space-x-4" data-id="{{ $tag->id }}">
+                            <div class="bg-white hover:bg-gray-50 py-2 px-4 border-t tag flex space-x-4" data-id="{{ $tag->id }}">
                                 <div class="w-10">
                                     <span class="text-xs font-semibold py-1 px-3 rounded-lg {{ $tag->repositories_count > 0 ? 'bg-green-100 text-green-800' : 'bg-orange-100 text-orange-800'}}">
                                         {{ $tag->repositories_count }}

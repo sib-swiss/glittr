@@ -49,6 +49,6 @@ class AppServiceProvider extends ServiceProvider
         });
         View::share('categories_colors', $categories_colors);
 
-        View::share('last_updated_at', Cache::get('last_updated_at', Carbon::now()));
+        View::share('last_updated_at', Cache::get('last_updated_at', null));
     }
 }

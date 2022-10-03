@@ -23,7 +23,7 @@
             </thead>
             <tbody>
                 @foreach($repositories as $repository)
-                <x-table.row class="{{ $repository->enabled ? 'bg-white':'bg-red-50' }}">
+                <x-table.row class="{{ $repository->enabled ? 'bg-white hover:bg-gray-50':'bg-red-50 hover:bg-red-100' }}">
                     <x-table.cell class="text-sm font-medium">{{ $repository->id }}</x-table.cell>
                     <x-table.cell>
                         <div class="text-xs tracking-wider uppercase">

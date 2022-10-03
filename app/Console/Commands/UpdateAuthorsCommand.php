@@ -30,6 +30,7 @@ class UpdateAuthorsCommand extends Command
     public function handle()
     {
         $this->comment('Start updating authors data.');
+        $this->newLine();
 
         foreach (Author::whereNotNull('api')->get() as $author) {
             $this->comment("Updating author {$author->name} with api {$author->api}.");
@@ -39,6 +40,7 @@ class UpdateAuthorsCommand extends Command
             }
         }
 
+        $this->newLine();
         $this->comment('Finished updating authors data.');
 
         return 0;

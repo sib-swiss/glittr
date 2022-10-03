@@ -2,13 +2,17 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Update;
+use App\Models\Repository;
 use App\Actions\AttachAuthor;
+use Illuminate\Support\Carbon;
+use Illuminate\Console\Command;
+use App\Mail\RepositoriesUpdated;
+use App\Jobs\LogRepositoriesUpdate;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
 use App\Actions\RemoteUpdateRepository;
 use App\Jobs\StackableUpdateRepositoryData;
-use App\Models\Repository;
-use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Cache;
 use Sammyjo20\LaravelHaystack\Models\Haystack;
 
 class UpdateRepositoriesCommand extends Command
@@ -38,6 +42,8 @@ class UpdateRepositoriesCommand extends Command
     {
         if ($this->hasArgument('repository') && $this->argument('repository')) {
             $this->comment('Start updating repository.');
+            $this->newLine();
+
             $repository = Repository::find($this->argument('repository'));
             if ($repository) {
                 $this->comment("Updating repository {$repository->url}");
@@ -47,14 +53,39 @@ class UpdateRepositoriesCommand extends Command
 
                 return 1;
             }
+
+            $this->newLine();
+            $this->comment('Finished updating repository.');
         } else {
+            $this->comment('Start updating all repositories.');
+            $this->newLine();
+
+            //$repositories = Repository::where('enabled', true);
+            $repositories = Repository::whereIn('id', [8,9,10]);
             $haystack = Haystack::build()
-                ->withDelay(1)
-                ->then(function () {
-                    Cache::forever('last_updated_at', Carbon::now());
+                //->withDelay(1)
+                ->withName('Update Repositories Data')
+                ->allowFailures()
+                ->addJob(new LogRepositoriesUpdate($repositories->count()))
+                ->then(function ($data) {
+                    if (isset($data['update_id'])) {
+                        $update = Update::find($data['update_id']);
+                        $update->finished_at = Carbon::now();
+                        $update->save();
+
+                        // If success percentage > 90 add date to cache for footer render
+                        if ($update->percentSuccess() > 90)  {
+                            Cache::forever('last_updated_at', $update->finished_at);
+                        }
+
+                        // Send report update.
+                        foreach (config('repositories.support_emails', []) as $recipient) {
+                            Mail::to($recipient)->queue(new RepositoriesUpdated($update));
+                        }
+                    }
                 });
 
-            Repository::chunk(500, function ($repositories) use ($haystack) {
+            $repositories->chunk(500, function ($repositories) use ($haystack) {
                 foreach ($repositories as $repository) {
                     $this->comment("Adding repository to the stack {$repository->url}");
                     $haystack->addJob(new StackableUpdateRepositoryData($repository));
@@ -63,6 +94,7 @@ class UpdateRepositoriesCommand extends Command
 
             $haystack->dispatch();
 
+            $this->newLine();
             $this->comment('Finished stacking repositories for update.');
         }
 

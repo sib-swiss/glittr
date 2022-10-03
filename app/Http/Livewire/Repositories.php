@@ -36,6 +36,8 @@ class Repositories extends Component
      */
     public $grouped_tags = [];
 
+    public $max_tags;
+
     public $search;
 
     public $per_page;
@@ -65,6 +67,8 @@ class Repositories extends Component
         if (! $this->per_page) {
             $this->per_page = config('repositories.default_per_page', 20);
         }
+
+        $this->max_tags = config('repositories.max_tags', 10);
 
         $categories = Category::with(['tags' => function ($query) {
             $query->ordered()->withCount('repositories');

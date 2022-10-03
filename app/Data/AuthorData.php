@@ -2,6 +2,7 @@
 
 namespace App\Data;
 
+use App\Utils;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Optional;
 
@@ -25,9 +26,11 @@ class AuthorData extends Data
 
     public static function fromGithub(array $userData): static
     {
+        $name = $userData['name'] ?? $userData['login'];
+
         return new self(
             remote_id: isset($userData['id']) ? strval($userData['id']) : null,
-            name: $userData['login'] ?? '',
+            name: $name,
             url: $userData['html_url'] ?? '',
             display_name: $userData['name'] ?? '',
             location: $userData['location'] ?? '',
@@ -37,7 +40,7 @@ class AuthorData extends Data
             bio: $userData['bio'] ?? '',
             avatar_url: $userData['avatar_url'] ?? '',
             twitter_username: $userData['twitter_username'] ?? '',
-            website: $userData['blog'] ?? '',
+            website: $userData['blog'] ? Utils::ensureUrl($userData['blog']) : '',
         );
     }
 
@@ -55,7 +58,7 @@ class AuthorData extends Data
             bio: $userData['bio'] ?? '',
             avatar_url: $userData['avatar_url'] ?? '',
             twitter_username: $userData['twitter'] ?? '',
-            website: $userData['website_url'] ?? '',
+            website: $userData['website_url'] ? Utils::ensureUrl($userData['website_url']) : '',
         );
     }
 }

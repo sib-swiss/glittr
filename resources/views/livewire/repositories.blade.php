@@ -156,7 +156,7 @@
                             </div>
                             <div class="@if(!$repository->author) hidden @endif  border-t border-b  lg:table-cell order-last lg:order-none col-span-2 lg:col-span-1 py-4 lg:py-2 px-2  lg:border-t-0 lg:align-middle bg-gray-50 lg:bg-transparent">
                                 @if ($repository->author)
-                                    <div class="lg:hid8en text-xs font-medium text-gray-600 tracking-wide uppercase mb-1">{{ __('Author') }}</div>
+                                    <div class="lg:hidden text-xs font-medium text-gray-600 tracking-wide uppercase mb-1">{{ __('Author') }}</div>
                                     <div class="font-bold tracking-tight">
                                         {{ $repository->author->display_name }}
                                     </div>
@@ -176,16 +176,22 @@
                                     </div>
                                 @endif
                             </div>
-                            <div class="lg:table-cell bg-gray-50 lg:bg-transparent order-last lg:order-none col-span-2 lg:col-span-1 p-2 lg:border-b lg:align-middle">
-                                <div class="inline-flex flex-wrap">
-                                    @foreach($repository->tags as $tag)
-                                    <span class="mr-2 my-1 tag-category-{{ $tag->category_id}} text-sm font-medium tracking-wide border rounded py-1 px-2 bg-category-color/10 text-category-color border-category-color">
-                                        {{ $tag->name }}
-                                    </span>
+                            <div class="lg:table-cell lg:w-80 bg-gray-50 lg:bg-transparent order-last lg:order-none col-span-2 lg:col-span-1 p-2 lg:border-b lg:align-middle">
+                                <div class="inline-flex flex-wrap" x-data="{ more: false }">
+                                    @foreach ($repository->tags as $index => $tag)
+                                        <span @if (($index + 1) > $max_tags) x-show="more" x-transition @endif class="mr-2 my-1 tag-category-{{ $tag->category_id}} text-sm font-medium tracking-wide border rounded py-1 px-2 bg-category-color/10 text-category-color border-category-color">
+                                            {{ $tag->name }}
+                                        </span>
                                     @endforeach
+
+                                    @if ($repository->tags->count() > $max_tags)
+                                        <button class="underline text-blue-500 hover:text-blue-600 text-sm font-semibold p-2" x-cloak type="button" x-show="!more" @click="more = true">
+                                            {{ __('+ :nb more', ['nb' => ($repository->tags->count() - $max_tags)])}}
+                                        </button>
+                                    @endif
                                 </div>
                             </div>
-                            <div class="lg:table-cell order-2 lg:order-none col-span-2 lg:col-span-1 p-2 lg:border-b lg:align-middle">
+                            <div class="lg:table-cell lg:w-32 order-2 lg:order-none col-span-2 lg:col-span-1 p-2 lg:border-b lg:align-middle">
                                 @if ($repository->stargazers)
                                 <div class="flex items-center space-x-2">
                                     <x-heroicon-o-star class="w-4 h-4 text-yellow-500" />
@@ -193,7 +199,7 @@
                                 </div>
                                 @endif
                             </div>
-                            <div class="lg:table-cell order-3 lg:order-none p-2 lg:border-b lg:align-middle">
+                            <div class="lg:table-cell lg:w-32 order-3 lg:order-none p-2 lg:border-b lg:align-middle">
                                 <div class="lg:hidden text-xs font-medium tracking-wide text-gray-400 uppercase">{{ __('Days since last push') }}</div>
                                 @if ($repository->last_push)
                                     <div class="flex items-center space-x-2">
@@ -204,7 +210,7 @@
                                     -
                                 @endif
                             </div>
-                            <div class="lg:table-cell order-3 p-2 lg:order-none lg:border-b lg:align-middle font-semibold lg:text-left text-right">
+                            <div class="lg:table-cell lg:w-32 order-3 p-2 lg:order-none lg:border-b lg:align-middle font-semibold lg:text-left text-right">
                                 <div class="lg:hidden text-xs font-medium tracking-wide text-gray-400 uppercase">{{ __('License') }}</div>
                                 {{ $repository->license ?? '-' }}
                             </div>
@@ -246,7 +252,7 @@
                     </button>
                 </div>
             </div>
-            <div class="flex-1  overflow-y-auto">
+            <div class="flex-1  overflow-y-auto space-y-4">
                 @foreach($grouped_tags as $cid => $category)
                     <div class="tag-category-{{ $cid }} ">
                         <label for="filter-category-{{ $cid }}" class="cursor-pointer p-4 border-t border-b border-category-color bg-category-color/10 text-category-color text-sm font-semibold flex items-center">
@@ -256,7 +262,7 @@
                                 {{ $category['category']['total'] }}
                             </span>
                         </label>
-                        <div class="grid grid-cols-1">
+                        <div class="grid grid-cols-{{ config('repositories.topics_filter_columns', 1) }}">
                             @foreach($category['tags'] as $tagIndex => $tag)
                                 <label
                                     for="filter-tag-{{ $tagIndex }}"

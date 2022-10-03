@@ -106,6 +106,11 @@ class Repository extends Model
             $column = 'authors.display_name';
         }
 
+        if ($column == 'last_push') {
+            // Number of days so invert the direction (datetime)
+            $direction = $direction == 'asc' ? 'desc' : 'asc';
+        }
+
         $query->orderBy($column, $direction);
     }
 

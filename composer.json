@@ -18,7 +18,7 @@
         "league/csv": "^9.8",
         "livewire/livewire": "^2.5",
         "mexitek/phpcolors": "dev-master",
-        "sammyjo20/laravel-haystack": "^0.7.6",
+        "sammyjo20/laravel-haystack": "^0.8.4",
         "spatie/eloquent-sortable": "^4.0",
         "spatie/laravel-data": "^2.0",
         "spatie/url": "^2.1"

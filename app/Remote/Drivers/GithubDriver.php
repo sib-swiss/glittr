@@ -60,7 +60,7 @@ class GithubDriver extends Driver
             $userData = $this->getClient()->user()->show($username);
         }
 
-        if (isset($userData['name']) && isset($userData['login'])) {
+        if (isset($userData['login'])) {
             return AuthorData::fromGithub($userData);
         }
 

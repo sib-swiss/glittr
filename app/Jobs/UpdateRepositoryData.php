@@ -21,6 +21,23 @@ class UpdateRepositoryData implements ShouldQueue
      */
     public $repository;
 
+    /**
+     * Number of allowed tries
+     *
+     * @var int
+     */
+    public $tries = 3;
+
+    /**
+     * Calculate the number of seconds to wait before retrying the job.
+     *
+     * @return array
+     */
+    public function backoff()
+    {
+        return [10, 30, 60];
+    }
+
     public function __construct(Repository $repository)
     {
         $this->repository = $repository;

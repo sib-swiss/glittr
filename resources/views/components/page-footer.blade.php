@@ -1,6 +1,7 @@
-<footer {!! $attributes->merge(['class' => 'bg-gray-100 border-t py-8 lg:py-12 mt-4']) !!}>
+<footer {!! $attributes->merge(['class' => 'bg-gray-100 border-t py-4 mt-4']) !!}>
     <div class="container grid items-end grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 ">
         <div>
+            <h3 class="text-primary mb-1 uppercase font-semibold tracking-wide text-sm">{{ __('About') }}</h3>
             <div class="prose prose-sm max-w-none leading-tight">
                 <p>
                     <strong>{{ config('app.name') }}</strong> is a curated list of bioinformatics training material. All material is:
@@ -17,18 +18,25 @@
         </div>
         <div class="flex flex-col text-center lg:text-right items-center lg:items-end space-y-2">
             @if (config('repositories.repository_link', '') != '')
-                <div class="prose prose-sm">
-                    <p><a class="font-semibold" href="{{ config('repositories.repository_link') }}" target="_blank">Code source</a> for this application</p>
+                <div>
+                    <h3 class="text-primary uppercase font-semibold tracking-wide text-sm">{{ __('Source') }}</h3>
+                    <div class="prose prose-sm">
+                        <p><a class="font-semibold" href="{{ config('repositories.repository_link') }}" target="_blank">Code source</a> for this application is available on github.</p>
+                    </div>
                 </div>
             @endif
             @if ($last_updated_at)
-                <div class="prose prose-sm">
-                    <p><strong>Last updated:</strong> {{ $last_updated_at }}</p>
+                <div>
+                    <h3 class="text-primary uppercase font-semibold tracking-wide text-sm">{{ __('Data last updated') }}</h3>
+                    <div class="prose prose-sm">
+                        <p>{{ $last_updated_at }}</p>
+                    </div>
                 </div>
             @endif
-            <div>
-                <img src="{{ url('/sib-mark.svg') }}" class="max-w-full h-6" />
-            </div>
+        </div>
+        <div class="col-span-2 text-center border-t pt-4">
+            <img src="{{ url('/sib-mark.svg') }}" class="inline-block max-w-full h-6" />
         </div>
     </div>
+
 </footer>
