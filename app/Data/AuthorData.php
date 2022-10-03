@@ -30,9 +30,9 @@ class AuthorData extends Data
 
         return new self(
             remote_id: isset($userData['id']) ? strval($userData['id']) : null,
-            name: $name,
+            name: $userData['login'],
             url: $userData['html_url'] ?? '',
-            display_name: $userData['name'] ?? '',
+            display_name: $name ?? '',
             location: $userData['location'] ?? '',
             type: $userData['type'] ?? '',
             company:  $userData['company'] ?? '',

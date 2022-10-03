@@ -13,7 +13,6 @@
         "laravel/framework": "^9.19",
         "laravel/jetstream": "^2.12",
         "laravel/sanctum": "^3.0",
-        "laravel/scout": "^9.4",
         "laravel/tinker": "^2.7",
         "league/csv": "^9.8",
         "livewire/livewire": "^2.5",

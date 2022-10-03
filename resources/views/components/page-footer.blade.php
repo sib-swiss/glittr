@@ -21,7 +21,7 @@
                 <div>
                     <h3 class="text-primary uppercase font-semibold tracking-wide text-sm">{{ __('Source') }}</h3>
                     <div class="prose prose-sm">
-                        <p><a class="font-semibold" href="{{ config('repositories.repository_link') }}" target="_blank" rel="noopener">Code source</a> for this application is available on github.</p>
+                        <p><a class="font-semibold" href="{{ config('repositories.repository_link') }}" target="_blank" rel="noopener">Code for this application is available on our github.</a></p>
                     </div>
                 </div>
             @endif
