@@ -138,7 +138,7 @@
                         <div class="lg:table-row border lg:border-b hover:bg-gray-50 bg-white grid grid-cols-2 {{ $loop->first ? 'mt-4' : 'mt-8' }}  lg:mt-0">
                             <div class="lg:table-cell order-1 lg:order-none col-span-2 lg:col-span-1 pt-4 lg:pt-2 p-2 lg:border-b lg:border-gray-200 lg:align-middle leading-tight">
                                 <div class="flex space-x-2">
-                                    <a class="text-blue-500 hover:text-blue-600 text-lg font-bold tracking-tight underline flex items-center space-x-1" href="{{ $repository->url }}" target="_blank">
+                                    <a class="text-blue-500 hover:text-blue-600 text-lg font-bold tracking-tight underline flex items-center space-x-1" href="{{ $repository->url }}" target="_blank" rel="noopener">
                                         <span>{{ $repository->name }}</span>
                                         <x-heroicon-m-arrow-top-right-on-square class="w-3 h-3" />
                                     </a>
@@ -149,7 +149,7 @@
                             </div>
                             <div class="@if(!$repository->website) hidden @endif mb-2 lg:mb-0 lg:table-cell order-4 lg:order-none col-span-2 lg:col-span-1 p-2 lg:border-b lg:align-middle">
                                 @if ($repository->website != "")
-                                    <a class="block text-center lg:inline-block text-sm uppercase tracking-wider py-2 px-4 rounded bg-blue-500 hover:bg-blue-700 text-white" href="{{ $repository->website }}" target="_blank">
+                                    <a class="block text-center lg:inline-block text-sm uppercase tracking-wider py-2 px-4 rounded bg-blue-500 hover:bg-blue-700 text-white" href="{{ $repository->website }}" target="_blank" rel="noopener">
                                         <span>{{ __('Website') }}</span>
                                     </a>
                                 @endif
@@ -162,13 +162,13 @@
                                     </div>
                                     <div class="flex space-x-2">
                                         @if ($repository->author->url != "")
-                                            <a class="text-sm text-blue-500 hover:text-blue-700 underline flex items-center space-x-1" href="{{ url($repository->author->url) }}" target="_blank">
+                                            <a class="text-sm text-blue-500 hover:text-blue-700 underline flex items-center space-x-1" href="{{ url($repository->author->url) }}" target="_blank" rel="noopener">
                                                 <span>{{ __('Profile') }}</span>
                                                 <x-heroicon-m-arrow-top-right-on-square class="w-3 h-3" />
                                             </a>
                                         @endif
                                         @if ($repository->author->website != "")
-                                            <a class="text-sm text-blue-500 hover:text-blue-700 underline flex items-center space-x-1" href="{{ url($repository->author->website) }}" target="_blank">
+                                            <a class="text-sm text-blue-500 hover:text-blue-700 underline flex items-center space-x-1" href="{{ url($repository->author->website) }}" target="_blank" rel="noopener">
                                                 <span>{{ __('Website') }}</span>
                                                 <x-heroicon-m-arrow-top-right-on-square class="w-3 h-3" />
                                             </a>
