@@ -28,7 +28,7 @@
 
                 <div class="col-span-6">
                     <div class="text-sm border rounded p-4 mt-1 bg-blue-50 text-blue-500">
-                        Your name and email will only be used to keep you informed about these submit process.
+                        {{ __('Your name and email will only be used to keep you informed about these submit process.') }}
                     </div>
                 </div>
 
@@ -52,7 +52,7 @@
 
             <x-slot name="actions">
                 <x-jet-button>
-                    Submit
+                    {{ __('Submit') }}
                 </x-jet-button>
             </x-slot>
         </x-jet-form-section>
