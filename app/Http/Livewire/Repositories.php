@@ -74,11 +74,11 @@ class Repositories extends Component
         $this->split_tags_filter = config('repositories.split_tags_filter', false);
 
         $categories = Cache::tags(['categories', 'tags', 'repositories'])
-            ->remember('categories_list', (30 * 60), function() {
-            return Category::with(['tags' => function ($query) {
-                $query->ordered()->withCount('repositories');
-            }])->ordered()->get();
-        });
+            ->remember('categories_list', (30 * 60), function () {
+                return Category::with(['tags' => function ($query) {
+                    $query->ordered()->withCount('repositories');
+                }])->ordered()->get();
+            });
 
         foreach ($categories as $cat) {
             $this->categories[$cat->id] = [
