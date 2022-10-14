@@ -13,9 +13,9 @@
             <x-slot name="form">
                 <div class="col-span-6">
                     <x-jet-label for="url" value="{{ __('Repository url') }}" />
-                    <x-jet-input id="url" type="text" class="mt-1 block w-full" placeholder="" wire:model.defer="url" autofocus />
+                    <x-jet-input id="url" type="text" class="mt-1 block w-full" placeholder="https://github.com/..." wire:model.defer="url" autofocus />
                     <div class="text-sm font-light mt-1">
-                        <strong>https://github.com/... </strong> for example
+                        <strong>github.com</strong> or <strong>gitlab.com</strong> repository url
                     </div>
                     <x-jet-input-error for="url" class="mt-1" />
                 </div>
