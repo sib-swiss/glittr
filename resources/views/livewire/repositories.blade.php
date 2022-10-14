@@ -138,17 +138,24 @@
                     @foreach($repositories as $repository)
                         <div class="lg:table-row border lg:border-b hover:bg-gray-50 bg-white grid grid-cols-2 {{ $loop->first ? 'mt-4' : 'mt-8' }}  lg:mt-0">
                             <div class="lg:table-cell order-1 lg:order-none col-span-2 lg:col-span-1 pt-4 lg:pt-2 p-2 lg:border-b lg:border-gray-200 lg:align-middle leading-tight">
-                                <div class="flex space-x-2">
-                                    <a class="text-blue-500 hover:text-blue-600 text-lg font-bold tracking-tight underline flex items-center space-x-1" href="{{ $repository->url }}" target="_blank" rel="noopener">
+                                <div class="flex justify-between">
+                                    <a class="text-blue-500 hover:text-blue-600 text-base lg:text-lg font-bold tracking-tight underline mr-1 lg:mr-0" href="{{ $repository->url }}" target="_blank" rel="noopener">
                                         <span>{{ $repository->name }}</span>
-                                        <x-heroicon-m-arrow-top-right-on-square class="w-3 h-3" />
+                                        <x-heroicon-m-arrow-top-right-on-square class="w-3 h-3 inline" />
                                     </a>
+                                    @if ($repository->stargazers)
+                                    <div class="lg:hidden flex items-center justify-end space-x-1">
+                                        <span class="text-sm font-semibold">{{ $repository->stargazers }}</span>
+                                        <x-heroicon-o-star class="w-4 h-4 text-yellow-500" />
+                                    </div>
+                                    @endif
                                 </div>
-                                <div class="text-sm xl:text-base text-gray-600">
-                                    {{ $repository->description }}
+                                <div class="text-sm xl:text-base text-gray-600 flex justify-between">
+                                    <div>{{ $repository->description }}</div>
+
                                 </div>
                             </div>
-                            <div class="@if(!$repository->website) hidden @endif mb-2 lg:mb-0 lg:table-cell order-4 lg:order-none col-span-2 lg:col-span-1 p-2 lg:border-b lg:align-middle">
+                            <div class="@if(!$repository->website || $repository->website == '') hidden @endif mb-2 lg:mb-0 lg:table-cell order-4 lg:order-none col-span-2 lg:col-span-1 p-2 lg:border-b lg:align-middle">
                                 @if ($repository->website != "")
                                     <a class="block text-center lg:inline-block text-sm uppercase tracking-wider py-2 px-4 rounded bg-blue-500 hover:bg-blue-700 text-white" href="{{ $repository->website }}" target="_blank" rel="noopener">
                                         <span>{{ __('Website') }}</span>
@@ -192,7 +199,7 @@
                                     @endif
                                 </div>
                             </div>
-                            <div class="lg:table-cell lg:w-32 order-2 lg:order-none col-span-2 lg:col-span-1 p-2 lg:border-b lg:align-middle">
+                            <div class="hidden lg:table-cell lg:w-32 order-2 lg:order-none col-span-2 lg:col-span-1 p-2 lg:border-b lg:align-middle">
                                 @if ($repository->stargazers)
                                 <div class="flex items-center space-x-2">
                                     <x-heroicon-o-star class="w-4 h-4 text-yellow-500" />

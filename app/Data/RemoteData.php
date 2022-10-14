@@ -17,6 +17,7 @@ class RemoteData extends Data
         public string|Optional $title,
         public string|Optional $description,
         public string|Optional $license,
+        public string|Optional $author_id,
         #[Date]
         public CarbonImmutable|Optional $last_push,
     ) {
@@ -37,6 +38,7 @@ class RemoteData extends Data
             title: $repoData['name'] ?? '',
             description: $repoData['description'] ?? '',
             license: isset($repoData['license']['key']) && $repoData['license']['key'] ? $repoData['license']['key'] : Optional::create(),
+            author_id: isset($repoData['owner']['id']) ? $repoData['owner']['id'] : Optional::create(),
             last_push: isset($repoData['pushed_at']) && $repoData['pushed_at'] ? CarbonImmutable::parse($repoData['pushed_at']) : Optional::create(),
         );
     }
@@ -56,7 +58,8 @@ class RemoteData extends Data
             title: $repoData['name'] ?? '',
             description: $repoData['description'] ?? '',
             license: Optional::create(),
-            last_push: isset($repoData['last_activity_at']) && $repoData['last_activity_at'] ? CarbonImmutable::parse($repoData['last_activity_at']) : Optional::create() //last activity? not found better...
+            author_id: isset($repoData['owner']['id']) ? $repoData['owner']['id'] : Optional::create(),
+            last_push: isset($repoData['last_activity_at']) && $repoData['last_activity_at'] ? CarbonImmutable::parse($repoData['last_activity_at']) : Optional::create(), //last activity? not found better...
         );
     }
 }

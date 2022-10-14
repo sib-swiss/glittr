@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Data\RemoteData;
 use App\Facades\Remote;
 use App\Models\Repository;
 use Illuminate\Support\Carbon;
@@ -32,6 +33,7 @@ class RemoteUpdateRepository
         }
 
         if ($repository->api) {
+            /** @var RemoteData $data */
             $data = Remote::for($repository)->getData();
             if ($data) {
                 $repository->update([
@@ -39,8 +41,10 @@ class RemoteUpdateRepository
                     'refreshed_at' => Carbon::now(),
                 ]);
             }
-            // Attach author if not linked.
-            if (! $repository->author) {
+            if (! $repository->auhtor ||
+                ($data->author_id && $repository->author && $data->author_id != $repository->author->remote_id)
+            ) {
+                // Attach author if not linked.
                 $authorData = Remote::for($repository)->getAuthorData();
                 if ($authorData) {
                     $this->attachAuthorAction->execute($repository, $authorData);
