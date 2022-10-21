@@ -75,7 +75,7 @@ class StackableUpdateRepositoryData implements ShouldQueue, StackableJob
             $errors = $logger->errors;
             $errors[] = [
                 'repository_id' => $this->repository->id,
-                'url' => $this->repository->url,
+                'url' => (string) $this->repository->url,
                 'error' => $exception->getMessage(),
             ];
             $logger->errors = $errors;
