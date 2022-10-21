@@ -69,10 +69,7 @@ class SubmitForm extends Component
 
     public function save(): void
     {
-        // Additional manual tags checks.
-        if (empty($this->tags)) {
-            $this->addError('tags', 'You need to provide at least on tag.');
-        }
+
 
         foreach ($this->tags as $tagId) {
             if (! Tag::find($tagId)) {

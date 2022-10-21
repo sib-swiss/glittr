@@ -1,5 +1,9 @@
 <div>
     @if ($submitted)
+        <div class="text-center my-8 lg:my-12">
+            <h1 class="font-bold text-xl lg:text-2xl tracking-tighter text-primary">Thank you!</h1>
+            <div class="prose prose-lg mx-auto">Your submission was successfully sent.</div>
+        </div>
     @else
         <x-form-section submit="save">
             <x-slot name="title">
@@ -7,7 +11,17 @@
             </x-slot-name>
 
             <x-slot name="description">
-                {{ __('Description') }}
+                <div class="space-y-4">
+                    <p>
+                        First of all, great that you're considering to contribute. Anything that you can contribute is highly appreciated!
+                    </p>
+                    <p>
+                        With this form you can request you can submit a new repository to be added to the collection or updates information for a repository.
+                    </p>
+                    <p>
+                        If you just want to send us a general message, you can leave the <strong>Repository url</strong> field empty and just leave your message in the comment field.
+                    </p>
+                </div>
             </x-slot>
 
             <x-slot name="form">
@@ -21,7 +35,7 @@
                 </div>
 
                 <div class="col-span-6">
-                    <x-jet-label for="tags" value="{{ __('Proposed tags') }}" />
+                    <x-jet-label for="tags" value="{{ __('Proposed topics') }}" />
                     @livewire('tag-select')
                     <x-jet-input-error for="tags" class="mt-1" />
                 </div>
@@ -33,12 +47,16 @@
                 </div>
 
                 <div class="col-span-6 sm:col-span-3">
-                    <x-jet-label for="name" value="{{ __('Name') }}" />
+                    <div class="flex items-center">
+                        <x-jet-label for="name" value="{{ __('Name') }}" /> <span class="text-red-500 ml-1">*</span>
+                    </div>
                     <x-jet-input id="name" type="text" placeholder="Your name" class="mt-1 block w-full" wire:model.defer="name" />
                     <x-jet-input-error for="name" class="mt-1" />
                 </div>
                 <div class="col-span-6 sm:col-span-3">
-                    <x-jet-label for="email" value="{{ __('Email') }}" />
+                    <div class="flex items-center">
+                        <x-jet-label for="email" value="{{ __('Email') }}" /> <span class="text-red-500 ml-1">*</span>
+                    </div>
                     <x-jet-input id="email" type="email" class="mt-1 block w-full" placeholder="Your email" wire:model.defer="email" />
                     <x-jet-input-error for="email" class="mt-1" />
                 </div>

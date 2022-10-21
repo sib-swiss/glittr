@@ -29,11 +29,11 @@
         @endforeach
     </ul>
     <div class="text-sm font-light">
-        {{ __('The first tag will be used as the main tag for exports.') }}
+        {{ __('The first topic will be used as the main topic for exports.') }}
     </div>
     <div class="flex items-center space-x-2 mt-1">
         <x-select class="w-1/2 " wire:model="add" @keydown.enter="add">
-            <option>- {{ __('Select a tag') }} -</option>
+            <option>- {{ __('Select a topic') }} -</option>
             @foreach ($categories as $category)
             <optgroup label="{{ $category->name }}">
                     @foreach ($category->tags as $tag)
@@ -47,12 +47,12 @@
 
         <x-jet-button type="button" class="{{ $add > 0 ? 'opacity-100':'opacity-50' }} flex items-center justify-center space-x-1 w-1/2" wire:click.prevent="add">
             <x-heroicon-o-plus class="w-5 h-5" />
-            <span>Add this tag</span>
+            <span>Add this topic</span>
         </x-jet-button>
     </div>
     @if ($mainTag)
         <div class="text-sm my-2">
-            {{ __('The main tag for this repository will be: ') }}<strong>{{ $mainTag['category'] }}: {{ $mainTag['tag']}}</strong>
+            {{ __('The main topic for this repository will be: ') }}<strong>{{ $mainTag['category'] }}: {{ $mainTag['tag']}}</strong>
         </div>
     @endif
 </div>

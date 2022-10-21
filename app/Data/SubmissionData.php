@@ -10,9 +10,9 @@ class SubmissionData extends Data
 {
     public function __construct(
         #[StartsWith('http://', 'https://')]
-        public string $url,
+        public ?string $url,
         #[ArrayType]
-        public array $tags,
+        public ?array $tags,
         public string $name,
         public string $email,
         public ?string $comment,

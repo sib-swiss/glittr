@@ -40,5 +40,4 @@
     <!--<div class="text-center py-4">
         <img src="{{ url('/sib-mark.svg') }}" class="inline-block max-w-full h-6" />
     </div>-->
-
 </footer>
