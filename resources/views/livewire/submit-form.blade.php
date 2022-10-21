@@ -11,7 +11,7 @@
             </x-slot-name>
 
             <x-slot name="description">
-                <div class="space-y-4">
+                <div class="prose prose-sm">
                     <p>
                         First of all, great that you're considering to contribute. Anything that you can contribute is highly appreciated!
                     </p>
