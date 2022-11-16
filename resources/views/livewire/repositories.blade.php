@@ -26,16 +26,14 @@
     <div class="flex-1 2xl:mr-[360px] relative flex flex-col">
         <div class="container relative flex-1">
             {{-- Header --}}
-            <x-page-header>
+            <x-page-header :container="false">
                 <x-slot name="text">
                     <div class="pb-2">
                         <p>
                             Is your (favourite) course not in there? Is a link dead? Did you find a typo?<br />Any contribution to this list is highly appreciated!
                         </p>
-                        <div class="absolute -bottom-4 inset-x-0 flex items-center justify-center">
-                            <div class="w-2 h-2 bg-white"></div>
-                            <a class="bg-white inline-block font-semibold tracking-wide px-4 py-2 border border-primary text-primary transition no-underline hover:bg-primary uppercase hover:text-white" href="{{ route('contribute') }}">{{ __('Contribute') }}</a>
-                            <div class="w-2 h-2 bg-white"></div>
+                        <div class="flex items-center justify-center">
+                            <a class="btn-glittr" href="{{ route('contribute') }}"><span>{{ __('Contribute !') }}</span></a>
                         </div>
                     </div>
                 </x-slot>
@@ -187,7 +185,7 @@
                             <div class="lg:table-cell lg:w-80 bg-gray-50 lg:bg-transparent order-last lg:order-none col-span-2 lg:col-span-1 p-2 lg:border-b lg:align-middle">
                                 <div class="inline-flex flex-wrap" x-data="{ more: false }">
                                     @foreach ($repository->tags as $index => $tag)
-                                        <span @if (($index + 1) > $max_tags) x-show="more" x-transition @endif class="mr-2 my-1 tag-category-{{ $tag->category_id}} text-sm font-medium tracking-wide border rounded py-1 px-2 bg-category-color/10 text-category-color border-category-color">
+                                        <span @if (($index + 1) > $max_tags) x-show="more" x-transition @endif class="mr-2 my-1 tag-category-{{ $tag->category_id}} text-sm font-medium tracking-wide border rounded py-1 px-2 bg-category-color text-white border-category-color">
                                             {{ $tag->name }}
                                         </span>
                                     @endforeach
@@ -263,7 +261,7 @@
             <div class="flex-1  overflow-y-auto {{ $split_tags_filter ? 'space-y-4' : ''}}">
                 @foreach($grouped_tags as $cid => $category)
                     <div class="tag-category-{{ $cid }} ">
-                        <label for="filter-category-{{ $cid }}" class="cursor-pointer p-4 border-t border-b border-category-color bg-category-color/10 text-category-color text-sm font-semibold flex items-center">
+                        <label for="filter-category-{{ $cid }}" class="cursor-pointer p-4 border-t border-b border-category-color bg-category-color text-white text-sm font-semibold flex items-center">
                             <x-jet-checkbox id="filter-category-{{ $cid }}" wire:model="categories.{{ $cid }}.selected" />
                             <span class="mx-2">{{ $category['category']['name'] }}</span>
                             <span class="ml-auto font-bold">
