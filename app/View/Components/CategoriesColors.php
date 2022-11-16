@@ -34,9 +34,11 @@ class CategoriesColors extends Component
             $values = [];
             foreach (Category::all() as $cat) {
                 $color = new Color($cat->color);
+                /*
                 while (! $color->isDark()) {
                     $color = new Color($color->darken());
                 }
+                */
                 $values[$cat->id] = [
                     'hex' => $cat->color,
                     'rgb' => $color->getRgb(),
