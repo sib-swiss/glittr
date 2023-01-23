@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Repository;
 use App\Models\Tag;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -30,6 +31,13 @@ class Repositories extends Component
     public $categories = [];
 
     /**
+     * Licence list
+     *
+     * @var array
+     */
+    public $licenses = [];
+
+    /**
      * Grouped list of tags with count of filtered results
      *
      * @var array
@@ -48,7 +56,36 @@ class Repositories extends Component
 
     public $sort_direction;
 
-    protected $queryString = ['search', 'per_page', 'sort_by', 'sort_direction'];
+    public $show_filters = false;
+
+    // Columns filters
+    public $name;
+
+    public $author;
+
+    public $minStars;
+
+    public $maxStars;
+
+    public $minPush;
+
+    public $maxPush;
+
+    public $license;
+
+    protected $queryString = [
+        'search',
+        'per_page',
+        'sort_by',
+        'sort_direction',
+        'name',
+        'author',
+        'minStars',
+        'maxStars',
+        'minPush',
+        'maxPush',
+        'license',
+    ];
 
     protected $sortColumns = [
         'name',
@@ -72,7 +109,10 @@ class Repositories extends Component
 
         $this->max_tags = config('repositories.max_tags', 10);
         $this->split_tags_filter = config('repositories.split_tags_filter', false);
-
+        $licences = Repository::where('license', '!=', '')->orderBy('license', 'asc')->select('license')->distinct()->get();
+        foreach ($licences as $licence) {
+            $this->licenses[$licence->license] = $licence->license;
+        }
         $categories = Cache::tags(['categories', 'tags', 'repositories'])
             ->remember('categories_list', (30 * 60), function () {
                 return Category::with(['tags' => function ($query) {
@@ -133,6 +173,41 @@ class Repositories extends Component
         $this->updateGroupedTags();
     }
 
+    public function updatedName()
+    {
+        $this->updateGroupedTags();
+    }
+
+    public function updatedAuthor()
+    {
+        $this->updateGroupedTags();
+    }
+
+    public function updatedMinStars()
+    {
+        $this->updateGroupedTags();
+    }
+
+    public function updatedMaxStars()
+    {
+        $this->updateGroupedTags();
+    }
+
+    public function updatedMinPush()
+    {
+        $this->updateGroupedTags();
+    }
+
+    public function updatedMaxPush()
+    {
+        $this->updateGroupedTags();
+    }
+
+    public function updatedLicense()
+    {
+        $this->updateGroupedTags();
+    }
+
     public function updated($name, $value)
     {
         $splitted = explode('.', $name);
@@ -175,9 +250,11 @@ class Repositories extends Component
     public function render()
     {
         $repositories = Repository::with(['tags', 'author'])->enabled();
+        $repositories = $this->filterRepositories($repositories);
 
-        if ($this->search != '') {
-            $repositories->search($this->search);
+        // Display filters if any is set.
+        if ($this->name != '' || $this->author != '' || $this->minStars != '' || $this->maxStars != '' || $this->minPush != '' || $this->maxPush != '' || $this->license != '') {
+            $this->show_filters = true;
         }
 
         // Apply selected tags to selection.
@@ -215,18 +292,54 @@ class Repositories extends Component
         ]);
     }
 
+    protected function filterRepositories($repositories)
+    {
+        if ($this->search != '') {
+            $repositories->search($this->search);
+        }
+        if ($this->name != '') {
+            $repositories->where('repositories.name', 'like', '%'.$this->name.'%');
+        }
+        if ($this->author != '') {
+            $repositories->whereHas('author', function (Builder $query) {
+                $query->where('name', 'like', '%'.$this->author.'%')
+                ->orWhere('display_name', 'like', '%'.$this->author.'%');
+            });
+        }
+        if ($this->minStars != '' && intval($this->minStars) > 0) {
+            $repositories->where('stargazers', '>=', intval($this->minStars));
+        }
+        if ($this->maxPush != '' && intval($this->maxPush) >= 0) {
+            $lastPush = Carbon::now()->setHour(0)->subDays(intval($this->maxPush));
+            $repositories->where('last_push', '>=', $lastPush);
+        }
+        if ($this->license != '') {
+            $repositories->where('license', $this->license);
+        }
+
+        return $repositories;
+    }
+
     protected function updateGroupedTags()
     {
+        $searchMeta = implode('.', [
+            $this->search,
+            $this->name,
+            $this->author,
+            $this->minStars,
+            $this->maxStars,
+            $this->minPush,
+            $this->maxPush,
+            $this->license,
+        ]);
         $search = $this->search;
         // Keep in cache for 30 min.
-        [$countTags, $countCategories] = Cache::tags(['repositories', 'tags', 'categories'])->remember("count.{$this->search}", (60 * 30), function () use ($search) {
-            $ids = Repository::enabled();
-            if ($search != '') {
-                $ids->search($search);
-            }
+        [$countTags, $countCategories] = Cache::tags(['repositories', 'tags', 'categories'])->remember("count.{$searchMeta}", (60 * 30), function () {
+            $repositories = Repository::enabled();
+            $repositories = $this->filterRepositories($repositories);
 
             //Get tags filter counts
-            $ids = $ids->select('id')->get()->pluck('id')->toArray();
+            $ids = $repositories->select('id')->get()->pluck('id')->toArray();
 
             //Filter tags
             $countTags = Tag::select('id', 'category_id')

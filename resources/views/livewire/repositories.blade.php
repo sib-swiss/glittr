@@ -77,7 +77,7 @@
                     </div>
                 @endif
             </div>
-            @if(count($repositories) > 0)
+
                 <div  class="py-2 mt-2 flex flex-wrap justify-between items-center">
                     <div class="w-full lg:w-auto lg:flex-1 pb-2 lg:pb-0 lg:text-left text-center">
                         <h2 class="text-lg font-bold">
@@ -126,7 +126,9 @@
                         </div>
                     @endif
                 </div>
-                <div  class="repositories-list  lg:bg-white w-full lg:table lg:border lg:border-gray-200">
+                <div  class="repositories-list  lg:bg-white w-full lg:table lg:border lg:border-gray-200" x-data="{
+                    show_filters: @entangle('show_filters'),
+                }">
                     <div class="hidden lg:table-header-group">
                         <x-list.header title="{{ __('Repository') }}" sort_by='name' sortable current_sort_by="{{ $sort_by }}" current_sort_direction="{{ $sort_direction }}" />
                         <x-list.header title="" />
@@ -135,6 +137,45 @@
                         <x-list.header title="{{ __('Stargazers') }}" sort_by='stargazers' sortable current_sort_by="{{ $sort_by }}" current_sort_direction="{{ $sort_direction }}" />
                         <x-list.header title="{{ __('Days since last push') }}" sort_by='last_push' sortable current_sort_by="{{ $sort_by }}" current_sort_direction="{{ $sort_direction }}" />
                         <x-list.header title="{{ __('License') }}" sort_by='license' sortable current_sort_by="{{ $sort_by }}" current_sort_direction="{{ $sort_direction }}" />
+                    </div>
+                    <button class="lg:hidden items-center space-x-2 px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition flex text-sm w-full justify-center" x-on:click="show_filters = !show_filters">
+                        <span>{{ __('Advanced search') }}</span>
+                        <x-heroicon-o-chevron-down class="w-5 h-5 transition duration-200" x-cloak x-bind:class="{
+                            'transform rotate-180': show_filters,
+                            'transform rotate-0': !show_filters,
+                        }" />
+                    </button>
+                    <div class="lg:table-header-group grid grid-cols-2 gap-4 bg-gray-50 py-4 lg:p-0" :class="{
+                        'visible': show_filters,
+                        'hidden': !show_filters,
+                    }">
+                        <div class="lg:table-cell bg-gray-50 lg:border-b p-2 col-span-2">
+                            <label for="filterName" class="lg:hidden text-sm uppercase font-semibold tracking-wide">{{ __('Search by repository name') }}</label>
+                            <input type="text" id="filterName" wire:model.debounce.300ms="name" class="w-full border border-gray-300 rounded p-2" placeholder="{{ __('Search by name') }}" />
+                        </div>
+                        <div class="hidden lg:table-cell bg-gray-50 lg:border-b p-2"></div>
+                        <div class="lg:table-cell bg-gray-50 lg:border-b p-2 col-span-2">
+                            <label for="filterName" class="lg:hidden text-sm uppercase font-semibold tracking-wide">{{ __('Search by author') }}</label>
+                            <input type="text" id="filterAuthor" wire:model.debounce.300ms="author" class="w-full border border-gray-300 rounded p-2" placeholder="{{ __('Search by author') }}" />
+                        </div>
+                        <div class="hidden lg:table-cell bg-gray-50 lg:border-b p-2"></div>
+                        <div class="lg:table-cell bg-gray-50 lg:border-b p-2">
+                            <label for="filterMinStars" class="lg:hidden text-sm uppercase font-semibold tracking-wide">{{ __('Minimum stargazers') }}</label>
+                            <input type="number" id="filterMinStars" wire:model.debounce.300ms="minStars" min="0" class="w-24 border border-gray-300 rounded p-2" placeholder="{{ __('Min.') }}" />
+                        </div>
+                        <div class="lg:table-cell bg-gray-50 lg:border-b p-2">
+                            <label for="filterMaxPush" class="lg:hidden text-sm uppercase font-semibold tracking-wide">{{ __('Maximum days since last push') }}</label>
+                            <input type="number" id="filterMaxPush" wire:model.debounce.300ms="maxPush" min="0" class="w-24 border border-gray-300 rounded p-2" placeholder="{{ __('Max.') }}" />
+                        </div>
+                        <div class="lg:table-cell bg-gray-50 lg:border-b p-2 col-span-2">
+                            <label for="filterLicense" class="lg:hidden text-sm uppercase font-semibold tracking-wide">{{ __('License') }}</label>
+                            <select wire:model="license" class="w-full border border-gray-300 rounded p-2">
+                                <option value="">{{ __('All') }}</option>
+                                @foreach ($licenses as $license)
+                                    <option value="{{ $license }}">{{ $license }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                     @foreach($repositories as $repository)
                         <div class="lg:table-row border lg:border-b hover:bg-gray-50 bg-white grid grid-cols-2 {{ $loop->first ? 'mt-4' : 'mt-8' }}  lg:mt-0">
@@ -229,16 +270,17 @@
                 <div class="mt-4">
                     {{ $repositories->links() }}
                 </div>
-            @else
-                <div class="bg-orange-100 border border-orange-600 text-orange-600 p-4 mt-8 text-center">
-                    {{ __('No results matched your search: ') }}<strong>{{ $search }}</strong>
-                    <p>
-                        <button type="button" class="font-bold underline mt-2" @click.prevent="$wire.set('search', '')">
-                            {{ __('Reset search term') }}
-                        </button>
-                    </p>
-                </div>
-            @endif
+
+                @if (count($repositories) == 0)
+                    <div class="bg-orange-100 border border-orange-600 text-orange-600 mt-8 p-4 text-center">
+                        {{ __('No results matched your search: ') }}<strong>{{ $search }}</strong>
+                        <p>
+                            <button type="button" class="font-bold underline mt-2" @click.prevent="$wire.set('search', '')">
+                                {{ __('Reset search term') }}
+                            </button>
+                        </p>
+                    </div>
+                @endif
         </div>
         <x-page-footer>
 
