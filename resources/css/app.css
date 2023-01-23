@@ -11,12 +11,12 @@
         background-clip: text;
         -webkit-text-fill-color: rgba(0,0,0,0);
     }
-    .text-glittr:hover {
+    /*.text-glittr:hover {
         background: linear-gradient(160deg, rgba(33,33,33,1) 0%, rgba(58,134,255,1) 15%, rgba(131,56,236,1) 35%, rgba(255,0,110,1) 65%, rgba(251,86,7,1) 80%, rgba(255,190,11,1) 100%);
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: rgba(0,0,0,0);
-    }
+    }*/
     .btn-glittr {
         @apply text-base uppercase font-bold border-2 px-4 py-2 transition-all duration-300 no-underline;
         border-image: linear-gradient(90deg, rgba(33,33,33,1) 0%, rgba(58,134,255,1) 15%, rgba(131,56,236,1) 35%, rgba(255,0,110,1) 65%, rgba(251,86,7,1) 80%, rgba(255,190,11,1) 100%) 1;

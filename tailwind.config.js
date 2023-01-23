@@ -21,6 +21,18 @@ module.exports = {
             },
         },
         extend: {
+            backgroundImage: {
+                'gradient-conic': 'conic-gradient(var(--tw-gradient-stops))',
+            },
+            keyframes: {
+                disco: {
+                  '0%': { transform: 'translateY(-50%) rotate(0deg)' },
+                  '100%': { transform: 'translateY(-50%) rotate(360deg)' },
+                },
+            },
+            animation: {
+                disco: 'disco 4s linear infinite',
+            },
             colors: {
                 'primary': {  DEFAULT: '#E30613',  '50': '#FDA4A9',  '100': '#FC9096',  '200': '#FB6871',  '300': '#FA414C',  '400': '#F91926',  '500': '#E30613',  '600': '#AC050E',  '700': '#76030A',  '800': '#3F0205',  '900': '#080001'},
                 'category-color': 'rgb(var(--category-color) / <alpha-value>)',

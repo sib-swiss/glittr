@@ -6,18 +6,17 @@ use Illuminate\View\Component;
 
 class GuestLayout extends Component
 {
-
     /**
      * Has Sidebar
      *
-     * @var boolean
+     * @var bool
      */
     public $sidebar = false;
 
     /**
      * Create the component
      *
-     * @param boolean $sidebar
+     * @param  bool  $sidebar
      * @return void
      */
     public function __construct($sidebar = false)
