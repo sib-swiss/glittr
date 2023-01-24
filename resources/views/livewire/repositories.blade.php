@@ -34,7 +34,7 @@
                         </p>
                         <div class="flex items-center justify-center">
                             <a class="relative overflow-hidden rounded-lg text-base uppercase no-underline px-20 py-6 bg-white group font-bold" href="{{ route('contribute') }}">
-                                <span class="absolute inset-[3px] z-10 grid place-items-center rounded-lg bg-white group-hover:bg-opacity-95 duration-200 transition">{{ __('Contribute !') }}</span>
+                                <span class="absolute inset-[3px] z-10 grid place-items-center rounded-lg bg-white group-hover:bg-opacity-95 duration-200 transition mix-blend-screen">{{ __('Contribute !') }}</span>
                                 <span aria-hidden class="absolute inset-0 z-0 scale-x-[2.0] blur before:absolute before:inset-0 before:top-1/2 before:aspect-square before:-translate-y-1/2 before:rotate-0 before:animate-disco  before:bg-gradient-conic before:from-glittr-violet before:via-glittr-orange before:to-glittr-yellow" />
                             </a>
                         </div>
