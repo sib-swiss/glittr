@@ -98,17 +98,17 @@ class Repositories extends Component
     public function mount()
     {
         if (! $this->sort_by) {
-            $this->sort_by = config('repositories.default_sort_by', 'name');
+            $this->sort_by = config('glittr.default_sort_by', 'name');
         }
         if (! $this->sort_direction) {
-            $this->sort_direction = config('repositories.default_sort_direction', 'asc');
+            $this->sort_direction = config('glittr.default_sort_direction', 'asc');
         }
         if (! $this->per_page) {
-            $this->per_page = config('repositories.default_per_page', 20);
+            $this->per_page = config('glittr.default_per_page', 20);
         }
 
-        $this->max_tags = config('repositories.max_tags', 10);
-        $this->split_tags_filter = config('repositories.split_tags_filter', false);
+        $this->max_tags = config('glittr.max_tags', 10);
+        $this->split_tags_filter = config('glittr.split_tags_filter', false);
         $licences = Repository::where('license', '!=', '')->orderBy('license', 'asc')->select('license')->distinct()->get();
         foreach ($licences as $licence) {
             $this->licenses[$licence->license] = $licence->license;
@@ -119,7 +119,6 @@ class Repositories extends Component
                     $query->ordered()->withCount('repositories');
                 }])->ordered()->get();
             });
-
         foreach ($categories as $cat) {
             $this->categories[$cat->id] = [
                 'name' => $cat->name,

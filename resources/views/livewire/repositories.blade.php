@@ -28,11 +28,11 @@
             {{-- Header --}}
             <x-page-header :container="false">
                 <x-slot name="text">
-                    <div class="pb-2">
-                        <p>
+                    <div class="pb-2 lg:flex lg:items-center lg:justify-end lg:space-x-4 text-center space-y-4 lg:space-y-0">
+                        <p class="prose prose-sm lg:prose lg:text-right leading-tight lg:leading-tight">
                             Is your (favourite) course not in there? Is a link dead? Did you find a typo?<br />Any contribution to this list is highly appreciated!
                         </p>
-                        <div class="flex items-center justify-center">
+                        <div class="flex items-center justify-center lg:justify-end">
                             <a class="relative overflow-hidden rounded-lg text-base uppercase no-underline px-20 py-6 bg-white group font-bold" href="{{ route('contribute') }}">
                                 <span class="absolute inset-[3px] z-10 grid place-items-center rounded-lg bg-white group-hover:bg-opacity-95 duration-200 transition mix-blend-screen">{{ __('Contribute !') }}</span>
                                 <span aria-hidden class="absolute inset-0 z-0 scale-x-[2.0] blur before:absolute before:inset-0 before:top-1/2 before:aspect-square before:-translate-y-1/2 before:rotate-0 before:animate-disco  before:bg-gradient-conic before:from-glittr-violet before:via-glittr-orange before:to-glittr-yellow" />
@@ -113,13 +113,13 @@
                         </x-select>
                     </div>
 
-                    @if (count(config('repositories.paginations', [])) > 0)
+                    @if (count(config('glittr.paginations', [])) > 0)
                         <div class="ml-4 flex flex-col items-end text-right">
                             <label for="paginationSelect" class="text-sm uppercase font-semibold tracking-wide">
                                 {{ __('Per page') }}
                             </label>
                             <x-select id="paginationSelect" class="" wire:model="per_page">
-                                @foreach (config('repositories.paginations') as $pagination_nb)
+                                @foreach (config('glittr.paginations') as $pagination_nb)
                                     <option value="{{ $pagination_nb }}">{{ $pagination_nb }}</option>
                                 @endforeach
                             </x-select>
@@ -304,7 +304,7 @@
                 </div>
             </div>
             <div class="flex-1  overflow-y-auto {{ $split_tags_filter ? 'space-y-4' : ''}}">
-                @foreach($grouped_tags as $cid => $category)
+                @foreach($grouped_tags->sortBy('order') as $cid => $category)
                     <div class="tag-category-{{ $cid }} ">
                         <label for="filter-category-{{ $cid }}" class="cursor-pointer p-4 border-t border-b border-category-color bg-category-color text-white text-sm font-semibold flex items-center">
                             <x-jet-checkbox id="filter-category-{{ $cid }}" wire:model="categories.{{ $cid }}.selected" />

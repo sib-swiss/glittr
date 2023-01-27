@@ -17,7 +17,7 @@ class CreateSubmission
             $submission->tags()->sync($submissionData->tags);
 
             //Send email
-            foreach (config('repositories.notification_emails', []) as $email) {
+            foreach (config('glittr.notification_emails', []) as $email) {
                 Mail::to($email)->send(new SubmissionAdded($submission));
             }
         }

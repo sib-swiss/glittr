@@ -1,0 +1,172 @@
+aedin/PCAworkshop,Statistics
+aedin/scRNAseqBasicWorkflow,"Single-cell sequencing, Transcriptomics, RNA-seq"
+amandamiotto/HackyHourBookmarks,General
+andrewjahn/AndysBrainBook,"Image analysis, Unix/Linux"
+awesome-workshop/docker-singularity-hats,"Containerization, Docker, Singularity"
+b-rodrigues/rap4mads,"R, Data science"
+bhklab/bioc2020workshop,R
+Bioconductor/bioconductor_docker,"R, Containerization, Docker"
+biocorecrg/CoursesCRG_Containers_Nextflow_May_2022,"Workflows, Nextflow"
+biocorecrg/CRG_R_tidyverse_2021,R
+biocorecrg/CRG_RIntroduction_2021,R
+biocorecrg/ELIXIR_containers_nextflow,"Workflows, Nextflow"
+biocorecrg/RNAseq_course_2019,"Transcriptomics, RNA-seq"
+biocorecrg/SIB_course_nextflow_Nov_2021,"Workflows, Nextflow"
+BiodataAnalysisGroup/intro-to-cwl-docker,"Workflows, CWL, Containerization, Docker"
+biodatascience/compbio,General
+bioinformatics-ca/AUR_2021,R
+bioinformatics-ca/CAN_2021,"Genomics, Single-cell sequencing, Transcriptomics, Enrichment analysis, Multiomics"
+bioinformatics-ca/EPI_2021,"Epidemiology, Genomics"
+bioinformatics-ca/HTG_2021,"Genomics, Next generation sequencing"
+bioinformatics-ca/IDE_2021,Epidemiology
+bioinformatics-ca/INR_2021,R
+bioinformatics-ca/MIC_2021,"Metagenomics, Microbiology"
+bioinformatics-ca/MLE_2021,"Machine learning, Statistics"
+bioinformatics-ca/PNA_2021,"Transcriptomics, Enrichment analysis"
+bioinformatics-ca/RNA_2021,"Transcriptomics, RNA-seq"
+bioinformatics-core-shared-training/Bulk_RNASeq_Course_Nov21,"Transcriptomics, RNA-seq"
+bioinformatics-core-shared-training/cruk-summer-school-2020,"Next generation sequencing, Genomics"
+bioinformatics-core-shared-training/experimental-design,Statistics
+bioinformatics-core-shared-training/IntroductionToStats,Statistics
+bioinformatics-core-shared-training/linear-models-r,"R, Statistics"
+bioinformatics-core-shared-training/Managing-your-research-data,Data management
+bioinformatics-core-shared-training/nextflow_september_2021,"Workflows, Nextflow"
+bioinformatics-core-shared-training/Quantitative-ChIPseq-Workshop,ChIP-seq
+bioinformatics-core-shared-training/UnivCambridge_ScRnaSeq_Nov2021,"Single-cell sequencing, Transcriptomics, RNA-seq"
+bovreg/nf-workshop20,"Workflows, Nextflow"
+bradleyboehmke/data-science-learning-resources,General
+bradleyboehmke/Intro-to-R-Bootcamp,R
+carpentries-incubator/bioc-project,R
+carpentries-incubator/bioc-rnaseq,"Transcriptomics, RNA-seq"
+carpentries-incubator/capstone-novice-spreadsheet-biblio,Data management
+carpentries-incubator/docker-introduction,"Containerization, Docker"
+carpentries-incubator/fair-bio-practice,"FAIR data, Reproducibility, Data management"
+carpentries-incubator/fair-for-leaders,"FAIR data, Data management"
+carpentries-incubator/hpc-intro,High performance computing
+carpentries-incubator/high-dimensional-stats-r,"R, Statistics"
+carpentries-incubator/introduction-to-conda-for-data-scientists,"Python, Reproducibility"
+carpentries-incubator/machine-learning-novice-python,"Machine learning, Statistics"
+carpentries-incubator/machine-learning-novice-sklearn,"Machine learning, Statistics"
+carpentries-incubator/python-interactive-data-visualizations,"Python, Data visualization"
+carpentries-incubator/singularity-introduction,"Containerization, Singularity"
+carpentries-incubator/snakemake-novice-bioinformatics,"Workflows, Snakemake"
+carpentries-incubator/statistical-thinking-public-health,Statistics
+carpentries-incubator/workflows-nextflow,"Workflows, Nextflow"
+carpentries-incubator/workflows-snakemake,"Workflows, Snakemake"
+cmirzayi/EpiForBioWorkshop2020,Epidemiology
+ColauttiLab/RCrashCourse_Book,R
+CompEpigen/BasicR,R
+crazyhottommy/getting-started-with-genomics-tools-and-resources,General
+csgillespie/efficientR,R
+cxli233/Online_R_learning,R
+datacarpentry/shell-genomics,Unix/Linux
+datacarpentry/wrangling-genomics,"Next generation sequencing, Genomics"
+DavisLaboratory/GenesetAnalysisWorkflow,"R, Enrichment analysis"
+DavisLaboratory/GeoMXAnalysisWorkflow,Spatial transcriptomics
+dgrtwo/tidy-text-mining,R
+djnavarro/rbook,"R, Statistics"
+DukeStatSci/introds,"R, Data science"
+ELIXIR-Belgium/rdm-guide,Data management
+elixir-europe/rdmkit,Data management
+elixir-oslo/fair-dm-lifesci-june-2022,FAIR data
+FAIRplus/the-fair-cookbook,"FAIR data, Reproducibility"
+fastai/course20,"Machine learning, Statistics"
+fmicompbio/adv_scrnaseq_2020,"Single-cell sequencing, Transcriptomics, RNA-seq"
+galaxyproject/training-material,"General, Genome assembly, Epigenetics, Genome annotation, Metagenomics, Next generation sequencing, Statistics, Machine learning, Transcriptomics, RNA-seq, Variant analysis, Data visualization"
+hadley/adv-r,R
+hadley/r4ds,"R, Data science"
+haibol2016/ATACseqQCWorkshop,"Epigenetics, ATAC-seq"
+hbctraining/Accessing_public_genomic_data,"Next generation sequencing, FAIR data, Genomics"
+hbctraining/DGE_workshop_salmon_online,"Transcriptomics, RNA-seq"
+hbctraining/Intro-to-ChIPseq,ChIP-seq
+hbctraining/Intro-to-R-flipped,R
+hbctraining/Intro-to-rnaseq-hpc-salmon-flipped,"Transcriptomics, RNA-seq"
+hbctraining/Intro-to-shell-flipped,Unix/Linux
+hbctraining/reproducibility-tools,"Reproducibility, Version control, Git, R, Rmarkdown"
+hbctraining/scRNA-seq_online,"Single-cell sequencing, Transcriptomics, RNA-seq"
+hbctraining/Training-modules,"General, Python, R, Rmarkdown, Unix/Linux, Version control, Git, Enrichment analysis, FAIR data, Data visualization, Variant analysis, RNA-seq, Transcriptomics"
+hukai916/IntegratedChIPseqWorkshop,ChIP-seq
+ics80-fa21/website,"R, Data science"
+ids-s1-20/website,"R, Data science"
+ISUgenomics/bioinformatics-workbook,"General, Unix/Linux, Data management, Transcriptomics, RNA-seq, Genome assembly, Genome annotation, Comparative genomics, Variant analysis, Metagenomics, ATAC-seq, Epigenetics, Data visualization, Workflows, Nextflow"
+jakevdp/PythonDataScienceHandbook,Python
+jakevdp/WhirlwindTourOfPython,Python
+jennybc/purrr-tutorial,R
+jmacdon/Bioc2020Anno,"R, Genome annotation"
+jmacdon/Bioc2022Anno,"R, Genome annotation"
+JoachimGoedhart/DataViz-protocols,"R, Data visualization"
+jsta/r-docker-tutorial,"R, Containerization, Docker"
+jthomasmock/rmd-nhs,"R, Rmarkdown"
+KatharinaHoff/BRAKER-TSEBRA-Workshop,Genome annotation
+korbinib/DMP-writing-workshop,Data management
+kstreet13/bioc2020trajectories,"Single-cell sequencing, Transcriptomics, RNA-seq"
+laderast/bash_for_bioinformatics,Unix/Linux
+laderast/gradual_shiny,"R, Shiny"
+laderast/RBootcamp,R
+LeidenCBC/MGC-BioSB-SingleCellAnalysis2021,"Single-cell sequencing, Transcriptomics, RNA-seq"
+liubuntu/Bioc2020Rcwl,"R, CWL"
+matloff/fasteR,R
+mcalgaro93/benchdamicWorkshop,"Metagenomics, Microbiology"
+melbournebioinformatics/MelBioInf_docs,"General, Unix/Linux, Data management, Transcriptomics, RNA-seq, Genomics, Version control, Git"
+melbournebioinformatics/r-intro-biologists,R
+moderndive/ModernDive_book,"R, Statistics, Data science"
+mtmorgan/HCABiocTraining,"Single-cell sequencing, Transcriptomics, RNA-seq"
+NBISweden/excelerate-scRNAseq,"Single-cell sequencing, Transcriptomics, RNA-seq"
+NBISweden/single-cell_sib_scilifelab_2021,"Single-cell sequencing, Transcriptomics, RNA-seq"
+nbisweden/workshop-scRNAseq,"Single-cell sequencing, Transcriptomics, RNA-seq"
+ndphillips/ThePiratesGuideToR,R
+ngs-docs/2021-august-remote-computing,High performance computing
+Openscapes/quarto-website-tutorial,"R, Quarto"
+oscarbaruffa/BigBookofR,R
+PapenfussLab/IntroductionToGenomicsWorkshop,"Genomics, Next generation sequencing"
+PlantsAndPython/PlantsAndPython,Python
+rafalab/dsbook,"R, Data science"
+rmcelreath/stat_rethinking_2022,Statistics
+rstudio-conf-2022/art-from-code,"R, Data visualization"
+rstudio-conf-2022/build-tidy-tools,R
+rstudio-conf-2022/get-started-quarto,"R, Quarto"
+rstudio-conf-2022/get-started-shiny,"R, Shiny"
+rstudio-conf-2022/ggplot2-graphic-design,"R, Data visualization"
+rstudio-conf-2022/intro-to-tidyverse,R
+rstudio-conf-2022/shiny-prod-apps,"R, Shiny"
+rstudio-conf-2022/teach-ds,"R, Data science"
+rstudio-conf-2022/wtf-rstats,R
+rstudio-education/datascience-box,"R, Data science"
+rstudio/rmarkdown-book,"R, Rmarkdown"
+SaskiaFreytag/biocommons-r-intro,R
+sateeshperi/nextflow_varcal,"Workflows, Nextflow, Variant analysis"
+seandavi/ITR,R
+seqeralabs/nf-training-public,"Workflows, Nextflow"
+sib-swiss/advanced-statistics,Statistics
+sib-swiss/containers-introduction-training,"Containerization, Docker, Singularity"
+sib-swiss/enrichment-analysis-training,"R, Enrichment analysis"
+sib-swiss/first-steps-with-python-training,Python
+sib-swiss/first-steps-with-R-training,R
+sib-swiss/intermediate-python-training,Python
+sib-swiss/intro-bayesian-statistics-training,Statistics
+sib-swiss/intro-machine-learning-training,"Machine learning, Statistics"
+sib-swiss/introduction-to-statistics-with-python-training,"Statistics, Python"
+sib-swiss/Introduction-to-statistics-with-R,"Statistics, R"
+sib-swiss/NGS-introduction-training,"Next generation sequencing, Genomics"
+sib-swiss/NGS-variants-training,"Next generation sequencing, Variant analysis"
+sib-swiss/RNAseq-introduction-training,"Transcriptomics, RNA-seq"
+sib-swiss/single-cell-training,"Single-cell sequencing, Transcriptomics, RNA-seq"
+sib-swiss/sparql-training,Data management
+sib-swiss/statistics-and-machine-learning-training,"Statistics, Machine learning"
+sib-swiss/unix-first-steps-training,Unix/Linux
+snakemake/snakemake,"Workflows, Snakemake"
+stemangiola/bioc_2020_tidytranscriptomics,"Transcriptomics, RNA-seq, R"
+swcarpentry/git-novice,"Version control, Git"
+swcarpentry/python-novice-inflammation,Python
+swcarpentry/r-novice-gapminder,R
+swcarpentry/shell-novice,Unix/Linux
+tidytranscriptomics-workshops/bioc2022_tidytranscriptomics,"Transcriptomics, RNA-seq, R"
+UoMResearchIT/r-tidyverse-intro,R
+vibbits/gentle-hands-on-python,Python
+vibbits/nextflow-workshop,"Workflows, Nextflow"
+waldronlab/CNVWorkshop,"Next generation sequencing, Variant analysis"
+waldronlab/curatedMetagenomicDataAnalyses,Metagenomics
+waldronlab/enrichOmics,"R, Enrichment analysis"
+waldronlab/MultiAssayWorkshop,"Multiomics, FAIR data"
+XueyiDong/RNAseq123workshop,"Transcriptomics, RNA-seq"
+yunshun/SingleCellWorkshop,"Single-cell sequencing, Transcriptomics, RNA-seq"

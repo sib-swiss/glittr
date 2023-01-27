@@ -31,7 +31,7 @@ return [
     'split_tags_filter' => true,
 
     /**
-     * Repositories fontend list configuration
+     * Repositories frontend list configuration
      */
     'default_sort_by' => 'stargazers',
     'default_sort_direction' => 'desc',
@@ -43,4 +43,15 @@ return [
         100,
     ],
 
+    /**
+     * Categories colors for import
+     */
+    'colors' => [
+        '#FF006E', // pink
+        '#212121', // black
+        '#FFBE0B', // yellow
+        '#3A86FF', // blue
+        '#8338EC', // purple
+        '#FB5607', // orange
+    ],
 ];
