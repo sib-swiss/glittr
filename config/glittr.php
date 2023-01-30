@@ -54,4 +54,33 @@ return [
         '#8338EC', // purple
         '#FB5607', // orange
     ],
+
+    /**
+     * List of developers/maintainers
+     */
+    'contributors' => [
+        [
+            'name' => 'Geert van Geest',
+            'links' => [
+                'twitter' => 'https://twitter.com/geertvangeest',
+                'orcid' => 'https://orcid.org/0000-0002-1561-078X',
+                'linkedin' => 'https://www.linkedin.com/in/geert-van-geest-47938822/',
+            ],
+        ],
+        [
+            'name' => 'Patricia Palagi',
+            'links' => [
+                'twitter' => 'https://twitter.com/P_Palagi',
+                'orcid' => 'https://orcid.org/0000-0001-9062-6303',
+                'linkedin' => 'https://www.linkedin.com/in/patriciapalagi/',
+            ],
+        ],
+        [
+            'name' => 'Yann Haefliger',
+            'links' => [
+                'twitter' => 'https://twitter.com/choup',
+                'linkedin' => 'https://www.linkedin.com/in/yhaefliger/',
+            ],
+        ],
+    ]
 ];

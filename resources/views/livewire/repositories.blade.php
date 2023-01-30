@@ -29,7 +29,7 @@
             <x-page-header :container="false">
                 <x-slot name="text">
                     <div class="pb-2 lg:flex lg:items-center lg:justify-end lg:space-x-4 text-center space-y-4 lg:space-y-0">
-                        <p class="prose prose-sm lg:prose lg:text-right leading-tight lg:leading-tight">
+                        <p class="prose prose-sm lg:prose lg:text-right leading-tight lg:leading-snug">
                             Is your (favourite) course not in there? Is a link dead? Did you find a typo?<br />Any contribution to this list is highly appreciated!
                         </p>
                         <div class="flex items-center justify-center lg:justify-end">
