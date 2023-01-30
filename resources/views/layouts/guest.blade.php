@@ -4,7 +4,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>{{ config('glittr.seo.title', config('app.name', 'Glittr')) }}</title>
+        <meta name="description" content="{{ config('glittr.seo.description') }}">
 
         {{-- FAVICON --}}
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -16,9 +17,9 @@
         <meta name="theme-color" content="#ffffff">
 
         {{-- SOCIAL SHARING --}}
-        <meta property="og:title" content="{{ config('glittr.og.title') }}">
+        <meta property="og:title" content="{{ config('glittr.og.title', config('glittr.seo.title', config('app.name', 'Glittr'))) }}">
         <meta property="og:type" content="website" />
-        <meta property="og:description" content="{{ config('glittr.og.description') }}">
+        <meta property="og:description" content="{{ config('glittr.og.description', config('glittr.seo.description')) }}">
         <meta property="og:image" content="{{ url('og.jpg') }}">
         <meta property="og:url" content="{{ url('/') }}">
         <meta name="twitter:card" content="summary_large_image">

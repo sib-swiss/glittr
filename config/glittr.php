@@ -56,6 +56,14 @@ return [
     ],
 
     /**
+     * SEO tags
+     */
+    'seo' => [
+        'title' => 'Glittr.org | Git repositories with bioinformatics training material',
+        'description' => 'Glittr is a curated list of bioinformatics training material.',
+    ],
+
+    /**
      * Open Graph tags for social media
      */
     'og' => [
