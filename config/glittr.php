@@ -82,5 +82,5 @@ return [
                 'linkedin' => 'https://www.linkedin.com/in/yhaefliger/',
             ],
         ],
-    ]
+    ],
 ];

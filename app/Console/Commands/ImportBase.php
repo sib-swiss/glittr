@@ -60,7 +60,7 @@ class ImportBase extends Command
                     'category' => $topic[2],
                     'definition' => $topic[5],
                 ];
-                $color = count($colors) >  0 ? array_shift($colors) : '#000000';
+                $color = count($colors) > 0 ? array_shift($colors) : '#000000';
                 $category = Category::firstOrCreate(
                     ['name' => $topicData['category']],
                     ['color' => $color]
@@ -83,8 +83,8 @@ class ImportBase extends Command
                     if (Str::endsWith('/', $url)) {
                         $url = substr($url, 0, -1);
                     }
-                    if (!Str::startsWith($url, 'http://') && !Str::startsWith($url, 'https://')) {
-                        $url = 'https://github.com/' . $url;
+                    if (! Str::startsWith($url, 'http://') && ! Str::startsWith($url, 'https://')) {
+                        $url = 'https://github.com/'.$url;
                     }
                     if (Str::startsWith($url, 'https://')) {
                         $paths = explode('/', $url);
@@ -95,7 +95,7 @@ class ImportBase extends Command
                                     $repoName = strtolower($paths[count($paths) - 2].'/'.end($paths));
                                     $repoTopics = explode(',', $repo[1]);
                                     $topicIds = [];
-                                    if (!empty($repoTopics)) {
+                                    if (! empty($repoTopics)) {
                                         foreach ($repoTopics as $topic) {
                                             $topic = trim($topic);
                                             if (isset($topics[$topic])) {
