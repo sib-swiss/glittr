@@ -56,6 +56,14 @@ return [
     ],
 
     /**
+     * Open Graph tags for social media
+     */
+    'og' => [
+        'title' => 'Glittr.org',
+        'description' => 'Git repositories with bioinformatics training material',
+    ],
+
+    /**
      * List of developers/maintainers
      */
     'contributors' => [
