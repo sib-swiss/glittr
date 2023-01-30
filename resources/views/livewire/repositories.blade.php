@@ -26,16 +26,17 @@
     <div class="flex-1 2xl:mr-[360px] relative flex flex-col">
         <div class="container relative flex-1">
             {{-- Header --}}
-            <x-page-header>
+            <x-page-header :container="false">
                 <x-slot name="text">
-                    <div class="pb-2">
-                        <p>
+                    <div class="pb-2 lg:flex lg:items-center lg:justify-end lg:space-x-4 text-center space-y-4 lg:space-y-0">
+                        <p class="prose prose-sm lg:prose lg:text-right leading-tight lg:leading-snug">
                             Is your (favourite) course not in there? Is a link dead? Did you find a typo?<br />Any contribution to this list is highly appreciated!
                         </p>
-                        <div class="absolute -bottom-4 inset-x-0 flex items-center justify-center">
-                            <div class="w-2 h-2 bg-white"></div>
-                            <a class="bg-white inline-block font-semibold tracking-wide px-4 py-2 border border-primary text-primary transition no-underline hover:bg-primary uppercase hover:text-white" href="{{ route('contribute') }}">{{ __('Contribute') }}</a>
-                            <div class="w-2 h-2 bg-white"></div>
+                        <div class="flex items-center justify-center lg:justify-end">
+                            <a class="relative overflow-hidden rounded-lg text-base uppercase no-underline px-20 py-6 bg-white group font-bold" href="{{ route('contribute') }}">
+                                <span class="absolute inset-[3px] z-10 grid place-items-center rounded-lg bg-white group-hover:bg-opacity-95 duration-200 transition mix-blend-screen">{{ __('Contribute !') }}</span>
+                                <span aria-hidden class="absolute inset-0 z-0 scale-x-[2.0] blur before:absolute before:inset-0 before:top-1/2 before:aspect-square before:-translate-y-1/2 before:rotate-0 before:animate-disco  before:bg-gradient-conic before:from-glittr-violet before:via-glittr-orange before:to-glittr-yellow" />
+                            </a>
                         </div>
                     </div>
                 </x-slot>
@@ -76,7 +77,7 @@
                     </div>
                 @endif
             </div>
-            @if(count($repositories) > 0)
+
                 <div  class="py-2 mt-2 flex flex-wrap justify-between items-center">
                     <div class="w-full lg:w-auto lg:flex-1 pb-2 lg:pb-0 lg:text-left text-center">
                         <h2 class="text-lg font-bold">
@@ -112,20 +113,22 @@
                         </x-select>
                     </div>
 
-                    @if (count(config('repositories.paginations', [])) > 0)
+                    @if (count(config('glittr.paginations', [])) > 0)
                         <div class="ml-4 flex flex-col items-end text-right">
                             <label for="paginationSelect" class="text-sm uppercase font-semibold tracking-wide">
                                 {{ __('Per page') }}
                             </label>
                             <x-select id="paginationSelect" class="" wire:model="per_page">
-                                @foreach (config('repositories.paginations') as $pagination_nb)
+                                @foreach (config('glittr.paginations') as $pagination_nb)
                                     <option value="{{ $pagination_nb }}">{{ $pagination_nb }}</option>
                                 @endforeach
                             </x-select>
                         </div>
                     @endif
                 </div>
-                <div  class="repositories-list  lg:bg-white w-full lg:table lg:border lg:border-gray-200">
+                <div  class="repositories-list  lg:bg-white w-full lg:table lg:border lg:border-gray-200" x-data="{
+                    show_filters: @entangle('show_filters'),
+                }">
                     <div class="hidden lg:table-header-group">
                         <x-list.header title="{{ __('Repository') }}" sort_by='name' sortable current_sort_by="{{ $sort_by }}" current_sort_direction="{{ $sort_direction }}" />
                         <x-list.header title="" />
@@ -134,6 +137,45 @@
                         <x-list.header title="{{ __('Stargazers') }}" sort_by='stargazers' sortable current_sort_by="{{ $sort_by }}" current_sort_direction="{{ $sort_direction }}" />
                         <x-list.header title="{{ __('Days since last push') }}" sort_by='last_push' sortable current_sort_by="{{ $sort_by }}" current_sort_direction="{{ $sort_direction }}" />
                         <x-list.header title="{{ __('License') }}" sort_by='license' sortable current_sort_by="{{ $sort_by }}" current_sort_direction="{{ $sort_direction }}" />
+                    </div>
+                    <button class="lg:hidden items-center space-x-2 px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition flex text-sm w-full justify-center" x-on:click="show_filters = !show_filters">
+                        <span>{{ __('Advanced search') }}</span>
+                        <x-heroicon-o-chevron-down class="w-5 h-5 transition duration-200" x-cloak x-bind:class="{
+                            'transform rotate-180': show_filters,
+                            'transform rotate-0': !show_filters,
+                        }" />
+                    </button>
+                    <div class="lg:table-header-group grid grid-cols-2 gap-4 bg-gray-50 py-4 lg:p-0" :class="{
+                        'visible': show_filters,
+                        'hidden': !show_filters,
+                    }">
+                        <div class="lg:table-cell bg-gray-50 lg:border-b p-2 col-span-2">
+                            <label for="filterName" class="lg:hidden text-sm uppercase font-semibold tracking-wide">{{ __('Search by repository name') }}</label>
+                            <input type="text" id="filterName" wire:model.debounce.300ms="name" class="w-full border border-gray-300 rounded p-2" placeholder="{{ __('Search by name') }}" />
+                        </div>
+                        <div class="hidden lg:table-cell bg-gray-50 lg:border-b p-2"></div>
+                        <div class="lg:table-cell bg-gray-50 lg:border-b p-2 col-span-2">
+                            <label for="filterName" class="lg:hidden text-sm uppercase font-semibold tracking-wide">{{ __('Search by author') }}</label>
+                            <input type="text" id="filterAuthor" wire:model.debounce.300ms="author" class="w-full border border-gray-300 rounded p-2" placeholder="{{ __('Search by author') }}" />
+                        </div>
+                        <div class="hidden lg:table-cell bg-gray-50 lg:border-b p-2"></div>
+                        <div class="lg:table-cell bg-gray-50 lg:border-b p-2">
+                            <label for="filterMinStars" class="lg:hidden text-sm uppercase font-semibold tracking-wide">{{ __('Minimum stargazers') }}</label>
+                            <input type="number" id="filterMinStars" wire:model.debounce.300ms="minStars" min="0" class="w-24 border border-gray-300 rounded p-2" placeholder="{{ __('Min.') }}" />
+                        </div>
+                        <div class="lg:table-cell bg-gray-50 lg:border-b p-2">
+                            <label for="filterMaxPush" class="lg:hidden text-sm uppercase font-semibold tracking-wide">{{ __('Maximum days since last push') }}</label>
+                            <input type="number" id="filterMaxPush" wire:model.debounce.300ms="maxPush" min="0" class="w-24 border border-gray-300 rounded p-2" placeholder="{{ __('Max.') }}" />
+                        </div>
+                        <div class="lg:table-cell bg-gray-50 lg:border-b p-2 col-span-2">
+                            <label for="filterLicense" class="lg:hidden text-sm uppercase font-semibold tracking-wide">{{ __('License') }}</label>
+                            <select wire:model="license" class="w-full border border-gray-300 rounded p-2">
+                                <option value="">{{ __('All') }}</option>
+                                @foreach ($licenses as $license)
+                                    <option value="{{ $license }}">{{ $license }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                     @foreach($repositories as $repository)
                         <div class="lg:table-row border lg:border-b hover:bg-gray-50 bg-white grid grid-cols-2 {{ $loop->first ? 'mt-4' : 'mt-8' }}  lg:mt-0">
@@ -187,7 +229,7 @@
                             <div class="lg:table-cell lg:w-80 bg-gray-50 lg:bg-transparent order-last lg:order-none col-span-2 lg:col-span-1 p-2 lg:border-b lg:align-middle">
                                 <div class="inline-flex flex-wrap" x-data="{ more: false }">
                                     @foreach ($repository->tags as $index => $tag)
-                                        <span @if (($index + 1) > $max_tags) x-show="more" x-transition @endif class="mr-2 my-1 tag-category-{{ $tag->category_id}} text-sm font-medium tracking-wide border rounded py-1 px-2 bg-category-color/10 text-category-color border-category-color">
+                                        <span @if (($index + 1) > $max_tags) x-show="more" x-transition @endif class="mr-2 my-1 tag-category-{{ $tag->category_id}} text-sm font-medium tracking-wide border rounded py-1 px-2 bg-category-color text-white border-category-color">
                                             {{ $tag->name }}
                                         </span>
                                     @endforeach
@@ -228,16 +270,17 @@
                 <div class="mt-4">
                     {{ $repositories->links() }}
                 </div>
-            @else
-                <div class="bg-orange-100 border border-orange-600 text-orange-600 p-4 mt-8 text-center">
-                    {{ __('No results matched your search: ') }}<strong>{{ $search }}</strong>
-                    <p>
-                        <button type="button" class="font-bold underline mt-2" @click.prevent="$wire.set('search', '')">
-                            {{ __('Reset search term') }}
-                        </button>
-                    </p>
-                </div>
-            @endif
+
+                @if (count($repositories) == 0)
+                    <div class="bg-orange-100 border border-orange-600 text-orange-600 mt-8 p-4 text-center">
+                        {{ __('No results matched your search: ') }}<strong>{{ $search }}</strong>
+                        <p>
+                            <button type="button" class="font-bold underline mt-2" @click.prevent="$wire.set('search', '')">
+                                {{ __('Reset search term') }}
+                            </button>
+                        </p>
+                    </div>
+                @endif
         </div>
         <x-page-footer>
 
@@ -261,9 +304,9 @@
                 </div>
             </div>
             <div class="flex-1  overflow-y-auto {{ $split_tags_filter ? 'space-y-4' : ''}}">
-                @foreach($grouped_tags as $cid => $category)
+                @foreach($grouped_tags->sortBy('order') as $cid => $category)
                     <div class="tag-category-{{ $cid }} ">
-                        <label for="filter-category-{{ $cid }}" class="cursor-pointer p-4 border-t border-b border-category-color bg-category-color/10 text-category-color text-sm font-semibold flex items-center">
+                        <label for="filter-category-{{ $cid }}" class="cursor-pointer p-4 border-t border-b border-category-color bg-category-color text-white text-sm font-semibold flex items-center">
                             <x-jet-checkbox id="filter-category-{{ $cid }}" wire:model="categories.{{ $cid }}.selected" />
                             <span class="mx-2">{{ $category['category']['name'] }}</span>
                             <span class="ml-auto font-bold">

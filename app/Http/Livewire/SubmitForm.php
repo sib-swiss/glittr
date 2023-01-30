@@ -69,8 +69,6 @@ class SubmitForm extends Component
 
     public function save(): void
     {
-
-
         foreach ($this->tags as $tagId) {
             if (! Tag::find($tagId)) {
                 $this->addError('tags', 'Invalid tag submitted.');

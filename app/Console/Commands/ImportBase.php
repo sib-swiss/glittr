@@ -18,7 +18,7 @@ class ImportBase extends Command
      *
      * @var string
      */
-    protected $signature = 'repo:import {--clean}';
+    protected $signature = 'repo:import {--clean} {--clean-topics}';
 
     /**
      * The console command description.
@@ -45,67 +45,85 @@ class ImportBase extends Command
             Repository::query()->delete();
         }
 
-        $reader = Reader::createFromPath(database_path('import/tags.csv', 'r'));
-        $tags = collect();
+        if ($this->option('clean-topics')) {
+            Tag::query()->delete();
+            Category::query()->delete();
+        }
 
-        foreach ($reader->getRecords() as $offset => $tag) {
-            if (isset($tag[1])) {
-                $tags->push([
-                    'repository' => strtolower($tag[0]),
-                    'tags' => explode(', ', $tag[1]),
-                ]);
+        $reader = Reader::createFromPath(database_path('import/topics.csv', 'r'));
+        $topics = [];
+        $colors = config('glittr.colors');
+        foreach ($reader->getRecords() as $offset => $topic) {
+            if ($offset > 0) {
+                $topicData = [
+                    'name' => $topic[1],
+                    'category' => $topic[2],
+                    'definition' => $topic[5],
+                ];
+                $color = count($colors) >  0 ? array_shift($colors) : '#000000';
+                $category = Category::firstOrCreate(
+                    ['name' => $topicData['category']],
+                    ['color' => $color]
+                );
+                $topic = Tag::firstOrCreate(
+                    [
+                        'name' => $topicData['name'],
+                        'category_id' => $category->id,
+                    ],
+                );
+                $topics[$topicData['name']] = $topic->id;
             }
         }
 
-        $reader = Reader::createFromPath(database_path('import/repositories.csv', 'r'));
+        $reader = Reader::createFromPath(database_path('import/slug_tags.csv', 'r'));
         foreach ($reader->getRecords() as $offset => $repo) {
-            if (isset($repo[0]) && $repo[0] != '') {
-                $url = trim($repo[0]);
-                if (Str::endsWith('/', $url)) {
-                    $url = substr($url, 0, -1);
-                }
-                if (Str::startsWith($url, 'https://')) {
-                    $paths = explode('/', $url);
-                    if (count($paths) > 2) {
-                        try {
-                            if (! Repository::where('url', $url)->exists()) {
-                                $total++;
-
-                                $repoName = strtolower($paths[count($paths) - 2].'/'.end($paths));
-                                $repoTags = $tags->where('repository', $repoName)->first();
-
-                                $tagIds = collect();
-                                if ($repoTags && isset($repoTags['tags']) && ! empty($repoTags['tags'])) {
-                                    $tagIds = collect($repoTags['tags'])->map(function ($tag) use ($otherCategory) {
-                                        $dbTag = Tag::firstOrCreate([
-                                            'name' => $tag,
-                                        ]);
-
-                                        // Assign new tags to "Others" category.
-                                        if (! $dbTag->category_id && $otherCategory) {
-                                            $dbTag->category_id = $otherCategory->id;
-                                            $dbTag->save();
-                                        }
-
-                                        return $dbTag->id;
-                                    });
-                                }
-                                $repository = Repository::firstOrCreate([
-                                    'url' => $url,
-                                ]);
-                                $repository->tags()->sync($tagIds->toArray());
-
-                                $this->info("Repository {$url} created");
-                            } else {
-                                $this->comment("Repository {$url} already exists.");
-                            }
-                        } catch (Exception $e) {
-                            $this->error("Error creating repository {$url}.");
-                            $this->error("Error: {$e->getMessage()}.");
-                        }
+            if (count($repo) > 1) {
+                if (isset($repo[0]) && $repo[0] != '') {
+                    $url = trim($repo[0]);
+                    if (Str::endsWith('/', $url)) {
+                        $url = substr($url, 0, -1);
                     }
-                } else {
-                    $this->error("Repository url {$url} doesn't start with https://");
+                    if (!Str::startsWith($url, 'http://') && !Str::startsWith($url, 'https://')) {
+                        $url = 'https://github.com/' . $url;
+                    }
+                    if (Str::startsWith($url, 'https://')) {
+                        $paths = explode('/', $url);
+                        if (count($paths) > 2) {
+                            try {
+                                if (! Repository::where('url', $url)->exists()) {
+                                    $total++;
+                                    $repoName = strtolower($paths[count($paths) - 2].'/'.end($paths));
+                                    $repoTopics = explode(',', $repo[1]);
+                                    $topicIds = [];
+                                    if (!empty($repoTopics)) {
+                                        foreach ($repoTopics as $topic) {
+                                            $topic = trim($topic);
+                                            if (isset($topics[$topic])) {
+                                                $topicIds[] = $topics[$topic];
+                                            } else {
+                                                $topicIds[] = Tag::firstOrCreate([
+                                                    'name' => $topic,
+                                                ])->id;
+                                            }
+                                        }
+                                    }
+                                    $repository = Repository::firstOrCreate([
+                                        'url' => $url,
+                                    ]);
+                                    $repository->tags()->sync($topicIds);
+
+                                    $this->info("Repository {$url} created");
+                                } else {
+                                    $this->comment("Repository {$url} already exists.");
+                                }
+                            } catch (Exception $e) {
+                                $this->error("Error creating repository {$url}.");
+                                $this->error("Error: {$e->getMessage()}.");
+                            }
+                        }
+                    } else {
+                        $this->error("Repository url {$url} doesn't start with https://");
+                    }
                 }
             }
         }

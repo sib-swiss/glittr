@@ -7,7 +7,6 @@ use Illuminate\View\Component;
 
 class PageFooter extends Component
 {
-
     /**
      * Last updated at string
      *

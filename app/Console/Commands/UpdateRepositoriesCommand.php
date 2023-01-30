@@ -78,7 +78,7 @@ class UpdateRepositoriesCommand extends Command
                         }
 
                         // Send report update.
-                        foreach (config('repositories.support_emails', []) as $recipient) {
+                        foreach (config('glittr.support_emails', []) as $recipient) {
                             Mail::to($recipient)->queue(new RepositoriesUpdated($update));
                         }
                     }

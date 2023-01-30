@@ -4,6 +4,7 @@
     'current_sort_direction' => null,
     'sort_by' => '',
     'title',
+    'filter' => null,
 ])
 @php
     $class = '';

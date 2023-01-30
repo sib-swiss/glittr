@@ -6,7 +6,7 @@ return [
      * is an array, it will try to convert from the first format that works,
      * and will serialize dates using the first format from the array.
      */
-    'date_format' => "Y-m-d H:i:s",
+    'date_format' => 'Y-m-d H:i:s',
 
     /*
      * Global transformers will take complex types and transform them into simple
@@ -46,11 +46,11 @@ return [
      * every data object, unless overridden in a specific data object class.
      */
     'normalizers' => [
-         Spatie\LaravelData\Normalizers\ModelNormalizer::class,
-         Spatie\LaravelData\Normalizers\ArrayableNormalizer::class,
-         Spatie\LaravelData\Normalizers\ObjectNormalizer::class,
-         Spatie\LaravelData\Normalizers\ArrayNormalizer::class,
-         Spatie\LaravelData\Normalizers\JsonNormalizer::class,
+        Spatie\LaravelData\Normalizers\ModelNormalizer::class,
+        Spatie\LaravelData\Normalizers\ArrayableNormalizer::class,
+        Spatie\LaravelData\Normalizers\ObjectNormalizer::class,
+        Spatie\LaravelData\Normalizers\ArrayNormalizer::class,
+        Spatie\LaravelData\Normalizers\JsonNormalizer::class,
     ],
 
     /*
