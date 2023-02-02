@@ -18,7 +18,8 @@ use Illuminate\Support\Facades\Route;
 /**
  * Return json formatted list grouped by main category for readme generation
  */
-Route::get('repositories', [RepositoryController::class, 'list']);
+Route::get('repositories-list', [RepositoryController::class, 'list']);
+Route::get('repositories', [RepositoryController::class, 'index']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
