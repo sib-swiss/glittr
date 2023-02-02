@@ -7,6 +7,7 @@ use App\Http\Resources\RepositoryFullResource;
 use App\Http\Resources\RepositoryResource;
 use App\Models\Category;
 use App\Models\Repository;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class RepositoryController extends Controller
 {
@@ -18,9 +19,24 @@ class RepositoryController extends Controller
     public function index()
     {
         return RepositoryFullResource::collection(
-            Repository::enabled()
-            ->with('author', 'tags')
-            ->paginate(25)
+            QueryBuilder::for(Repository::enabled())
+            ->allowedFilters([
+                'name',
+                'license',
+                'description',
+                'author.name',
+                'tags.name',
+                'tags.category.name',
+            ])
+            ->allowedSorts([
+                'name',
+                'stargazers',
+                'last_push',
+                'author.name',
+            ])
+            ->defaultSort('-stargazers')
+            ->with('author', 'tags', 'tags.category')
+            ->jsonPaginate(100)
         );
     }
 
