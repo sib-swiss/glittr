@@ -1,4 +1,4 @@
-# SIB - Training Collection App
+# Glittr.org
 
 Laravel application to manage SIB Training Collection related repositories
 
