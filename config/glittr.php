@@ -4,16 +4,12 @@ return [
     /**
      * List of emails to send notifcations (new submissions)
      */
-    'notification_emails' => [
-        'test@test.com',
-    ],
+    'notification_emails' => explode(',', env('GLITTR_NOTIFICATION_EMAILS', '')),
 
     /**
      * List of emails to send cron repositories update notifications
      */
-    'support_emails' => [
-        'yann.haefliger@sib.swiss',
-    ],
+    'support_emails' => explode(',', env('GLITTR_SUPPORT_EMAILS', '')),
 
     /**
      * Current app code repository for footer link

@@ -18,7 +18,9 @@ class CreateSubmission
 
             //Send email
             foreach (config('glittr.notification_emails', []) as $email) {
-                Mail::to($email)->send(new SubmissionAdded($submission));
+                if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    Mail::to($email)->send(new SubmissionAdded($submission));
+                }
             }
         }
 

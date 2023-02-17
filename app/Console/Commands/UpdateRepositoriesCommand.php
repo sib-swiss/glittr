@@ -75,9 +75,13 @@ class UpdateRepositoriesCommand extends Command
                             Cache::forever('last_updated_at', $update->finished_at);
                         }
 
-                        // Send report update.
-                        foreach (config('glittr.support_emails', []) as $recipient) {
-                            Mail::to($recipient)->queue(new RepositoriesUpdated($update));
+                        // Send report if not all repositories were updated.
+                        if ($update->percentSuccess() < 100) {
+                            foreach (config('glittr.support_emails', []) as $recipient) {
+                                if (filter_var($recipient, FILTER_VALIDATE_EMAIL)) {
+                                    Mail::to($recipient)->queue(new RepositoriesUpdated($update));
+                                }
+                            }
                         }
                     }
                 });
