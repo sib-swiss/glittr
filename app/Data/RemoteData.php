@@ -25,9 +25,6 @@ class RemoteData extends Data
 
     /**
      * Map data retrieved from github api
-     *
-     * @param  array  $repoData
-     * @return static
      */
     public static function fromGithub(array $repoData): static
     {
@@ -45,9 +42,6 @@ class RemoteData extends Data
 
     /**
      * Map data retrieved from gitlab api
-     *
-     * @param  array  $repoData
-     * @return static
      */
     public static function fromGitLab(array $repoData): static
     {

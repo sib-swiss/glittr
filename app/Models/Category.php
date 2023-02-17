@@ -27,6 +27,16 @@ class Category extends Model implements Sortable
         return $this->hasMany(Tag::class);
     }
 
+    public static function getCategoriesWithTags()
+    {
+        return Cache::tags(['categories', 'tags', 'repositories'])
+            ->remember('categories_list', (30 * 60), function () {
+                return self::with(['tags' => function ($query) {
+                    $query->ordered()->withCount('repositories');
+                }])->ordered()->get();
+            });
+    }
+
     /**
      * The "booted" method of the model.
      *

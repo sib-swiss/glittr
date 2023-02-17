@@ -62,7 +62,6 @@ class StackableUpdateRepositoryData implements ShouldQueue, StackableJob
     /**
      * Handle a job failure.
      *
-     * @param  \Throwable  $exception
      * @return void
      */
     public function failed(Throwable $exception)

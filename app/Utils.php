@@ -8,9 +8,6 @@ class Utils
 {
     /**
      * Ensure url start with https or http
-     *
-     * @param  string  $url
-     * @return string
      */
     public static function ensureUrl(string $url): string
     {

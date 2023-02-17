@@ -34,8 +34,6 @@ class UpdateRepositoriesCommand extends Command
     /**
      * Execute the console command.
      *
-     * @param  RemoteUpdateRepository  $remoteUpdateRepository
-     * @param  AttachAuthor  $attachAuthorAction
      * @return int
      */
     public function handle(RemoteUpdateRepository $remoteUpdateRepository, AttachAuthor $attachAuthorAction)

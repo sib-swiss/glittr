@@ -56,6 +56,22 @@ return [
     ],
 
     /**
+     * SEO tags
+     */
+    'seo' => [
+        'title' => 'Glittr.org | Git repositories with bioinformatics training material',
+        'description' => 'Glittr is a curated list of bioinformatics training material.',
+    ],
+
+    /**
+     * Open Graph tags for social media
+     */
+    'og' => [
+        'title' => 'Glittr.org',
+        'description' => 'Git repositories with bioinformatics training material',
+    ],
+
+    /**
      * List of developers/maintainers
      */
     'contributors' => [
@@ -82,5 +98,5 @@ return [
                 'linkedin' => 'https://www.linkedin.com/in/yhaefliger/',
             ],
         ],
-    ]
+    ],
 ];

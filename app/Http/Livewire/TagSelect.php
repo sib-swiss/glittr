@@ -40,7 +40,6 @@ class TagSelect extends Component
      * Undocumented function
      *
      * @param  array  $selected Array of ordered selected tag ids [2, 1, 5]
-     * @return void
      */
     public function mount(array $values = [], ?string $eventName = 'tagsUpdated'): void
     {
