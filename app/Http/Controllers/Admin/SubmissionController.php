@@ -30,7 +30,6 @@ class SubmissionController extends AdminController
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -41,7 +40,6 @@ class SubmissionController extends AdminController
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Repository  $repository
      * @return \Illuminate\Http\Response
      */
     public function show(Repository $repository)
@@ -52,7 +50,6 @@ class SubmissionController extends AdminController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Repository  $repository
      * @return \Illuminate\Http\Response
      */
     public function edit(Repository $repository)
@@ -63,8 +60,6 @@ class SubmissionController extends AdminController
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Repository  $repository
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Repository $repository)
@@ -75,7 +70,6 @@ class SubmissionController extends AdminController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Repository  $repository
      * @return \Illuminate\Http\Response
      */
     public function destroy(Repository $repository)

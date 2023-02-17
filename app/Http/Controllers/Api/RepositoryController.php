@@ -7,6 +7,7 @@ use App\Http\Resources\RepositoryFullResource;
 use App\Http\Resources\RepositoryResource;
 use App\Models\Category;
 use App\Models\Repository;
+use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
 class RepositoryController extends Controller
@@ -24,8 +25,9 @@ class RepositoryController extends Controller
                 'name',
                 'license',
                 'description',
-                'author.name',
-                'tags.name',
+                AllowedFilter::exact('author.name'),
+                'author.display_name',
+                AllowedFilter::exact('tags.name'),
                 'tags.category.name',
             ])
             ->allowedSorts([

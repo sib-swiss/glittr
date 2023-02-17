@@ -21,7 +21,6 @@ class SubmissionAdded extends Mailable
     /**
      * Create a new message instance.
      *
-     * @param  Submission  $submission
      * @return void
      */
     public function __construct(Submission $submission)

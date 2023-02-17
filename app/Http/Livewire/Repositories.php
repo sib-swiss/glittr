@@ -113,12 +113,7 @@ class Repositories extends Component
         foreach ($licences as $licence) {
             $this->licenses[$licence->license] = $licence->license;
         }
-        $categories = Cache::tags(['categories', 'tags', 'repositories'])
-            ->remember('categories_list', (30 * 60), function () {
-                return Category::with(['tags' => function ($query) {
-                    $query->ordered()->withCount('repositories');
-                }])->ordered()->get();
-            });
+        $categories = Category::getCategoriesWithTags();
         foreach ($categories as $cat) {
             $this->categories[$cat->id] = [
                 'name' => $cat->name,

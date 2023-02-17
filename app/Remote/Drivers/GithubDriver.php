@@ -27,8 +27,6 @@ class GithubDriver extends Driver
 
     /**
      * Retrieve and transmit to data
-     *
-     * @return RemoteData|null
      */
     public function getData(?Url $url = null): ?RemoteData
     {
