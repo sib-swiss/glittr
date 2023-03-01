@@ -55,15 +55,15 @@ GET /api/repositories?filter[author.name]=sib&filter[license]=cc
 GET /api/repositories?filter[tags.name]=r,machine%20learning
 ```
 
-| Fiter               | Exact match | Description                                   |
-| ------------------- | ----------- | --------------------------------------------- |
-| name                | No          | Repository name                               |
-| licence             | No          | Repository license                            |
-| description         | No          | Repository description                        |
-| author.name         | Yes         | Author Github/Gitlab username                 |
-| author.display_name | No          | Author Github/Gitlab display name             |
-| tags.name           | Yes         | Repository tags                               |
-| tags.category.name  | No          | Repository with a tag from from this category |
+| Fiter               | Exact match | Description                              |
+| ------------------- | ----------- | ---------------------------------------- |
+| name                | No          | Repository name                          |
+| licence             | No          | Repository license                       |
+| description         | No          | Repository description                   |
+| author.name         | Yes         | Author Github/Gitlab username            |
+| author.display_name | No          | Author Github/Gitlab display name        |
+| tags.name           | Yes         | Repository tags                          |
+| tags.category.name  | No          | Repository with a tag from this category |
 
 To retrieve the list of tags and categories you can use the `/api/tags` endpoint which retunr the list of tags grouped by category with repositories count.
 
