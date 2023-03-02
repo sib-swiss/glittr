@@ -5,6 +5,7 @@ namespace App\Http\Livewire\Admin;
 use App\Concerns\InteractsWithNotifications;
 use App\Models\Category;
 use App\Models\Tag;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\View\View;
 use Livewire\Component;
 
@@ -166,6 +167,7 @@ class TagsList extends Component
     {
         if (! empty($categoryIds)) {
             Category::setNewOrder($categoryIds);
+            Cache::tags('categories')->flush();
             $this->notify(__('Categories order successfully updated.'));
         }
     }
@@ -207,7 +209,7 @@ class TagsList extends Component
     public function confirmTagDeletion(int $tagId): void
     {
         $this->confirmingTagDeletion = true;
-        $this->tagIdBeingDeleted = $tagId;
+        $this->TagIdBeingDeleted = $tagId;
     }
 
     public function deleteTag(): void
@@ -221,13 +223,14 @@ class TagsList extends Component
         }
 
         $this->confirmingTagDeletion = false;
-        $this->tagIdBeingDeleted = null;
+        $this->TagIdBeingDeleted = null;
     }
 
     public function sortTags(array $tagIds)
     {
         if (! empty($tagIds)) {
             Tag::setNewOrder($tagIds);
+            Cache::tags('tags')->flush();
             $this->notify(__('Tags order successfully updated.'));
         }
     }

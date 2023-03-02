@@ -126,6 +126,7 @@ class Repositories extends Component
                 $this->tags[$tag->id] = [
                     'id' => $tag->id,
                     'name' => $tag->name,
+                    'order' => $tag->order_column,
                     'total' => $tag->repositories_count,
                     'filtered' => $tag->repositories_count,
                     'selected' => false,
@@ -377,6 +378,7 @@ class Repositories extends Component
         $tags = collect($this->tags);
         $this->grouped_tags = $tags
             ->filter(fn ($tag) => $tag['filtered'] > 0 && isset($this->categories[$tag['cid']]))
+            ->sortBy('order')
             ->groupBy('cid', true)
             ->map(fn ($tags, $cid) => [
                 'category' => $this->categories[$cid],
