@@ -314,7 +314,7 @@
                             </span>
                         </label>
                         <div class="grid {{ $split_tags_filter ? 'grid-cols-2' : 'grid-cols-1'}}">
-                            @foreach($category['tags'] as $tagIndex => $tag)
+                            @foreach($category['tags']->sortBy('order') as $tagIndex => $tag)
                                 <label
                                     for="filter-tag-{{ $tagIndex }}"
                                     class="cursor-pointer text-sm lg:text-base px-4 py-3 flex items-center border-b bg-white hover:bg-gray-50 border-r">
