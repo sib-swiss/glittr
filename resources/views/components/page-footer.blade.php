@@ -73,7 +73,7 @@
             </div>
         </div>
         <div class="pt-4 mt-8 border-t lg:text-right text-center leading-tight flex flex-col lg:flex-row justify-center items-center">
-            <a href="https://www.sib.ch" class="lg:order-2 lg:ml-4 mb-4 lg:mb-0">
+            <a href="https://www.sib.swiss" class="lg:order-2 lg:ml-4 mb-4 lg:mb-0">
                 <img src="{{ url('/sib-web-logo.svg') }}" class="max-w-full h-16" alt="Swiss Institute of Bioinformatics" />
             </a>
             <div class="prose prose-sm leading-snug">
