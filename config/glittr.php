@@ -14,7 +14,7 @@ return [
     /**
      * Current app code repository for footer link
      */
-    'repository_link' => 'https://gitlab.sib.swiss/yhaeflig/training-collection-app',
+    'repository_link' => 'https://github.com/sib-swiss/glittr',
 
     /**
      * Max number of tags displayed in table (with show more button)
