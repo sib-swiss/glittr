@@ -82,3 +82,20 @@ GET /api/repositories?sort=-last_push
 | stargazers  | Number of stars               |
 | last_push   | Last push                     |
 | author.name | Author Github/Gitlab username |
+
+### Pagination
+
+By default, the API will return all results. You can retrieve paginated results by adding the `page` parameter. It will use `spatie/laravel-json-api-paginate` so you can use the JSON API pagination format (max results per page is set to 100).
+
+```plaintext
+GET /api/repositories?page[size]=10&page[number]=2
+```
+
+### Repositories List
+
+There is an addional endpoint `/api/repositories/list` which return the list of repositories grouped by their main category, as presented on the [sib-swiss/training-collection repository](https://github.com/sib-swiss/training-collection).
+
+
+## License
+
+Glittr is licensed under the [MIT license](https://opensource.org/licenses/MIT).

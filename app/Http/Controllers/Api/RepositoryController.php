@@ -19,27 +19,31 @@ class RepositoryController extends Controller
      */
     public function index()
     {
-        return RepositoryFullResource::collection(
-            QueryBuilder::for(Repository::enabled())
-            ->allowedFilters([
-                'name',
-                'license',
-                'description',
-                AllowedFilter::exact('author.name'),
-                'author.display_name',
-                AllowedFilter::exact('tags.name'),
-                'tags.category.name',
-            ])
-            ->allowedSorts([
-                'name',
-                'stargazers',
-                'last_push',
-                'author.name',
-            ])
-            ->defaultSort('-stargazers')
-            ->with('author', 'tags', 'tags.category')
-            ->jsonPaginate(100)
-        );
+        $queryBuilder = QueryBuilder::for(Repository::enabled())
+        ->allowedFilters([
+            'name',
+            'license',
+            'description',
+            AllowedFilter::exact('author.name'),
+            'author.display_name',
+            AllowedFilter::exact('tags.name'),
+            'tags.category.name',
+        ])
+        ->allowedSorts([
+            'name',
+            'stargazers',
+            'last_push',
+            'author.name',
+        ])
+        ->defaultSort('-stargazers')
+        ->with('author', 'tags', 'tags.category');
+        // Paginate if request has a page parameter
+        if (request()->has('page')) {
+            return RepositoryFullResource::collection($queryBuilder->jsonPaginate(100));
+        } else {
+            return RepositoryFullResource::collection($queryBuilder->get());
+        }
+
     }
 
     /**
