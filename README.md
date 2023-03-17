@@ -1,6 +1,6 @@
-# Glittr.org
+# Glittr
 
-Laravel application to manage SIB Training Collection related repositories
+A web app to find bioinformatics training materials on GitHub and GitLab based on Laravel.
 
 ## Requirement
 
@@ -12,11 +12,11 @@ Laravel application to manage SIB Training Collection related repositories
 
 ## Installation
 
-Copy `.env.example` to `.env` and set inside your access tokens and server configuration.
+Copy `.env.example` to `.env` and set your access tokens and server configuration.
 
 ### Local
 
-You can run in local using Sail (Laravel's docker image).
+You can run in local using [Laravel Sail](https://laravel.com/docs/9.x/sail) (Laravel's docker image).
 
 ```bash
 sail up
@@ -41,7 +41,7 @@ See Laravel documentation for [jobs task runner configuration](https://laravel.c
 
 ## API
 
-The API endpoint is available at `/api/repositories`. It is using [Spatie Query Builder](https://spatie.be/docs/laravel-query-builder/v5/introduction) to filter the data with with the following parameters:
+The API endpoint is available at `/api/repositories`. It is using [Spatie Query Builder](https://spatie.be/docs/laravel-query-builder/v5/introduction) to filter the data with the following parameters:
 
 ### Filters
 
@@ -83,9 +83,9 @@ GET /api/repositories?sort=-last_push
 | last_push   | Last push                     |
 | author.name | Author Github/Gitlab username |
 
-### Pagination
+#### Pagination
 
-By default, the API will return all results. You can retrieve paginated results by adding the `page` parameter. It will use [spatie/laravel-json-api-paginate package](https://github.com/spatie/laravel-json-api-paginate) so you can use the [JSON API pagination format](https://jsonapi.org/profiles/ethanresnick/cursor-pagination) (max results per page is set to **100**).
+By default, the API will return all results. You can retrieve paginated results by adding the `page` parameter. It will use [spatie/laravel-json-api-paginate package](https://github.com/spatie/laravel-json-api-paginate) which follow the [JSON API spcec](https://jsonapi.org/profiles/ethanresnick/cursor-pagination) (max results per page is set to **100**).
 
 ```plaintext
 // Page 2 with 10 results per page
@@ -94,9 +94,9 @@ GET /api/repositories?page[size]=10&page[number]=2
 
 ### Repositories List
 
-There is an addional endpoint `/api/list` which return the list of repositories grouped by their main category, as presented on the [sib-swiss/training-collection repository](https://github.com/sib-swiss/training-collection).
+There is an additional endpoint `/api/list` which returns the list of repositories grouped by their main category, as presented on the [sib-swiss/training-collection repository](https://github.com/sib-swiss/training-collection).
 
 
 ## License
 
-Glittr is licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Glittr is licensed under The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
