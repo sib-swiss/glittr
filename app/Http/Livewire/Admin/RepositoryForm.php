@@ -181,7 +181,6 @@ class RepositoryForm extends Component
             $repository->update($validatedData['repository']);
             //re-attach tags for ordering
             $repository->tags()->detach();
-            //dd($validatedData['repository']['tags']);
             $repository->tags()->sync($validatedData['repository']['tags']);
 
             $this->notify("Repository {$displayName} successfully updated.");
