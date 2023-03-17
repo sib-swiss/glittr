@@ -85,15 +85,16 @@ GET /api/repositories?sort=-last_push
 
 ### Pagination
 
-By default, the API will return all results. You can retrieve paginated results by adding the `page` parameter. It will use `spatie/laravel-json-api-paginate` so you can use the JSON API pagination format (max results per page is set to 100).
+By default, the API will return all results. You can retrieve paginated results by adding the `page` parameter. It will use [spatie/laravel-json-api-paginate package](https://github.com/spatie/laravel-json-api-paginate) so you can use the [JSON API pagination format](https://jsonapi.org/profiles/ethanresnick/cursor-pagination) (max results per page is set to **100**).
 
 ```plaintext
+// Page 2 with 10 results per page
 GET /api/repositories?page[size]=10&page[number]=2
 ```
 
 ### Repositories List
 
-There is an addional endpoint `/api/repositories/list` which return the list of repositories grouped by their main category, as presented on the [sib-swiss/training-collection repository](https://github.com/sib-swiss/training-collection).
+There is an addional endpoint `/api/list` which return the list of repositories grouped by their main category, as presented on the [sib-swiss/training-collection repository](https://github.com/sib-swiss/training-collection).
 
 
 ## License
