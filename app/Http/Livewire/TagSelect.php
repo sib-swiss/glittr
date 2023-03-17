@@ -103,6 +103,8 @@ class TagSelect extends Component
         if (isset($this->selected[$index])) {
             unset($this->selected[$index]);
         }
+
+        $this->emitUpdate();
     }
 
     protected function addTag(int $tagId, bool $emit = true): void
