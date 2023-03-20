@@ -96,5 +96,12 @@ return [
         ],
     ],
 
+    /**
+     * Analytics systems
+     */
     'google_analytics' => env('GOOGLE_ANALYTICS', false),
+    'matomo' => [
+        'url' => env('MATOMO_URL', false),
+        'site_id' => env('MATOMO_SITE_ID', false),
+    ],
 ];
