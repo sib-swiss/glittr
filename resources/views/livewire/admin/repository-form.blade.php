@@ -4,11 +4,16 @@
             <div>
                 <x-jet-label for="url" value="{{ __('Repository Url') }}" />
                 <div class="flex items-center space-x-2">
-                    <x-jet-input id="url" type="text" class="mt-1 block w-full" wire:model.defer="repository.url" />
+                    <x-jet-input id="url" type="text" class="mt-1 block w-full" wire:model="repository.url" />
                     <x-jet-secondary-button type="button" wire:loading.remove="testRemote" wire:click="testRemote">Test</x-jet-secondary-button>
                 </div>
                 <x-jet-input-error for="repository.url" class="mt-2" />
             </div>
+            @if ($existingWarning)
+            <div class="text-sm font-bold p-2 border rounded bg-orange-100 border-orange-500 text-orange-500">
+                This repository already exists in the collection.
+            </div>
+            @endif
             <div wire:loading.block wire:target="testRemote" class="block border text-sm bg-blue-50  border-blue-500 text-blue-500 p-2">
                 Testing remote status...
             </div>
@@ -47,7 +52,9 @@
             @if($cancelEvent != '')
                 <x-jet-secondary-button wire:click.prevent="$emit('{{ $cancelEvent }}')">{{ __('Cancel') }}</x-jet-seconday-button>
             @endif
-            <x-jet-button wire:click.prevent="save">{{ Str::headline($action) }}</x-jet-button>
+            @if (!$existingWarning)
+                <x-jet-button wire:click.prevent="save">{{ Str::headline($action) }}</x-jet-button>
+            @endif
         </x-slot>
     </form>
 </x-modal.content>

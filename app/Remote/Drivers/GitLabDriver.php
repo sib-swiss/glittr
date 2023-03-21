@@ -37,7 +37,7 @@ class GitLabDriver extends Driver
 
         if ($url) {
             [$username, $repository_name] = Helpers::getRepositoryUserAndName($url);
-            $repoData = $this->getClient()->projects()->show($username . '/' . $repository_name);
+            $repoData = $this->getClient()->projects()->show($username.'/'.$repository_name);
 
             return RemoteData::fromGitLab($repoData);
         }
@@ -50,9 +50,11 @@ class GitLabDriver extends Driver
         if (! $url && $this->author && $this->author->remote_id != '') {
             if ($this->author->type == 'user') {
                 $userData = $this->getClient()->users()->show($this->author->remote_id);
+
                 return AuthorData::fromGitLabUser($userData);
             } else {
                 $userData = $this->getClient()->groups()->show($this->author->remote_id);
+
                 return AuthorData::fromGitLabGroup($userData);
             }
         } elseif ($url || ($this->repository && $this->repository->url)) {
@@ -60,7 +62,7 @@ class GitLabDriver extends Driver
                 $url = $this->repository->url;
             }
             [$username, $repository_name] = Helpers::getRepositoryUserAndName($url);
-            $repoData = $this->getClient()->projects()->show($username . '/' . $repository_name);
+            $repoData = $this->getClient()->projects()->show($username.'/'.$repository_name);
             $ownerType = $repoData['namespace']['kind'] ?? null;
             if ($ownerType) {
                 if ($ownerType == 'user') {

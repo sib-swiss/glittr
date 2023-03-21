@@ -1,8 +1,8 @@
 <div>
     @if ($submitted)
         <div class="text-center my-8 lg:my-12">
-            <h1 class="font-bold text-xl lg:text-2xl tracking-tighter text-primary">Thank you!</h1>
-            <div class="prose prose-lg mx-auto">Your submission was successfully sent.</div>
+            <h1 class="font-bold text-xl lg:text-2xl tracking-tighter text-primary">{{ __('Thank you!') }}</h1>
+            <div class="prose prose-lg mx-auto">{{ __('Your submission was successfully sent.')}}</div>
         </div>
     @else
         <x-form-section submit="save">
@@ -27,12 +27,19 @@
             <x-slot name="form">
                 <div class="col-span-6">
                     <x-jet-label for="url" value="{{ __('Repository url') }}" />
-                    <x-jet-input id="url" type="text" class="mt-1 block w-full" placeholder="https://github.com/..." wire:model.defer="url" autofocus />
+                    <x-jet-input id="url" type="text" class="mt-1 block w-full" placeholder="https://github.com/..." wire:model="url" autofocus />
                     <div class="text-sm font-light mt-1">
                         <strong>github.com</strong> or <strong>gitlab.com</strong> repository url
                     </div>
                     <x-jet-input-error for="url" class="mt-1" />
                 </div>
+
+                @if ($existingWarning)
+                <div class="col-span-6 text-sm border rounded p-4 mt-1 bg-orange-50 border-orange-500 text-orange-500">
+                    A repository with this url already exists in the collection.<br />
+                    If you want to update information regarding this entry, please leave a comment.
+                </div>
+                @endif
 
                 <div class="col-span-6">
                     <x-jet-label for="tags" value="{{ __('Proposed topics') }}" />
@@ -41,7 +48,7 @@
                 </div>
 
                 <div class="col-span-6">
-                    <div class="text-sm border rounded p-4 mt-1 bg-blue-50 text-blue-500">
+                    <div class="text-sm border rounded p-4 mt-1 bg-blue-50 border-blue-500 text-blue-500">
                         {{ __('Your name and email will only be used to keep you informed about these submit process.') }}
                     </div>
                 </div>

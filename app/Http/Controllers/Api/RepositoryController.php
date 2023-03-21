@@ -43,7 +43,6 @@ class RepositoryController extends Controller
         } else {
             return RepositoryFullResource::collection($queryBuilder->get());
         }
-
     }
 
     /**

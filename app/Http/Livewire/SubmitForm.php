@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use App\Actions\CreateSubmission;
 use App\Data\SubmissionData;
+use App\Models\Repository;
 use App\Models\Tag;
 use Illuminate\Support\Facades\App;
 use Illuminate\View\View;
@@ -47,6 +48,13 @@ class SubmitForm extends Component
     public $comment = '';
 
     /**
+     * Display warning if repository already exists
+     *
+     * @var bool
+     */
+    public $existingWarning = false;
+
+    /**
      * Form submitted
      *
      * @var bool
@@ -60,6 +68,16 @@ class SubmitForm extends Component
     public function tagsUpdated(array $tagIds): void
     {
         $this->tags = $tagIds;
+    }
+
+    public function updatedUrl($value)
+    {
+        // Check no repository with the same url exists
+        if (Repository::where('url', $value)->exists()) {
+            $this->existingWarning = true;
+        } else {
+            $this->existingWarning = false;
+        }
     }
 
     public function render(): View
