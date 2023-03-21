@@ -44,4 +44,9 @@ class Submission extends Model
     {
         $query->whereNull('validated_at');
     }
+
+    public function repositoryExists(): bool
+    {
+        return Repository::where('url', $this->url)->exists();
+    }
 }

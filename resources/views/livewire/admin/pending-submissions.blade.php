@@ -16,6 +16,11 @@
                             <a href="{{ $submission->url }}" class="font-semibold underline" target="_blank">
                                 {{ $submission->url }}
                             </a>
+                            @if ($submission->repositoryExists())
+                                <div class="text-sm font-semibold text-orange-600">
+                                    {{ __('This repository already exists in the collection.') }}
+                                </div>
+                            @endif
                             @if ($submission->comment != '')
                                 <div class="text-sm ">
                                     <span class="text-xs uppercase font-semibold tracking-wide text-gray-500 mt-1">{{ __('Comment: ')}}</span>

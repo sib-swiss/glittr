@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
 // Return json formatted list grouped by main category for readme generation
 Route::get('list', [RepositoryController::class, 'list']);
 

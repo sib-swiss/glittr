@@ -3,10 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\TagResource;
 use App\Models\Category;
-use App\Models\Tag;
-use Spatie\QueryBuilder\QueryBuilder;
 
 class TagController extends Controller
 {
@@ -23,13 +20,13 @@ class TagController extends Controller
             $tags = [];
             $repositories = 0;
             foreach ($catetgory->tags as $tag) {
-                $tags [] = [
+                $tags[] = [
                     'name' => $tag->name,
                     'repositories' => $tag->repositories_count,
                 ];
                 $repositories += $tag->repositories_count;
             }
-            $return [] = [
+            $return[] = [
                 'category' => $catetgory->name,
                 'repositories' => $repositories,
                 'tags' => $tags,

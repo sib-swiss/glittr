@@ -31,8 +31,18 @@ class RepositoryForm extends Component
         'tags' => [],
     ];
 
+    /**
+     * Display tests results
+     *
+     * @var boolean
+     */
     public $showTests = false;
 
+    /**
+     * Tests results data
+     *
+     * @var array
+     */
     public $tests = [];
 
     /**
@@ -63,6 +73,13 @@ class RepositoryForm extends Component
      */
     public $submissionMessage = '';
 
+    /**
+     * Display warning if repository already exists
+     *
+     * @var boolean
+     */
+    public $existingWarning = false;
+
     protected $listeners = [
         'tagsUpdated',
     ];
@@ -78,7 +95,6 @@ class RepositoryForm extends Component
                 'website' => (string) $r->website,
                 'tags' => $r->tags->pluck('id')->toArray(),
             ];
-
             $this->action = 'edit';
         } else {
             $this->action = 'add';
@@ -97,12 +113,20 @@ class RepositoryForm extends Component
             $this->cancelEvent = $cancelEvent;
         }
 
+        $this->checkExisting();
         $this->resetTests();
     }
 
     public function tagsUpdated(array $tagIds): void
     {
         $this->repository['tags'] = $tagIds;
+    }
+
+    public function updated($name, $value): void
+    {
+        if ($name == 'repository.url') {
+            $this->checkExisting();
+        }
     }
 
     public function testRemote()
@@ -138,6 +162,22 @@ class RepositoryForm extends Component
         $this->showTests = true;
     }
 
+    protected function checkExisting(): void
+    {
+        $this->existingWarning = false;
+        if ($this->repository['url'] != '') {
+            // remove trailing slash if any
+            if (substr($this->repository['url'], -1) == '/') {
+                $url = substr($this->repository['url'], 0, -1);
+            } else {
+                $url = $this->repository['url'];
+            }
+            if (Repository::where('url', $url)->exists()) {
+                $this->existingWarning = true;
+            }
+        }
+    }
+
     protected function resetTests()
     {
         $this->tests = [
@@ -151,6 +191,10 @@ class RepositoryForm extends Component
 
     public function save(): void
     {
+        if ($this->existingWarning) {
+            $this->addError('url', 'Repository already exists.');
+            return;
+        }
         $validatedData = $this->validate();
         $displayName = $validatedData['repository']['url'];
         if ($this->action == 'add') {
