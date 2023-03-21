@@ -37,7 +37,7 @@ class GitLabDriver extends Driver
 
         if ($url) {
             [$username, $repository_name] = Helpers::getRepositoryUserAndName($url);
-            $repoData = $this->getClient()->projects()->show($username.'/'.$repository_name);
+            $repoData = $this->getClient()->projects()->show($username . '/' . $repository_name);
 
             return RemoteData::fromGitLab($repoData);
         }
@@ -48,27 +48,40 @@ class GitLabDriver extends Driver
     public function getAuthorData(?Url $url = null): ?AuthorData
     {
         if (! $url && $this->author && $this->author->remote_id != '') {
-            $userData = $this->getClient()->users()->show($this->author->remote_id);
+            if ($this->author->type == 'user') {
+                $userData = $this->getClient()->users()->show($this->author->remote_id);
+                return AuthorData::fromGitLabUser($userData);
+            } else {
+                $userData = $this->getClient()->groups()->show($this->author->remote_id);
+                return AuthorData::fromGitLabGroup($userData);
+            }
         } elseif ($url || ($this->repository && $this->repository->url)) {
             if (! $url) {
                 $url = $this->repository->url;
             }
             [$username, $repository_name] = Helpers::getRepositoryUserAndName($url);
-            $userData = $this->getClient()->users()->all(['username' => $username]);
-
-            if (isset($userData[0]) && isset($userData[0]['id'])) {
-                $userId = $userData[0]['id'];
-                $userData = $this->getClient()->users()->show($userId);
+            $repoData = $this->getClient()->projects()->show($username . '/' . $repository_name);
+            $ownerType = $repoData['namespace']['kind'] ?? null;
+            if ($ownerType) {
+                if ($ownerType == 'user') {
+                    $userData = $this->getClient()->users()->all(['username' => $username]);
+                    if (isset($userData[0]) && isset($userData[0]['id'])) {
+                        $userId = $userData[0]['id'];
+                        $userData = $this->getClient()->users()->show($userId);
+                        if (isset($userData['name']) && isset($userData['id'])) {
+                            return AuthorData::fromGitLabUser($userData);
+                        }
+                    }
+                } else {
+                    $userData = $this->getClient()->groups()->show($username);
+                    if (isset($userData['name']) && isset($userData['id'])) {
+                        return AuthorData::fromGitLabGroup($userData);
+                    }
+                }
             } else {
-                throw new Exception('Empty response returned.');
+                throw new Exception('Unable to determine author type.');
             }
         }
-
-        if (isset($userData['name']) && isset($userData['id'])) {
-            return AuthorData::fromGitLab($userData);
-        }
-
-        return null;
     }
 
     /**
