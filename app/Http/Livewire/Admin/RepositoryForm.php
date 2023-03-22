@@ -165,7 +165,7 @@ class RepositoryForm extends Component
     protected function checkExisting(): void
     {
         $this->existingWarning = false;
-        if ($this->repository['url'] != '') {
+        if ($this->action == 'add' && $this->repository['url'] != '') {
             // remove trailing slash if any
             if (substr($this->repository['url'], -1) == '/') {
                 $url = substr($this->repository['url'], 0, -1);
