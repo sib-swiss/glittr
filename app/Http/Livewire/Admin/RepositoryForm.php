@@ -165,14 +165,19 @@ class RepositoryForm extends Component
     protected function checkExisting(): void
     {
         $this->existingWarning = false;
-        if ($this->action == 'add' && $this->repository['url'] != '') {
+        if ($this->repository['url'] != '') {
+            $query = Repository::where('url', $this->repository['url']);
+            // in edit mode, remove current id from check
+            if ($this->action == 'edit') {
+                $query->where('id', '!=', $this->repository['id']);
+            }
             // remove trailing slash if any
             if (substr($this->repository['url'], -1) == '/') {
                 $url = substr($this->repository['url'], 0, -1);
             } else {
                 $url = $this->repository['url'];
             }
-            if (Repository::where('url', $url)->exists()) {
+            if ($query->exists()) {
                 $this->existingWarning = true;
             }
         }
