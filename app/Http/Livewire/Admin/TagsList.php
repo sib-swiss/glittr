@@ -95,7 +95,7 @@ class TagsList extends Component
      *
      * @var int
      */
-    public $TagIdBeingDeleted;
+    public $tagIdBeingDeleted;
 
     protected $listeners = [
         'editCategoryCancel',
@@ -209,7 +209,7 @@ class TagsList extends Component
     public function confirmTagDeletion(int $tagId): void
     {
         $this->confirmingTagDeletion = true;
-        $this->TagIdBeingDeleted = $tagId;
+        $this->tagIdBeingDeleted = $tagId;
     }
 
     public function deleteTag(): void
@@ -223,7 +223,7 @@ class TagsList extends Component
         }
 
         $this->confirmingTagDeletion = false;
-        $this->TagIdBeingDeleted = null;
+        $this->tagIdBeingDeleted = null;
     }
 
     public function sortTags(array $tagIds)
