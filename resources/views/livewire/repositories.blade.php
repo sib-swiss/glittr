@@ -65,7 +65,7 @@
                 @endif
                 @if (count($selected_tags) > 0)
                     <div class="flex items-center mt-2 -mx-1 flex-wrap">
-                        <div class="px-1 font-semibold uppercase tracking-wide text-sm">{{ __('Selected topcis')}} ({{ count($selected_tags) }})</div>
+                        <div class="px-1 font-semibold uppercase tracking-wide text-sm">{{ __('Selected topics')}} ({{ count($selected_tags) }})</div>
                         <div class="px-1">
                             <button title="{{ __('Clear selected topics') }}" wire:click="clearTags" class="text-sm p-2 bg-gray-100 border-gray-800 border text-left flex items-stretch">
                                 <span>{{ $selected_tags->pluck('name')->implode(', ') }}</span>
