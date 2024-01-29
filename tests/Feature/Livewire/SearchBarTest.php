@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Livewire;
 
-use App\Http\Livewire\SearchBar;
+use App\Livewire\SearchBar;
 use Livewire\Livewire;
 use Tests\TestCase;
 

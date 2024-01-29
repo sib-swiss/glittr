@@ -16,15 +16,21 @@ Copy `.env.example` to `.env` and set your access tokens and server configuratio
 
 ### Local
 
-You can run in local using [Laravel Sail](https://laravel.com/docs/9.x/sail) (Laravel's docker image).
+You can run in local using [DDEV](https://ddev.readthedocs.io/en/stable/).
 
 ```bash
-sail up
-sail composer install
-sail artisan migrate:fresh --seed
-sail artisan repo:import
-sail npm install
-sain npm run dev
+ddev start
+ddev composer install
+ddev artisan migrate:fresh --seed
+ddev artisan repo:import
+ddev npm install
+ddev npm run dev
+```
+
+To have repositories updated when added/modified you need to run the queue worker.
+
+```bash
+ddev artisan queue:work
 ```
 
 ### Production

@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Livewire;
 
-use App\Http\Livewire\TagSelect;
+use App\Livewire\TagSelect;
 use Livewire\Livewire;
 use Tests\TestCase;
 
