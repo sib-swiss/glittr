@@ -1,9 +1,6 @@
 import { defineConfig } from 'vite';
 import laravel, { refreshPaths } from 'laravel-vite-plugin';
 
-import path from 'path'
-const port = 5173;
-const origin = `${process.env.DDEV_PRIMARY_URL}:${port}`;
 
 export default defineConfig({
     // Adjust Vites dev server for DDEV

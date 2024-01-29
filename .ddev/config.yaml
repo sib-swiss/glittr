@@ -10,8 +10,8 @@ host_db_port: "33079"
 web_extra_exposed_ports:
   - name: vite
     container_port: 5173
-    http_port: 5174
-    https_port: 5175
+    http_port: 5172
+    https_port: 5173
 database:
     type: mariadb
     version: "10.4"
