@@ -1,15 +1,15 @@
 <div>
     <x-header title="Repositories">
         <x-header.actions>
-            <x-jet-button wire:click="$set('showAdd', true)" class="space-x-2">
+            <x-button wire:click="$set('showAdd', true)" class="space-x-2">
                 <x-heroicon-o-plus class="w-6 h-6" />
                 <span>{{ __('Add a repository') }}</span>
-            </x-jet-button>
+            </x-button>
         </x-header.actions>
     </x-header>
     <x-admin.container>
         <div class="my-4 bg-white border-gray-400">
-            <x-jet-input placeholder="Search" class="w-full p-4" autofocus wire:model.debounce.500ms="search" />
+            <x-input placeholder="Search" class="w-full p-4" autofocus wire:model.live.debounce.500ms="search" />
         </div>
         <x-table class="mb-4">
             <thead>
@@ -59,20 +59,20 @@
                     <x-table.cell width="60">
                         <div class="flex items-center space-x-2">
                             @if ($repository->enabled)
-                                <x-jet-secondary-button title="{{ __('Disable repository') }}" wire:click="disableRepository({{ $repository->id }})">
+                                <x-secondary-button title="{{ __('Disable repository') }}" wire:click="disableRepository({{ $repository->id }})">
                                     <x-heroicon-m-eye-slash class="w-4 h-4" />
-                                </x-jet-secondary-button>
+                                </x-secondary-button>
                             @else
-                                <x-jet-secondary-button title="{{ __('Enable repository') }}" wire:click="enableRepository({{ $repository->id }})">
+                                <x-secondary-button title="{{ __('Enable repository') }}" wire:click="enableRepository({{ $repository->id }})">
                                     <x-heroicon-m-eye class="w-4 h-4" />
-                                </x-jet-secondary-button>
+                                </x-secondary-button>
                             @endif
-                            <x-jet-button title="{{ __('Edit repository') }}" wire:click="editRepository({{ $repository->id }})">
+                            <x-button title="{{ __('Edit repository') }}" wire:click="editRepository({{ $repository->id }})">
                                 <x-heroicon-m-pencil class="w-4 h-4" />
-                            </x-jet-button>
-                            <x-jet-danger-button title="{{ __('Remove repository') }}" wire:click="confirmRepositoryDeletion({{ $repository->id }})">
+                            </x-button>
+                            <x-danger-button title="{{ __('Remove repository') }}" wire:click="confirmRepositoryDeletion({{ $repository->id }})">
                                 <x-heroicon-o-trash class="w-4 h-4" />
-                            </x-jet-danger-button>
+                            </x-danger-button>
                         </div>
                     </x-table.cell>
                 </x-table.row>
@@ -83,17 +83,17 @@
     </x-admin.container>
 
     <!-- Add Repository Form Modal -->
-    <x-jet-modal wire:model="showAdd" persisted="true">
+    <x-modal wire:model.live="showAdd" persisted="true">
         @livewire('admin.repository-form', [null, 'addRepositoryCancel'], key("repositoryAdd-{$addIncrement}"))
-    </x-jet-modal>
+    </x-modal>
     <!-- Edit Repository Form Modal -->
-    <x-jet-modal wire:model="showEdit" persisted="true">
+    <x-modal wire:model.live="showEdit" persisted="true">
         @if($repositoryBeingUpdated)
             @livewire('admin.repository-form', [$repositoryBeingUpdated, 'editRepositoryCancel'], key("repositoryEdit-{$repositoryBeingUpdated}"))
         @endif
-    </x-jet-modal>
+    </x-modal>
     <!-- Confirm Repository removal -->
-    <x-jet-confirmation-modal wire:model="confirmingRepositoryDeletion">
+    <x-confirmation-modal wire:model.live="confirmingRepositoryDeletion">
         <x-slot name="title">
             {{ __('Delete Repository') }}
         </x-slot>
@@ -103,14 +103,14 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button wire:click="$toggle('confirmingRepositoryDeletion')" wire:loading.attr="disabled">
+            <x-secondary-button wire:click="$toggle('confirmingRepositoryDeletion')" wire:loading.attr="disabled">
                 {{ __('Cancel') }}
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-danger-button class="ml-3" wire:click="deleteRepository" wire:loading.attr="disabled">
+            <x-danger-button class="ml-3" wire:click="deleteRepository" wire:loading.attr="disabled">
                 {{ __('Delete') }}
-            </x-jet-danger-button>
+            </x-danger-button>
         </x-slot>
-    </x-jet-confirmation-modal>
+    </x-confirmation-modal>
 
 </div>

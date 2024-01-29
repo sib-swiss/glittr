@@ -74,28 +74,28 @@
        {{ $submissions->links() }}
 
        <!-- Add Repository Form Modal -->
-        <x-jet-modal wire:model="showAccept" persisted="true">
+        <x-modal wire:model.live="showAccept" persisted="true">
             @if ($acceptingSubmissionId)
                 @livewire('admin.repository-form', [null, 'addRepositoryCancel', $acceptingSubmissionId], key("submissionAccept-{$acceptingSubmissionId}"))
             @endif
-        </x-jet-modal>
+        </x-modal>
         <!-- Edit Repository Form Modal -->
-        <x-jet-modal wire:model="showDecline" persisted="true">
+        <x-modal wire:model.live="showDecline" persisted="true">
             <x-modal.content title="Decline Submission">
-                <form wire:submit.prevent="decline">
+                <form wire:submit="decline">
                     <div class="space-y-4">
                         <div>
-                            <x-jet-label for="declineComment" value="{{ __('Comment')}}" />
-                            <x-textarea wire:model="declineComment" class="w-full" />
+                            <x-label for="declineComment" value="{{ __('Comment')}}" />
+                            <x-textarea wire:model.live="declineComment" class="w-full" />
                         </div>
                     </div>
                     <x-slot name="footer">
-                        <x-jet-secondary-button wire:click.prevent="cancelDecline">{{ __('Cancel') }}</x-jet-seconday-button>
-                        <x-jet-button wire:click.prevent="decline">Confirm decline</x-jet-button>
+                        <x-secondary-button wire:click.prevent="cancelDecline">{{ __('Cancel') }}</x-seconday-button>
+                        <x-button wire:click.prevent="decline">Confirm decline</x-button>
                     </x-slot>
                 </form>
             </x-modal.content>
-        </x-jet-modal>
+        </x-modal>
     @else
         <div class="text-lg space-y-4 flex flex-col items-center border p-4 rounded border-green-500 text-green-500 bg-green-50 mt-4">
             <x-heroicon-o-hand-thumb-up class="w-8 h-8" />

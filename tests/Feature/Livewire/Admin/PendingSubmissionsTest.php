@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Livewire\Admin;
 
-use App\Http\Livewire\Admin\PendingSubmissions;
+use App\Livewire\Admin\PendingSubmissions;
 use Livewire\Livewire;
 use Tests\TestCase;
 

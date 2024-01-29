@@ -19,6 +19,8 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('repo:update')->dailyAt('13:00');
         $schedule->command('repo:update-authors')->dailyAt('13:30');
+
+        $schedule->command('cache:prune-stale-tags')->hourly();
     }
 
     /**

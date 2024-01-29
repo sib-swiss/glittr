@@ -43,7 +43,7 @@
             </x-page-header>
             <div id="items-list" class="mt-4 bg-gray-50 p-4 border-t border-b">
                 <div x-data @keydown.window="handleFocus" class="relative">
-                    <input class="w-full border-gray-400 rounded pl-14 pr-14 h-14 py-4 lg:text-lg focus:border-blue-500" type="text" placeholder="{{ __('Global search ("/" to focus)') }}" x-ref="input" wire:model.debounce.500ms="search" />
+                    <input class="w-full border-gray-400 rounded pl-14 pr-14 h-14 py-4 lg:text-lg focus:border-blue-500" type="text" placeholder="{{ __('Global search ("/" to focus)') }}" x-ref="input" wire:model.live.debounce.500ms="search" />
                     <div class="w-14 h-14 absolute left-0 top-0 flex items-center justify-center text-gray-400">
                         <x-heroicon-o-magnifying-glass class="w-6 h-6" />
                     </div>
@@ -57,10 +57,10 @@
                 </div>
                 @if (count($repositories) > 0)
                     <div class="mt-2 2xl:hidden">
-                        <x-jet-button type="button" class="flex text-sm lg:text-base w-full justify-center" @click="toggleFilter">
+                        <x-button type="button" class="flex text-sm lg:text-base w-full justify-center" @click="toggleFilter">
                             <x-heroicon-o-adjustments-horizontal class="w-5 h-5 mr-3" />
                             <span>{{ __('Filter by topic') }}</span>
-                        </x-jet-button>
+                        </x-button>
                     </div>
                 @endif
                 @if (count($selected_tags) > 0)
@@ -118,7 +118,7 @@
                             <label for="paginationSelect" class="text-sm uppercase font-semibold tracking-wide">
                                 {{ __('Per page') }}
                             </label>
-                            <x-select id="paginationSelect" class="" wire:model="per_page">
+                            <x-select id="paginationSelect" class="" wire:model.live="per_page">
                                 @foreach (config('glittr.paginations') as $pagination_nb)
                                     <option value="{{ $pagination_nb }}">{{ $pagination_nb }}</option>
                                 @endforeach
@@ -127,7 +127,7 @@
                     @endif
                 </div>
                 <div  class="repositories-list  lg:bg-white w-full lg:table lg:border lg:border-gray-200" x-data="{
-                    show_filters: @entangle('show_filters'),
+                    show_filters: @entangle('show_filters').live,
                 }">
                     <div class="hidden lg:table-header-group">
                         <x-list.header title="{{ __('Repository') }}" sort_by='name' sortable current_sort_by="{{ $sort_by }}" current_sort_direction="{{ $sort_direction }}" />
@@ -151,25 +151,25 @@
                     }">
                         <div class="lg:table-cell bg-gray-50 lg:border-b p-2 col-span-2">
                             <label for="filterName" class="lg:hidden text-sm uppercase font-semibold tracking-wide">{{ __('Search by repository name') }}</label>
-                            <input type="text" id="filterName" wire:model.debounce.300ms="name" class="w-full border border-gray-300 rounded p-2" placeholder="{{ __('Search by name') }}" />
+                            <input type="text" id="filterName" wire:model.live.debounce.300ms="name" class="w-full border border-gray-300 rounded p-2" placeholder="{{ __('Search by name') }}" />
                         </div>
                         <div class="hidden lg:table-cell bg-gray-50 lg:border-b p-2"></div>
                         <div class="lg:table-cell bg-gray-50 lg:border-b p-2 col-span-2">
                             <label for="filterName" class="lg:hidden text-sm uppercase font-semibold tracking-wide">{{ __('Search by author') }}</label>
-                            <input type="text" id="filterAuthor" wire:model.debounce.300ms="author" class="w-full border border-gray-300 rounded p-2" placeholder="{{ __('Search by author') }}" />
+                            <input type="text" id="filterAuthor" wire:model.live.debounce.300ms="author" class="w-full border border-gray-300 rounded p-2" placeholder="{{ __('Search by author') }}" />
                         </div>
                         <div class="hidden lg:table-cell bg-gray-50 lg:border-b p-2"></div>
                         <div class="lg:table-cell bg-gray-50 lg:border-b p-2">
                             <label for="filterMinStars" class="lg:hidden text-sm uppercase font-semibold tracking-wide">{{ __('Minimum stargazers') }}</label>
-                            <input type="number" id="filterMinStars" wire:model.debounce.300ms="minStars" min="0" class="w-24 border border-gray-300 rounded p-2" placeholder="{{ __('Min.') }}" />
+                            <input type="number" id="filterMinStars" wire:model.live.debounce.300ms="minStars" min="0" class="w-24 border border-gray-300 rounded p-2" placeholder="{{ __('Min.') }}" />
                         </div>
                         <div class="lg:table-cell bg-gray-50 lg:border-b p-2">
                             <label for="filterMaxPush" class="lg:hidden text-sm uppercase font-semibold tracking-wide">{{ __('Maximum days since last push') }}</label>
-                            <input type="number" id="filterMaxPush" wire:model.debounce.300ms="maxPush" min="0" class="w-24 border border-gray-300 rounded p-2" placeholder="{{ __('Max.') }}" />
+                            <input type="number" id="filterMaxPush" wire:model.live.debounce.300ms="maxPush" min="0" class="w-24 border border-gray-300 rounded p-2" placeholder="{{ __('Max.') }}" />
                         </div>
                         <div class="lg:table-cell bg-gray-50 lg:border-b p-2 col-span-2">
                             <label for="filterLicense" class="lg:hidden text-sm uppercase font-semibold tracking-wide">{{ __('License') }}</label>
-                            <select wire:model="license" class="w-full border border-gray-300 rounded p-2">
+                            <select wire:model.live="license" class="w-full border border-gray-300 rounded p-2">
                                 <option value="">{{ __('All') }}</option>
                                 @foreach ($licenses as $license)
                                     <option value="{{ $license }}">{{ $license }}</option>
@@ -307,7 +307,7 @@
                 @foreach($grouped_tags->sortBy('order') as $cid => $category)
                     <div class="tag-category-{{ $cid }} ">
                         <label for="filter-category-{{ $cid }}" class="cursor-pointer p-4 border-t border-b border-category-color bg-category-color text-white text-sm font-semibold flex items-center">
-                            <x-jet-checkbox id="filter-category-{{ $cid }}" wire:model="categories.{{ $cid }}.selected" />
+                            <x-checkbox id="filter-category-{{ $cid }}" wire:model.live="categories.{{ $cid }}.selected" />
                             <span class="mx-2">{{ $category['category']['name'] }}</span>
                             <span class="ml-auto font-bold">
                                 {{ $category['category']['total'] }}
@@ -319,7 +319,7 @@
                                     for="filter-tag-{{ $tagIndex }}"
                                     class="cursor-pointer text-sm lg:text-base px-4 py-3 flex items-center border-b bg-white hover:bg-gray-50 border-r">
 
-                                    <x-jet-checkbox value="1" id="filter-tag-{{ $tagIndex }}" wire:model="tags.{{ $tagIndex }}.selected" />
+                                    <x-checkbox value="1" id="filter-tag-{{ $tagIndex }}" wire:model.live="tags.{{ $tagIndex }}.selected" />
                                     <span class="mx-2 leading-tight text-sm font-semibold">{{ $tag['name'] }}</span>
                                     <span class="ml-auto font-bold text-xs p-1 rounded bg-gray-100">{{ $tag['filtered'] }}</span>
                                 </label>

@@ -32,7 +32,7 @@
         {{ __('The first topic will be used as the main topic for exports.') }}
     </div>
     <div class="flex items-center space-x-2 mt-1">
-        <x-select class="w-1/2 " wire:model="add" @keydown.enter="add">
+        <x-select class="w-1/2 " wire:model.live="add" @keydown.enter="add">
             <option>- {{ __('Select a topic') }} -</option>
             @foreach ($categories as $category)
             <optgroup label="{{ $category->name }}">
@@ -45,10 +45,10 @@
             @endforeach
         </x-select>
 
-        <x-jet-button type="button" class="{{ $add > 0 ? 'opacity-100':'opacity-50' }} flex items-center justify-center space-x-1 w-1/2" wire:click.prevent="add">
+        <x-button type="button" class="{{ $add > 0 ? 'opacity-100':'opacity-50' }} flex items-center justify-center space-x-1 w-1/2" wire:click.prevent="add">
             <x-heroicon-o-plus class="w-5 h-5" />
             <span>Add this topic</span>
-        </x-jet-button>
+        </x-button>
     </div>
     @if ($mainTag)
         <div class="text-sm my-2">

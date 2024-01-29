@@ -1,13 +1,13 @@
 <x-modal.content title="{{ $action }} Repository">
-    <form wire:submit.prevent="save">
+    <form wire:submit="save">
         <div class="space-y-4">
             <div>
-                <x-jet-label for="url" value="{{ __('Repository Url') }}" />
+                <x-label for="url" value="{{ __('Repository Url') }}" />
                 <div class="flex items-center space-x-2">
-                    <x-jet-input id="url" type="text" class="mt-1 block w-full" wire:model="repository.url" />
-                    <x-jet-secondary-button type="button" wire:loading.remove="testRemote" wire:click="testRemote">Test</x-jet-secondary-button>
+                    <x-input id="url" type="text" class="mt-1 block w-full" wire:model.live="repository.url" />
+                    <x-secondary-button type="button" wire:loading.remove="testRemote" wire:click="testRemote">Test</x-secondary-button>
                 </div>
-                <x-jet-input-error for="repository.url" class="mt-2" />
+                <x-input-error for="repository.url" class="mt-2" />
             </div>
             @if ($existingWarning)
             <div class="text-sm font-bold p-2 border rounded bg-orange-100 border-orange-500 text-orange-500">
@@ -33,9 +33,9 @@
             </div>
             @endif
             <div class="flex flex-wrap items-center space-x-1">
-                <x-jet-label for="tags" value="{{ __('Tags') }}" />
+                <x-label for="tags" value="{{ __('Tags') }}" />
                 @livewire('tag-select', ['values' => $repository['tags']])
-                <x-jet-input-error for="repository.tags" class="mt-2 w-full" />
+                <x-input-error for="repository.tags" class="mt-2 w-full" />
             </div>
             {{--<div class="bg-orange-50 text-orange-500 text-sm p-4 border border-orange-500">
                 ! All informations below will be updated with data from the API !
@@ -43,17 +43,17 @@
 
             @if ($submissionId)
                 <div>
-                    <x-jet-label for="submissionMessage" value="{{ __('Optional comment to save with submission')}}" />
-                    <x-textarea class="w-full" id="submissionMessage" wire:model="submissionMessage" />
+                    <x-label for="submissionMessage" value="{{ __('Optional comment to save with submission')}}" />
+                    <x-textarea class="w-full" id="submissionMessage" wire:model.live="submissionMessage" />
                 </div>
             @endif
         </div>
         <x-slot name="footer">
             @if($cancelEvent != '')
-                <x-jet-secondary-button wire:click.prevent="$emit('{{ $cancelEvent }}')">{{ __('Cancel') }}</x-jet-seconday-button>
+                <x-secondary-button wire:click.prevent="$dispatch('{{ $cancelEvent }}')">{{ __('Cancel') }}</x-seconday-button>
             @endif
             @if (!$existingWarning)
-                <x-jet-button wire:click.prevent="save">{{ Str::headline($action) }}</x-jet-button>
+                <x-button wire:click.prevent="save">{{ Str::headline($action) }}</x-button>
             @endif
         </x-slot>
     </form>

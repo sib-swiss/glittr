@@ -1,0 +1,16 @@
+name: redis
+repository: ddev/ddev-redis
+version: v1.2.0
+install_date: "2024-01-29T09:00:12+01:00"
+project_files:
+    - docker-compose.redis.yaml
+    - redis/scripts/settings.ddev.redis.php
+    - redis/scripts/setup-drupal-settings.sh
+    - redis/redis.conf
+    - commands/redis/redis-cli
+global_files: []
+removal_actions:
+    - |
+      #ddev-nodisplay
+      #ddev-description:Remove redis settings for Drupal 9+ if applicable
+      rm -f "${DDEV_APPROOT}/${DDEV_DOCROOT}/sites/default/settings.ddev.redis.php"

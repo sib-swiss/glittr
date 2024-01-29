@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Livewire\Admin;
 
-use App\Http\Livewire\Admin\RepositoryForm;
+use App\Livewire\Admin\RepositoryForm;
 use Livewire\Livewire;
 use Tests\TestCase;
 
