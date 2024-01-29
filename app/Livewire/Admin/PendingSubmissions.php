@@ -12,8 +12,8 @@ use Livewire\WithPagination;
 
 class PendingSubmissions extends Component
 {
-    use WithPagination;
     use InteractsWithNotifications;
+    use WithPagination;
 
     public $showAccept = false;
 

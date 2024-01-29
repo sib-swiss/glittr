@@ -36,7 +36,7 @@ class RepositoriesUpdated extends Mailable
     public function build()
     {
         return $this
-            ->subject((0 == $this->update->error) ? 'Updated finished without error' : "Error updating ({$this->update->error} errors)")
+            ->subject(($this->update->error == 0) ? 'Updated finished without error' : "Error updating ({$this->update->error} errors)")
             ->markdown('emails.repositories.updated', [
                 'update' => $this->update,
             ]

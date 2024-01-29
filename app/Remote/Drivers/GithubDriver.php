@@ -37,6 +37,16 @@ class GithubDriver extends Driver
         if ($url) {
             [$username, $repository_name] = Helpers::getRepositoryUserAndName($url);
             $repoData = $this->getClient()->repo()->show($username, $repository_name);
+            try {
+                $release = $this->getClient()->repo()->releases()->latest($username, $repository_name);
+                if (isset($release['name'])) {
+                    $repoData['revision_comments'] = $release['body'];
+                    $repoData['version'] = $release['name'];
+                    $repoData['version_published_at'] = $release['published_at'];
+                }
+            } catch (\Exception $e) {
+                // No release found
+            }
 
             return RemoteData::fromGithub($repoData);
         }

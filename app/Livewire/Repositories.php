@@ -298,7 +298,7 @@ class Repositories extends Component
         if ($this->author != '') {
             $repositories->whereHas('author', function (Builder $query) {
                 $query->where('name', 'like', '%'.$this->author.'%')
-                ->orWhere('display_name', 'like', '%'.$this->author.'%');
+                    ->orWhere('display_name', 'like', '%'.$this->author.'%');
             });
         }
         if ($this->minStars != '' && intval($this->minStars) > 0) {
@@ -338,13 +338,13 @@ class Repositories extends Component
 
             //Filter tags
             $countTags = Tag::select('id', 'category_id')
-            ->withCount(['repositories' => function (Builder $query) use ($ids) {
-                $query->whereIn('id', $ids);
-            }])
-            ->having('repositories_count', '>', 0)
-            ->get()
-            ->mapWithKeys(fn ($item) => [$item->id => ['nb' => $item->repositories_count, 'cid' => $item->category_id]])
-            ->all();
+                ->withCount(['repositories' => function (Builder $query) use ($ids) {
+                    $query->whereIn('id', $ids);
+                }])
+                ->having('repositories_count', '>', 0)
+                ->get()
+                ->mapWithKeys(fn ($item) => [$item->id => ['nb' => $item->repositories_count, 'cid' => $item->category_id]])
+                ->all();
 
             $countCategories = [];
 
