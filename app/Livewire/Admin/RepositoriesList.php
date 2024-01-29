@@ -10,8 +10,8 @@ use Livewire\WithPagination;
 
 class RepositoriesList extends Component
 {
-    use WithPagination;
     use InteractsWithNotifications;
+    use WithPagination;
 
     /**
      * Display repository add form modal

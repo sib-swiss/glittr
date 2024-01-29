@@ -6,7 +6,6 @@ namespace App\Livewire;
 
 use App\Models\Category;
 use App\Models\Tag;
-use App\Models\TagCategory;
 use Illuminate\View\View;
 use Livewire\Component;
 
@@ -54,7 +53,7 @@ class TagSelect extends Component
     /**
      * Undocumented function
      *
-     * @param  array  $selected Array of ordered selected tag ids [2, 1, 5]
+     * @param  array  $selected  Array of ordered selected tag ids [2, 1, 5]
      */
     public function mount(array $values = [], ?string $eventName = 'tagsUpdated'): void
     {

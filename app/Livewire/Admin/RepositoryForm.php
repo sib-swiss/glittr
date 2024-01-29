@@ -34,7 +34,7 @@ class RepositoryForm extends Component
     /**
      * Display tests results
      *
-     * @var boolean
+     * @var bool
      */
     public $showTests = false;
 
@@ -76,7 +76,7 @@ class RepositoryForm extends Component
     /**
      * Display warning if repository already exists
      *
-     * @var boolean
+     * @var bool
      */
     public $existingWarning = false;
 
@@ -139,13 +139,13 @@ class RepositoryForm extends Component
                 try {
                     $repo = Remote::driver($api)->getData($url);
                     $this->tests['repo'] = true;
-                } catch(Exception $e) {
+                } catch (Exception $e) {
                     $this->tests['errors'][] = 'REPO: '.$e->getMessage();
                 }
                 try {
                     $author = Remote::driver($api)->getAuthorData($url);
                     $this->tests['author'] = true;
-                } catch(Exception $e) {
+                } catch (Exception $e) {
                     $this->tests['errors'][] = 'AUTHOR: '.$e->getMessage();
                 }
                 if ($this->tests['repo'] && $this->tests['author']) {
@@ -198,6 +198,7 @@ class RepositoryForm extends Component
     {
         if ($this->existingWarning) {
             $this->addError('url', 'Repository already exists.');
+
             return;
         }
         $validatedData = $this->validate();

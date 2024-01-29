@@ -9,18 +9,18 @@ use Spatie\LaravelData\Optional;
 class AuthorData extends Data
 {
     public function __construct(
-      public ?string $remote_id,
-      public string $name,
-      public string|Optional $url,
-      public string|Optional $display_name,
-      public string|Optional $location,
-      public string|Optional $type,
-      public string|Optional $company,
-      public string|Optional $email,
-      public string|Optional $bio,
-      public string|Optional $avatar_url,
-      public string|Optional $twitter_username,
-      public string|Optional $website,
+        public ?string $remote_id,
+        public string $name,
+        public string|Optional $url,
+        public string|Optional $display_name,
+        public string|Optional $location,
+        public string|Optional $type,
+        public string|Optional $company,
+        public string|Optional $email,
+        public string|Optional $bio,
+        public string|Optional $avatar_url,
+        public string|Optional $twitter_username,
+        public string|Optional $website,
     ) {
     }
 
@@ -35,7 +35,7 @@ class AuthorData extends Data
             display_name: $name ?? '',
             location: $userData['location'] ?? '',
             type: $userData['type'] ?? '',
-            company:  $userData['company'] ?? '',
+            company: $userData['company'] ?? '',
             email: $userData['email'] ?? '',
             bio: $userData['bio'] ?? '',
             avatar_url: $userData['avatar_url'] ?? '',
@@ -53,7 +53,7 @@ class AuthorData extends Data
             display_name: $userData['name'] ?? '',
             location: $userData['location'] ?? '',
             type: 'user',
-            company:  $userData['organization'] ?? '',
+            company: $userData['organization'] ?? '',
             email: $userData['public_email'] ?? '',
             bio: $userData['bio'] ?? '',
             avatar_url: $userData['avatar_url'] ?? '',

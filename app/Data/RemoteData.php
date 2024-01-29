@@ -20,6 +20,13 @@ class RemoteData extends Data
         public string|Optional $author_id,
         #[Date]
         public CarbonImmutable|Optional $last_push,
+        #[Date]
+        public CarbonImmutable|Optional $repository_created_at,
+        #[Date]
+        public CarbonImmutable|Optional $repository_updated_at,
+        public string|Optional $version,
+        #[Date]
+        public CarbonImmutable|Optional $version_published_at,
     ) {
     }
 
@@ -37,6 +44,10 @@ class RemoteData extends Data
             license: isset($repoData['license']['key']) && $repoData['license']['key'] ? $repoData['license']['key'] : Optional::create(),
             author_id: isset($repoData['owner']['id']) ? $repoData['owner']['id'] : Optional::create(),
             last_push: isset($repoData['pushed_at']) && $repoData['pushed_at'] ? CarbonImmutable::parse($repoData['pushed_at']) : Optional::create(),
+            repository_created_at: isset($repoData['created_at']) && $repoData['created_at'] ? CarbonImmutable::parse($repoData['created_at']) : Optional::create(),
+            repository_updated_at: isset($repoData['updated_at']) && $repoData['updated_at'] ? CarbonImmutable::parse($repoData['updated_at']) : Optional::create(),
+            version: $repoData['version'] ?? Optional::create(),
+            version_published_at: isset($repoData['version_published_at']) && $repoData['version_published_at'] ? CarbonImmutable::parse($repoData['version_published_at']) : Optional::create(),
         );
     }
 
@@ -54,6 +65,10 @@ class RemoteData extends Data
             license: Optional::create(),
             author_id: isset($repoData['owner']['id']) ? $repoData['owner']['id'] : Optional::create(),
             last_push: isset($repoData['last_activity_at']) && $repoData['last_activity_at'] ? CarbonImmutable::parse($repoData['last_activity_at']) : Optional::create(), //last activity? not found better...
+            repository_created_at: isset($repoData['created_at']) && $repoData['created_at'] ? CarbonImmutable::parse($repoData['created_at']) : Optional::create(),
+            repository_updated_at: isset($repoData['updated_at']) && $repoData['updated_at'] ? CarbonImmutable::parse($repoData['updated_at']) : Optional::create(),
+            version: $repoData['version'] ?? Optional::create(),
+            version_published_at: isset($repoData['version_published_at']) && $repoData['version_published_at'] ? CarbonImmutable::parse($repoData['version_published_at']) : Optional::create(),
         );
     }
 }
