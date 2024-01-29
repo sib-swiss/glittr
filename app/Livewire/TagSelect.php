@@ -6,6 +6,7 @@ namespace App\Livewire;
 
 use App\Models\Category;
 use App\Models\Tag;
+use App\Models\TagCategory;
 use Illuminate\View\View;
 use Livewire\Component;
 
@@ -32,6 +33,20 @@ class TagSelect extends Component
      */
     public $eventName;
 
+    /**
+     * Main tag
+     *
+     * @var array
+     */
+    public $mainTag = null;
+
+    /**
+     * List of categories for select
+     *
+     * @var array
+     */
+    public $categories = [];
+
     protected $rules = [
         'add' => 'required|int',
     ];
@@ -46,35 +61,32 @@ class TagSelect extends Component
         foreach ($values as $tagId) {
             $this->addTag($tagId, false);
         }
+
+        $this->categories = Category::select('id', 'name', 'color')
+            ->ordered()
+            ->with(['tags' => function ($query) {
+                $query->select('id', 'category_id', 'name')
+                    ->ordered();
+            }])->get()
+            ->filter(fn ($category) => count($category->tags) > 0)
+            ->toArray();
+
+        $this->updateData();
+
         $this->eventName = $eventName;
     }
 
-    public function add(): void
+    public function addTagAction(): void
     {
         $validatedData = $this->validate();
         $this->addTag(intval($validatedData['add']));
+        $this->updateData();
         $this->add = null;
     }
 
     public function render(): View
     {
-        $selectedIds = $this->getIds();
-        $categories = Category::select('id', 'name', 'color')
-            ->ordered()
-            ->with(['tags' => function ($query) use ($selectedIds) {
-                $query->select('id', 'category_id', 'name')
-                ->ordered()
-                ->whereNotIn('id', $selectedIds);
-            }])->get()
-            ->filter(fn ($category) => count($category->tags) > 0);
-
-        if (! empty($this->selected)) {
-            $mainTag = reset($this->selected);
-        } else {
-            $mainTag = null;
-        }
-
-        return view('livewire.tag-select', compact('categories', 'mainTag'));
+        return view('livewire.tag-select');
     }
 
     protected function getIds()
@@ -95,6 +107,7 @@ class TagSelect extends Component
         ksort($sortArray);
         array_multisort($sortArray, SORT_ASC, SORT_NUMERIC, $this->selected);
 
+        $this->updateData();
         $this->emitUpdate();
     }
 
@@ -104,21 +117,44 @@ class TagSelect extends Component
             unset($this->selected[$index]);
         }
 
+        $this->updateData();
         $this->emitUpdate();
+    }
+
+    protected function updateData()
+    {
+        $selectedIds = array_keys($this->selected);
+        foreach ($this->categories as $i => $category) {
+            $visible = false;
+            foreach ($category['tags'] as $j => $tag) {
+                $tag_visible = ! in_array($tag['id'], $selectedIds);
+                $this->categories[$i]['tags'][$j]['visible'] = $tag_visible;
+                if ($tag_visible) {
+                    $visible = true;
+                }
+            }
+            $this->categories[$i]['visible'] = $visible;
+        }
+
+        if (count($this->selected) > 0) {
+            $this->mainTag = reset($this->selected);
+        } else {
+            $this->mainTag = null;
+        }
     }
 
     protected function addTag(int $tagId, bool $emit = true): void
     {
-        if (! $this->getIds()->contains($tagId)) {
+
+        if (! isset($this->selected[$tagId])) {
             $tag = Tag::select('id', 'category_id', 'name')->with('category:id,name,color')->where('id', $tagId)->first();
             if ($tag) {
-                array_push($this->selected, [
+                $this->selected[$tagId] = [
                     'id' => $tag->id,
                     'tag' => $tag->name,
                     'category' => $tag->category->name ?? '',
                     'color' => $tag->category->color ?? '#ff1986',
-                ]);
-
+                ];
                 if ($emit) {
                     $this->emitUpdate();
                 }
