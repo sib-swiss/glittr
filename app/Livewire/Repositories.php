@@ -88,6 +88,8 @@ class Repositories extends Component
     #[Url(except: null)]
     public $license;
 
+    #[Url(as: 'tags_operator')]
+    public $andOperator = true;
 
     protected $sortColumns = [
         'name',
@@ -223,6 +225,9 @@ class Repositories extends Component
             $this->resetPage();
             $this->groupTags();
             $this->setTagsIds();
+            if ($this->andOperator) {
+                $this->updateGroupedTags();
+            }
         }
     }
 
@@ -272,20 +277,16 @@ class Repositories extends Component
         $repositories = Repository::with(['tags', 'author'])->enabled();
         $repositories = $this->filterRepositories($repositories);
 
+        $selected_tags = collect($this->tags)
+        ->filter(fn ($tag) => $tag['selected']);
+
         // Display filters if any is set.
         if ($this->name != '' || $this->author != '' || $this->minStars != '' || $this->maxStars != '' || $this->minPush != '' || $this->maxPush != '' || $this->license != '') {
             $this->show_filters = true;
         }
 
-        // Apply selected tags to selection.
-        $selected_tags = collect($this->tags)
-            ->filter(fn ($tag) => $tag['selected']);
-
-        if (count($selected_tags) > 0) {
-            $selectedTagIds = $selected_tags->pluck('id');
-            $repositories->whereHas('tags', function (Builder $query) use ($selectedTagIds) {
-                $query->whereIn('id', $selectedTagIds);
-            });
+        if (!$this->andOperator) {
+            $this->applyTagsSelection($repositories);
         }
 
         // Order the results.
@@ -310,6 +311,24 @@ class Repositories extends Component
             'selected_tags' => $selected_tags,
             'sorting_columns' => $sorting_columns,
         ]);
+    }
+
+    protected function applyTagsSelection(&$repositories): void
+    {
+        // Apply selected tags to selection.
+        $selected_tags = collect($this->tags)
+        ->filter(fn ($tag) => $tag['selected']);
+
+        if (count($selected_tags) > 0) {
+            $selectedTagIds = $selected_tags->pluck('id');
+            $operator = config('glittr.tags_operator', 'OR');
+            $repositories->whereHas('tags', function (Builder $query) use ($selectedTagIds, $operator) {
+                $query->whereIn('id', $selectedTagIds);
+                if ($this->andOperator) {
+                    $query->havingRaw('COUNT(id) = ?', [count($selectedTagIds)]);
+                }
+            });
+        }
     }
 
     protected function filterRepositories($repositories)
@@ -337,6 +356,10 @@ class Repositories extends Component
             $repositories->where('license', $this->license);
         }
 
+        if ($this->andOperator) {
+            $this->applyTagsSelection($repositories);
+        }
+
         return $repositories;
     }
 
@@ -351,8 +374,9 @@ class Repositories extends Component
             $this->minPush,
             $this->maxPush,
             $this->license,
+            $this->andOperator ? $this->tagIds : '',
         ]);
-        $search = $this->search;
+
         // Keep in cache for 30 min.
         [$countTags, $countCategories] = Cache::tags(['repositories', 'tags', 'categories'])->remember("count.{$searchMeta}", (60 * 30), function () {
             $repositories = Repository::enabled();
