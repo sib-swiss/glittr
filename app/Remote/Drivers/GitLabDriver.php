@@ -38,6 +38,14 @@ class GitLabDriver extends Driver
         if ($url) {
             [$username, $repository_name] = Helpers::getRepositoryUserAndName($url);
             $repoData = $this->getClient()->projects()->show($username.'/'.$repository_name);
+            if (isset($repoData['id'])) {
+                $repoData['title'] = $repoData['name'];
+                $releases = $this->getClient()->tags()->all($repoData['id']);
+                if (! empty($releases)) {
+                    $repoData['version'] = $releases[0]['name'];
+                    $repoData['version_published_at'] = $releases[0]['commit']['created_at'];
+                }
+            }
 
             return RemoteData::fromGitLab($repoData);
         }
