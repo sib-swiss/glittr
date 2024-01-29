@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -48,44 +49,45 @@ class Repositories extends Component
 
     public $split_tags_filter;
 
-    public $search;
+    #[Url(except: '', as: 'tags')]
+    public $tagIds = '';
 
+    #[Url(except: '')]
+    public $search = '';
+
+    #[Url(except: '')]
     public $per_page;
 
+    #[Url(except: '')]
     public $sort_by;
 
+    #[Url(except: '')]
     public $sort_direction;
 
     public $show_filters = false;
 
     // Columns filters
+    #[Url(except: null)]
     public $name;
 
+    #[Url(except: null)]
     public $author;
 
+    #[Url(except: null)]
     public $minStars;
 
+    #[Url(except: null)]
     public $maxStars;
 
+    #[Url(except: null)]
     public $minPush;
 
+    #[Url(except: null)]
     public $maxPush;
 
+    #[Url(except: null)]
     public $license;
 
-    protected $queryString = [
-        'search',
-        'per_page',
-        'sort_by',
-        'sort_direction',
-        'name',
-        'author',
-        'minStars',
-        'maxStars',
-        'minPush',
-        'maxPush',
-        'license',
-    ];
 
     protected $sortColumns = [
         'name',
@@ -132,6 +134,15 @@ class Repositories extends Component
                     'selected' => false,
                     'cid' => $cat->id,
                 ];
+            }
+        }
+
+        if ($this->tagIds != "") {
+            $tagIds = explode(',', $this->tagIds);
+            foreach ($tagIds as $tagId) {
+                if (intval($tagId) > 0 && isset($this->tags[$tagId])) {
+                    $this->tags[$tagId]['selected'] = true;
+                }
             }
         }
 
@@ -211,6 +222,7 @@ class Repositories extends Component
         } elseif (count($splitted) === 3 && $splitted[0] == 'tags' && $splitted[2] == 'selected') {
             $this->resetPage();
             $this->groupTags();
+            $this->setTagsIds();
         }
     }
 
@@ -224,8 +236,20 @@ class Repositories extends Component
             }
         }
 
+        $this->setTagsIds();
         $this->resetPage();
         $this->groupTags();
+    }
+
+    public function setTagsIds(): void
+    {
+        $tagIds = [];
+        foreach ($this->tags as $tagId => $tag) {
+            if ($tag['selected']) {
+                $tagIds[] = $tagId;
+            }
+        }
+        $this->tagIds = implode(',', $tagIds);
     }
 
     public function clearTags()
@@ -240,6 +264,7 @@ class Repositories extends Component
                 $this->categories[$cid]['selected'] = false;
             }
         }
+        $this->tagIds = '';
     }
 
     public function render()
