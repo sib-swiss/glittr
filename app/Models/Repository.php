@@ -207,6 +207,15 @@ class Repository extends Model
             $jsonLd->addValue('version', $this->version);
         }
 
+        if ($this->license != '') {
+            if (isset(config('glittr.licences_url', [])[$this->license])) {
+                $jsonLd->addValue('license', [config('glittr.licences_url', [])[$this->license]]);
+            } else {
+                // do we add if not found?
+                $jsonLd->addValue('license', [$this->license]);
+            }
+        }
+
         return $jsonLd;
     }
 }

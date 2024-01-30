@@ -105,6 +105,31 @@ return [
         'site_id' => env('MATOMO_SITE_ID', false),
     ],
 
-    // tags operator for filtering.
+    /**
+     * Tags filtering default operator
+     */
     'tags_default_and_operator' => true,
+
+    /**
+     * List of licences urls
+     */
+    'licences_url' => [
+        'agpl-3.0'  => 'http://choosealicense.com/licenses/agpl-3.0/',
+        'apache-2.0'  => 'http://choosealicense.com/licenses/apache-2.0/',
+        'artistic-2.0'  => 'http://choosealicense.com/licenses/artistic-2.0/',
+        'bsd-2-clause'  => 'http://choosealicense.com/licenses/bsd-2-clause/',
+        'bsd-3-clause'  => 'http://choosealicense.com/licenses/bsd-3-clause/',
+        'bsl-1.0'  => 'http://choosealicense.com/licenses/bsl-1.0/',
+        'cc-by-4.0'  => 'http://choosealicense.com/licenses/cc-by-4.0/',
+        'cc-by-sa-4.0'  => 'http://choosealicense.com/licenses/cc-by-sa-4.0/',
+        'cc0-1.0'  => 'http://choosealicense.com/licenses/cc0-1.0/',
+        'epl-2.0'  => 'http://choosealicense.com/licenses/epl-2.0/',
+        'gpl-2.0'  => 'http://choosealicense.com/licenses/gpl-2.0/',
+        'gpl-3.0'  => 'http://choosealicense.com/licenses/gpl-3.0/',
+        'lgpl-2.1'  => 'http://choosealicense.com/licenses/lgpl-2.1/',
+        'mit'  => 'http://choosealicense.com/licenses/mit/',
+        'mpl-2.0'  => 'http://choosealicense.com/licenses/mpl-2.0/',
+        'unlicense'  => 'http://choosealicense.com/licenses/unlicense/',
+        'wtfpl'  => 'http://choosealicense.com/licenses/wtfpl/',
+    ],
 ];
