@@ -104,4 +104,7 @@ return [
         'url' => env('MATOMO_URL', false),
         'site_id' => env('MATOMO_SITE_ID', false),
     ],
+
+    // tags operator for filtering.
+    'tags_default_and_operator' => true,
 ];

@@ -303,11 +303,23 @@
                     </button>
                 </div>
             </div>
+            <div class="bg-gray-700 text-white">
+                <label for="filter-tags-and" class="cursor-pointer flex items-center p-2">
+                    <x-checkbox id="filter-tags-and" class="mr-2" value="1" wire:model.live="tags_and" />
+                    <div>
+                        <div class="text-sm ">Show repositories matching <strong>all</strong> selected topics</div>
+                    </div>
+                </label>
+            </div>
             <div class="flex-1  overflow-y-auto {{ $split_tags_filter ? 'space-y-4' : ''}}">
                 @foreach($grouped_tags->sortBy('order') as $cid => $category)
                     <div class="tag-category-{{ $cid }} ">
                         <label for="filter-category-{{ $cid }}" class="cursor-pointer p-4 border-t border-b border-category-color bg-category-color text-white text-sm font-semibold flex items-center">
-                            <x-checkbox id="filter-category-{{ $cid }}" wire:model.live="categories.{{ $cid }}.selected" />
+                            <div wire:key="filter-{{ $cid }}-checkbox">
+                                @if (!$tags_and)
+                                    <x-checkbox id="filter-category-{{ $cid }}" wire:model.live="categories.{{ $cid }}.selected" />
+                                @endif
+                            </div>
                             <span class="mx-2">{{ $category['category']['name'] }}</span>
                             <span class="ml-auto font-bold">
                                 {{ $category['category']['total'] }}
