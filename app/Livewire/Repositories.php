@@ -88,8 +88,8 @@ class Repositories extends Component
     #[Url(except: null)]
     public $license;
 
-    #[Url(as: 'tags_operator')]
-    public $andOperator = true;
+    #[Url]
+    public $tags_and;
 
     protected $sortColumns = [
         'name',
@@ -109,6 +109,10 @@ class Repositories extends Component
         }
         if (! $this->per_page) {
             $this->per_page = config('glittr.default_per_page', 20);
+        }
+
+        if (! $this->tags_and) {
+            $this->tags_and = config('glittr.tags_default_and_operator', 'OR') == 'AND';
         }
 
         $this->max_tags = config('glittr.max_tags', 10);
@@ -216,6 +220,16 @@ class Repositories extends Component
         $this->updateGroupedTags();
     }
 
+    public function updatedTagsAnd($isAnd)
+    {
+        if ($isAnd) {
+            foreach ($this->tags as $tagId => $tag) {
+                $this->tags[$tagId]['selected'] = false;
+            }
+        }
+        $this->updateGroupedTags();
+    }
+
     public function updated($name, $value)
     {
         $splitted = explode('.', $name);
@@ -225,7 +239,7 @@ class Repositories extends Component
             $this->resetPage();
             $this->groupTags();
             $this->setTagsIds();
-            if ($this->andOperator) {
+            if ($this->tags_and) {
                 $this->updateGroupedTags();
             }
         }
@@ -285,7 +299,7 @@ class Repositories extends Component
             $this->show_filters = true;
         }
 
-        if (!$this->andOperator) {
+        if (!$this->tags_and) {
             $this->applyTagsSelection($repositories);
         }
 
@@ -324,7 +338,7 @@ class Repositories extends Component
             $operator = config('glittr.tags_operator', 'OR');
             $repositories->whereHas('tags', function (Builder $query) use ($selectedTagIds, $operator) {
                 $query->whereIn('id', $selectedTagIds);
-                if ($this->andOperator) {
+                if ($this->tags_and) {
                     $query->havingRaw('COUNT(id) = ?', [count($selectedTagIds)]);
                 }
             });
@@ -356,7 +370,7 @@ class Repositories extends Component
             $repositories->where('license', $this->license);
         }
 
-        if ($this->andOperator) {
+        if ($this->tags_and) {
             $this->applyTagsSelection($repositories);
         }
 
@@ -374,7 +388,7 @@ class Repositories extends Component
             $this->minPush,
             $this->maxPush,
             $this->license,
-            $this->andOperator ? $this->tagIds : '',
+            $this->tags_and ? $this->tagIds : '',
         ]);
 
         // Keep in cache for 30 min.
