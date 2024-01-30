@@ -21,6 +21,7 @@ class TagFullResource extends JsonResource
             'ontology_class' => $this->ontology_class ?? '',
             'link' => $this->link ?? '',
             'description' => $this->description,
+            'repositories_count' => $this->repositories()->count(),
             'repositories' => RepositoryFullResource::collection($this->whenLoaded('repositories')),
         ];
     }

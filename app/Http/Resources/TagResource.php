@@ -20,7 +20,7 @@ class TagResource extends JsonResource
             'ontology' => $this->ontology->name ?? '',
             'ontology_class' => $this->ontology_class ?? '',
             'link' => $this->link ?? '',
-            'url' => route('api.tags.show', $this->id),
+            'api_url' => route('api.tags.show', $this->id),
         ];
     }
 }
