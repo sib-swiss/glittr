@@ -37,18 +37,19 @@ class GetLicences extends Command
         $main_licenses = collect(GitHub::licenses()->all());
         foreach ($main_licenses as $license) {
             $this->addLicences($license['key'], $licences_url);
-        };
+        }
 
         // Sort array by key
         ksort($licences_url);
 
         foreach ($licences_url as $key => $value) {
-            $this->info("'" . $key . "'  => '" . $value . "',");
+            $this->info("'".$key."'  => '".$value."',");
         }
     }
 
-    protected function addLicences($license_key, &$licences_url) {
-        if (!$license_key || $license_key == "" || isset($licences_url[$license_key])) {
+    protected function addLicences($license_key, &$licences_url)
+    {
+        if (! $license_key || $license_key == '' || isset($licences_url[$license_key])) {
             return;
         }
         try {
@@ -57,7 +58,7 @@ class GetLicences extends Command
                 $licences_url[$license_key] = $ld['html_url'];
             }
         } catch (\Exception $e) {
-            $this->error($license_key . ' => ' . $e->getMessage());
+            $this->error($license_key.' => '.$e->getMessage());
         }
     }
 }

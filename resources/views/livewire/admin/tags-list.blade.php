@@ -93,14 +93,14 @@
     </x-admin.container>
 
     <!-- Edit Category Form Modal -->
-    <x-modal wire:model.live="showEditCategory" persisted="true">
+    <x-modal wire:model.live="showEditCategory" persisted="true" id="CategoryUpdateModal{{$categoryIdBeingUpdated}}">
         @if ($categoryIdBeingUpdated)
             @livewire('admin.category-form', [$categoryIdBeingUpdated, 'editCategoryCancel'], key("CategoryUpdate-{$categoryIdBeingUpdated}"))
         @endif
     </x-modal>
 
     <!-- Add Category Form Modal -->
-    <x-modal wire:model.live="showAddCategory" persisted="true">
+    <x-modal wire:model.live="showAddCategory" persisted="true" id="CategoryAddModal{{$categoryAddIncrement}}">
         @livewire('admin.category-form', [null, 'addCategoryCancel'], key("categoryAdd-{$categoryAddIncrement}"))
     </x-modal>
 
@@ -126,14 +126,14 @@
     </x-confirmation-modal>
 
      <!-- Edit Tag Form Modal -->
-     <x-modal wire:model.live="showEditTag" persisted="true">
+     <x-modal wire:model.live="showEditTag" persisted="true" id="tagUpdateModal{{$tagIdBeingUpdated}}">
         @if ($tagIdBeingUpdated)
             @livewire('admin.tag-form', [$tagIdBeingUpdated, 'editTagCancel'], key("tagUpdate-{$tagIdBeingUpdated}"))
         @endif
     </x-modal>
 
     <!-- Add Tag Form Modal -->
-    <x-modal wire:model.live="showAddTag" persisted="true">
+    <x-modal wire:model.live="showAddTag" persisted="true" id="tagAddModal{{$tagAddIncrement}}">
         @livewire('admin.tag-form', [null, 'addTagCancel'], key("tagAdd-{$tagAddIncrement}"))
     </x-modal>
 

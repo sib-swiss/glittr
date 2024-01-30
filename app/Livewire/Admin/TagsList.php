@@ -55,6 +55,7 @@ class TagsList extends Component
      */
     public $categoryIdBeingDeleted;
 
+
     /**
      * Display category edit form modal
      *

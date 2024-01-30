@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TagFullResource;
 use App\Models\Category;
+use App\Models\Tag;
 
 class TagController extends Controller
 {
@@ -34,5 +36,13 @@ class TagController extends Controller
         }
 
         return $return;
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Tag $tag)
+    {
+        return new TagFullResource($tag->load(['repositories', 'repositories.tags', 'repositories.author']));
     }
 }

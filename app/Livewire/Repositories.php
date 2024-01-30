@@ -143,7 +143,7 @@ class Repositories extends Component
             }
         }
 
-        if ($this->tagIds != "") {
+        if ($this->tagIds != '') {
             $tagIds = explode(',', $this->tagIds);
             foreach ($tagIds as $tagId) {
                 if (intval($tagId) > 0 && isset($this->tags[$tagId])) {
@@ -292,14 +292,14 @@ class Repositories extends Component
         $repositories = $this->filterRepositories($repositories);
 
         $selected_tags = collect($this->tags)
-        ->filter(fn ($tag) => $tag['selected']);
+            ->filter(fn ($tag) => $tag['selected']);
 
         // Display filters if any is set.
         if ($this->name != '' || $this->author != '' || $this->minStars != '' || $this->maxStars != '' || $this->minPush != '' || $this->maxPush != '' || $this->license != '') {
             $this->show_filters = true;
         }
 
-        if (!$this->tags_and) {
+        if (! $this->tags_and) {
             $this->applyTagsSelection($repositories);
         }
 
@@ -331,12 +331,12 @@ class Repositories extends Component
     {
         // Apply selected tags to selection.
         $selected_tags = collect($this->tags)
-        ->filter(fn ($tag) => $tag['selected']);
+            ->filter(fn ($tag) => $tag['selected']);
 
         if (count($selected_tags) > 0) {
             $selectedTagIds = $selected_tags->pluck('id');
             $operator = config('glittr.tags_operator', 'OR');
-            $repositories->whereHas('tags', function (Builder $query) use ($selectedTagIds, $operator) {
+            $repositories->whereHas('tags', function (Builder $query) use ($selectedTagIds) {
                 $query->whereIn('id', $selectedTagIds);
                 if ($this->tags_and) {
                     $query->havingRaw('COUNT(id) = ?', [count($selectedTagIds)]);

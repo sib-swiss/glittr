@@ -4,6 +4,7 @@ namespace App\Livewire\Admin;
 
 use App\Data\TagData;
 use App\Models\Category;
+use App\Models\Ontology;
 use App\Models\Tag;
 use Livewire\Component;
 
@@ -15,6 +16,13 @@ class TagForm extends Component
      * @var array
      */
     public $categories = [];
+
+    /**
+     * List of related ontologies for form select
+     *
+     * @var array
+     */
+    public $ontologies = [];
 
     /**
      * Tag data array
@@ -56,6 +64,7 @@ class TagForm extends Component
             $this->title = 'Add tag';
         }
         $this->categories = Category::select('id', 'name')->ordered()->get()->mapWithKeys(fn ($cat) => [$cat->id => $cat->name]);
+        $this->ontologies = Ontology::select('id', 'name')->orderBy('name')->get()->mapWithKeys(fn ($ont) => [$ont->id => $ont->name]);
         $this->cancelEvent = $cancelEvent;
     }
 

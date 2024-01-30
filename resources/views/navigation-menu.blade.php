@@ -24,6 +24,9 @@
                     <x-nav-link href="{{ route('admin.tags.index') }}" :active="(request()->routeIs('admin.tags.*') || request()->routeIs('admin.categories.*'))">
                         {{ __('Tags') }}
                     </x-nav-link>
+                    <x-nav-link href="{{ route('admin.ontologies.index') }}" :active="(request()->routeIs('admin.ontologies.*'))">
+                        {{ __('Ontologies') }}
+                    </x-nav-link>
 
                 </div>
             </div>
@@ -157,6 +160,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link href="{{ route('admin.tags.index') }}" :active="(request()->routeIs('admin.tags.*') || request()->routeIs('admin.categories.*'))">
                 {{ __('Tags') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link href="{{ route('admin.ontologies.index') }}" :active="(request()->routeIs('admin.ontologies.*'))">
+                {{ __('Ontologies') }}
             </x-responsive-nav-link>
         </div>
 

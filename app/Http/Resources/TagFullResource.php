@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TagResource extends JsonResource
+class TagFullResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -20,7 +20,8 @@ class TagResource extends JsonResource
             'ontology' => $this->ontology->name ?? '',
             'ontology_class' => $this->ontology_class ?? '',
             'link' => $this->link ?? '',
-            'url' => route('api.tags.show', $this->id),
+            'description' => $this->description,
+            'repositories' => RepositoryFullResource::collection($this->whenLoaded('repositories')),
         ];
     }
 }

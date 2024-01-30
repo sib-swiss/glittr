@@ -37,4 +37,5 @@ Route::middleware([
         Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
         Route::get('repositories', [RepositoryController::class, 'index'])->name('repositories.index');
         Route::get('tags', [TagController::class, 'index'])->name('tags.index');
+        Route::get('ontologies', [AdminController::class, 'ontologies'])->name('ontologies.index');
     });
