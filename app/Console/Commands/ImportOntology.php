@@ -33,22 +33,30 @@ class ImportOntology extends Command
 
         $reader = Reader::createFromPath(database_path('import/topic_ontologies.csv', 'r'));
         foreach ($reader->getRecords() as $offset => $topic) {
-            if ($offset > 0 && count($topic) > 5 && $topic[1] !== '') {
+            if ($offset > 0 && count($topic) > 7 && $topic[1] !== '') {
                 $name = $topic[1];
                 $ontology = $topic[2] ?? '';
                 $ontologyClass = $topic[3] ?? '';
-                $link = $topic[5] ?? '';
-                $description = $topic[6] ?? '';
+                $term_code = $topic[5] ?? '';
+                $term_set = $topic[6] ?? '';
+                $link = $topic[7] ?? '';
+                $description = $topic[8] ?? '';
                 if ($ontology != '') {
                     $tag = Tag::firstWhere('name', $name);
                     $ontology = Ontology::firstOrCreate([
                         'name' => $ontology,
                     ]);
+                    if (empty($ontology->term_set) && $term_set != '') {
+                        $ontology->update([
+                            'term_set' => $term_set,
+                        ]);
+                    }
                     if ($tag) {
                         $this->info('Updating tag '.$name);
                         $tag->update([
                             'ontology_id' => $ontology->id,
                             'ontology_class' => $ontologyClass,
+                            'term_code' => $term_code,
                             'link' => $link,
                             'description' => $description,
                         ]);
