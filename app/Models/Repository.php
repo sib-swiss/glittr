@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
+
 
 class Repository extends Model
 {
@@ -214,6 +216,50 @@ class Repository extends Model
                 // do we add if not found?
                 $jsonLd->addValue('license', [$this->license]);
             }
+        }
+
+        $about = [];
+
+        // Add tags ontology.
+        foreach ($this->tags as $tag) {
+            if ($tag->link != "") {
+                $name = $tag->ontology_class != "" ? $tag->ontology_class : $tag->name;
+                $data = [];
+
+                if (Str::contains($tag->ontology->name ?? '', 'EDAM') && ($tag->term_code != '' || Str::contains($tag->link, 'edamontology.org'))) {
+                    if (empty($tag->term_code)) {
+                        $code = explode('/', $tag->link);
+                        $code = end($code);
+                    } else {
+                        $code = $tag->term_code;
+                    }
+
+                    $data['@id'] = 'http://edamontology.org/'.$code;
+                    $data['@type'] = 'DefinedTerm';
+                    $data['inDefinedTermSet'] = 'http://edamontology.org';
+
+                    $data['termCode'] = $code;
+                    if (!Str::contains($tag->link, 'edamontology.org')) {
+                        $data['url'] = $tag->link;
+                    }
+                } else {
+                    $data['@id'] = $tag->link;
+                    /*
+                    $data['@type'] = 'Thing';
+                    // termCode is not a valid property for Thing
+                    if ($tag->term_code != "") {
+                        $data['termCode'] = $tag->term_code;
+                    }
+                    */
+                }
+
+                $data['name'] = $name;
+
+                $about[] = $data;
+            }
+        }
+        if (!empty($about)) {
+            $jsonLd->addValue('about', $about);
         }
 
         return $jsonLd;

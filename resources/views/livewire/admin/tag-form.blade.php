@@ -32,6 +32,11 @@
                 <x-input-error for="ontology_class" class="mt-2" />
             </div>
             <div>
+                <x-label for="term_code" value="{{ __('Term Code') }}" />
+                <x-input id="term_code" type="text" class="mt-1 block w-full" wire:model="tag.term_code" />
+                <x-input-error for="term_code" class="mt-2" />
+            </div>
+            <div>
                 <x-label for="link" value="{{ __('Link (URL)') }}" />
                 <x-input id="link" type="text" class="mt-1 block w-full" wire:model="tag.link" />
                 <x-input-error for="link" class="mt-2" />

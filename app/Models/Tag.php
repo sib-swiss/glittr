@@ -22,6 +22,7 @@ class Tag extends Model implements Sortable
         'name',
         'ontology_id',
         'ontology_class',
+        'term_code',
         'link',
         'description',
         'category_id',

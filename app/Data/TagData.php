@@ -14,6 +14,7 @@ class TagData extends Data
         public ?int $order_column,
         public ?int $ontology_id,
         public ?string $ontology_class,
+        public ?string $term_code,
         #[Url]
         public ?string $link,
         public ?string $description,
