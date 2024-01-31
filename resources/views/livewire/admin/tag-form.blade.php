@@ -36,7 +36,7 @@
                 <x-input id="term_code" type="text" class="mt-1 block w-full" wire:model="tag.term_code" />
                 <x-input-error for="term_code" class="mt-2" />
                 <div class="text-sm text-gray-500">
-                    {{ __('Only required if the ontology is in EDAM and value in Link field below is not the EDAM ID (http://edamontology.org/topic_3316 -> topic_3316)') }}
+                    {{ __('Used in bioschemas export if the linked Ontology has a Term Set URL defined.') }}
                 </div>
             </div>
             <div>

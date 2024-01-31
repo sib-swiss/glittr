@@ -11,6 +11,7 @@ class Ontology extends Model
 
     protected $fillable = [
         'name',
+        'term_set',
     ];
 
     public function tags()

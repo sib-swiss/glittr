@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin;
 
+use App\Data\OntologyData;
 use App\Models\Ontology;
 use App\Models\Tag;
 use Livewire\Attributes\Locked;
@@ -45,33 +46,23 @@ class OntologyForm extends Component
         if ($id) {
             $ontology = Ontology::findOrFail($id);
             $this->id = $id;
-            $this->ontology = [
-                'name' => $ontology->name,
-            ];
+            $this->ontology = OntologyData::from($ontology)->toArray();
             $this->action = 'edit';
             $this->title = 'Edit ontology';
         } else {
-            $this->ontology = [
-                'name' => '',
-            ];
+            $this->ontology = OntologyData::empty();
             $this->action = 'add';
             $this->title = 'Add ontology';
         }
         $this->cancelEvent = $cancelEvent;
     }
 
-    public function rules()
-    {
-        return [
-            'ontology.name' => 'required|string|max:255',
-        ];
-    }
 
     public function save()
     {
-        $data = $this->validate();
+        OntologyData::validate($this->ontology);
+        $data = OntologyData::from($this->ontology)->toArray();
 
-        $data = $data['ontology'];
         if ($this->id) {
             $current = Ontology::find($this->id);
             $current->update($data);

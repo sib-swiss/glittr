@@ -219,29 +219,19 @@ class Repository extends Model
         }
 
         $about = [];
-
-        // Add tags ontology.
+        // Add tags ontology in about section.
         foreach ($this->tags as $tag) {
             if ($tag->link != "") {
                 $name = $tag->ontology_class != "" ? $tag->ontology_class : $tag->name;
                 $data = [];
 
-                if (Str::contains($tag->ontology->name ?? '', 'EDAM') && ($tag->term_code != '' || Str::contains($tag->link, 'edamontology.org'))) {
-                    if (empty($tag->term_code)) {
-                        $code = explode('/', $tag->link);
-                        $code = end($code);
-                    } else {
-                        $code = $tag->term_code;
-                    }
-
-                    $data['@id'] = 'http://edamontology.org/'.$code;
+                if (($tag->ontology->term_set ?? '') != "" && $tag->term_code != '') {
+                    $data['@id'] = $tag->link;
                     $data['@type'] = 'DefinedTerm';
-                    $data['inDefinedTermSet'] = 'http://edamontology.org';
+                    $data['inDefinedTermSet'] = $tag->ontology->term_set;
 
-                    $data['termCode'] = $code;
-                    if (!Str::contains($tag->link, 'edamontology.org')) {
-                        $data['url'] = $tag->link;
-                    }
+                    $data['termCode'] = $tag->term_code;
+                    $data['url'] = $tag->link;
                 } else {
                     $data['@id'] = $tag->link;
                     /*
@@ -252,9 +242,7 @@ class Repository extends Model
                     }
                     */
                 }
-
                 $data['name'] = $name;
-
                 $about[] = $data;
             }
         }
