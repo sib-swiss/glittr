@@ -191,7 +191,7 @@ class Repository extends Model
             $jsonLd->addValue('contributor', $this->author->getJsonLd());
         }
 
-        $jsonLd->addValue('website', $this->website && $this->website != '' ? (string) $this->website : (string) $this->url);
+        $jsonLd->addValue('url', $this->website && $this->website != '' ? (string) $this->website : (string) $this->url);
 
         if ($this->repository_created_at) {
             $jsonLd->addValue('dateCreated', $this->repository_created_at->toIso8601String());
