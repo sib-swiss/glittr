@@ -19,14 +19,16 @@
                         With this form you can request you can submit a new repository to be added to the collection or updates information for a repository.
                     </p>
                     <p>
-                        If you just want to send us a general message, you can leave the <strong>Repository url</strong> field empty and just leave your message in the comment field.
+                        If you just want to send us a general question or remark, feel free to <a href="mailto:info@glittr.org">contact us by email</a>.
                     </p>
                 </div>
             </x-slot>
 
             <x-slot name="form">
                 <div class="col-span-6">
-                    <x-label for="url" value="{{ __('Repository url') }}" />
+                    <div class="flex items-center">
+                        <x-label for="url" value="{{ __('Repository url') }}" /> <span class="text-red-500 ml-1">*</span>
+                    </div>
                     <x-input id="url" type="text" class="mt-1 block w-full" placeholder="https://github.com/..." wire:model.live="url" autofocus />
                     <div class="text-sm font-light mt-1">
                         <strong>github.com</strong> or <strong>gitlab.com</strong> repository url
