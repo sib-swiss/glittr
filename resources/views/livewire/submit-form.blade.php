@@ -19,19 +19,21 @@
                         With this form you can request you can submit a new repository to be added to the collection or updates information for a repository.
                     </p>
                     <p>
-                        If you just want to send us a general message, you can leave the <strong>Repository url</strong> field empty and just leave your message in the comment field.
+                        If you just want to send us a general question or remark, feel free to <a href="mailto:info@glittr.org">contact us by email</a>.
                     </p>
                 </div>
             </x-slot>
 
             <x-slot name="form">
                 <div class="col-span-6">
-                    <x-jet-label for="url" value="{{ __('Repository url') }}" />
-                    <x-jet-input id="url" type="text" class="mt-1 block w-full" placeholder="https://github.com/..." wire:model="url" autofocus />
+                    <div class="flex items-center">
+                        <x-label for="url" value="{{ __('Repository url') }}" /> <span class="text-red-500 ml-1">*</span>
+                    </div>
+                    <x-input id="url" type="text" class="mt-1 block w-full" placeholder="https://github.com/..." wire:model.live="url" autofocus />
                     <div class="text-sm font-light mt-1">
                         <strong>github.com</strong> or <strong>gitlab.com</strong> repository url
                     </div>
-                    <x-jet-input-error for="url" class="mt-1" />
+                    <x-input-error for="url" class="mt-1" />
                 </div>
 
                 @if ($existingWarning)
@@ -42,9 +44,9 @@
                 @endif
 
                 <div class="col-span-6">
-                    <x-jet-label for="tags" value="{{ __('Proposed topics') }}" />
+                    <x-label for="tags" value="{{ __('Proposed topics') }}" />
                     @livewire('tag-select')
-                    <x-jet-input-error for="tags" class="mt-1" />
+                    <x-input-error for="tags" class="mt-1" />
                 </div>
 
                 <div class="col-span-6">
@@ -55,31 +57,31 @@
 
                 <div class="col-span-6 sm:col-span-3">
                     <div class="flex items-center">
-                        <x-jet-label for="name" value="{{ __('Name') }}" /> <span class="text-red-500 ml-1">*</span>
+                        <x-label for="name" value="{{ __('Name') }}" /> <span class="text-red-500 ml-1">*</span>
                     </div>
-                    <x-jet-input id="name" type="text" placeholder="Your name" class="mt-1 block w-full" wire:model.defer="name" />
-                    <x-jet-input-error for="name" class="mt-1" />
+                    <x-input id="name" type="text" placeholder="Your name" class="mt-1 block w-full" wire:model="name" />
+                    <x-input-error for="name" class="mt-1" />
                 </div>
                 <div class="col-span-6 sm:col-span-3">
                     <div class="flex items-center">
-                        <x-jet-label for="email" value="{{ __('Email') }}" /> <span class="text-red-500 ml-1">*</span>
+                        <x-label for="email" value="{{ __('Email') }}" /> <span class="text-red-500 ml-1">*</span>
                     </div>
-                    <x-jet-input id="email" type="email" class="mt-1 block w-full" placeholder="Your email" wire:model.defer="email" />
-                    <x-jet-input-error for="email" class="mt-1" />
+                    <x-input id="email" type="email" class="mt-1 block w-full" placeholder="Your email" wire:model="email" />
+                    <x-input-error for="email" class="mt-1" />
                 </div>
 
                 <div class="col-span-6">
-                    <x-jet-label for="comment" value="{{ __('Comment') }}" />
-                    <x-textarea id="comment" class="mt-1 block w-full" placeholder="Optional comment" wire:model.defer="comment" />
-                    <x-jet-input-error for="comment" class="mt-1" />
+                    <x-label for="comment" value="{{ __('Comment') }}" />
+                    <x-textarea id="comment" class="mt-1 block w-full" placeholder="Optional comment" wire:model="comment" />
+                    <x-input-error for="comment" class="mt-1" />
                 </div>
             </x-slot>
 
             <x-slot name="actions">
-                <x-jet-button>
+                <x-button>
                     {{ __('Submit') }}
-                </x-jet-button>
+                </x-button>
             </x-slot>
-        </x-jet-form-section>
+        </x-form-section>
     @endif
 </div>

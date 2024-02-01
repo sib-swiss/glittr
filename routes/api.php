@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\Api\RepositoryController;
 use App\Http\Controllers\Api\TagController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,12 +16,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Return json formatted list grouped by main category for readme generation
-Route::get('list', [RepositoryController::class, 'list']);
+Route::get('list', [RepositoryController::class, 'list'])->name('api.list');
 
-Route::get('repositories', [RepositoryController::class, 'index']);
+Route::get('repositories', [RepositoryController::class, 'index'])->name('api.repositories.index');
 
-Route::get('tags', [TagController::class, 'index']);
+Route::get('tags', [TagController::class, 'index'])->name('api.tags.index');
+Route::get('tags/{tag}', [TagController::class, 'show'])->name('api.tags.show');
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::get('bioschemas', [RepositoryController::class, 'bioschemas'])->name('api.bioschemas');

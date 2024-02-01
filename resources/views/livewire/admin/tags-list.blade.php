@@ -1,14 +1,14 @@
 <div>
     <x-header title="List of tags">
         <x-header.actions>
-            <x-jet-button wire:click="$set('showAddTag', true)" class="space-x-2">
+            <x-button wire:click="$set('showAddTag', true)" class="space-x-2">
                 <x-heroicon-o-plus class="w-6 h-6" />
                 <span>{{ __('Tag') }}</span>
-            </x-jet-button>
-            <x-jet-button wire:click="$set('showAddCategory', true)" class="space-x-2">
+            </x-button>
+            <x-button wire:click="$set('showAddCategory', true)" class="space-x-2">
                 <x-heroicon-o-plus class="w-6 h-6" />
                 <span>{{ __('Category') }}</span>
-            </x-jet-button>
+            </x-button>
         </x-header.actions>
     </x-header>
     <x-admin.container>
@@ -34,16 +34,16 @@
                         <div class="py-4 flex-1 font-semibold md:text-lg">{{ $category->name }}</div>
                         <div class="flex items-center">
                             @if (0 === count($category->tags))
-                                <x-jet-danger-button class="mr-2" wire:click="confirmCategoryDeletion({{ $category->id }})">
+                                <x-danger-button class="mr-2" wire:click="confirmCategoryDeletion({{ $category->id }})">
                                     <x-heroicon-o-trash class="w-6 h-6" />
-                                </x-jet-danger-button>
+                                </x-danger-button>
                             @endif
-                            <x-jet-button class="mr-2" type="button" title="{{ __('Edit category') }}" wire:click="editCategory({{ $category->id}})">
+                            <x-button class="mr-2" type="button" title="{{ __('Edit category') }}" wire:click="editCategory({{ $category->id}})">
                                 Edit Category
-                            </x-jet-button>
-                            <x-jet-secondary-button class="mr-2 category-drag-handle" type="button" title="{{ __('Reorder categories') }}">
+                            </x-button>
+                            <x-secondary-button class="mr-2 category-drag-handle" type="button" title="{{ __('Reorder categories') }}">
                                 <x-heroicon-o-chevron-up-down class="w-4 h-4" />
-                            </x-jet-secondary-button>
+                            </x-secondary-button>
                         </div>
                     </div>
                     <div
@@ -72,16 +72,16 @@
                                 <div class="flex-1">{{ $tag->name }}</div>
                                 <div class="flex items-center justify-end space-x-2">
                                     @if (0 === $tag->repositories_count)
-                                        <x-jet-danger-button wire:click="confirmTagDeletion({{ $tag->id }})">
+                                        <x-danger-button wire:click="confirmTagDeletion({{ $tag->id }})">
                                             <x-heroicon-m-trash class="w-4 h-4" />
-                                        </x-jet-danger-button>
+                                        </x-danger-button>
                                     @endif
-                                    <x-jet-button wire:click="editTag({{ $tag->id }})">
+                                    <x-button wire:click="editTag({{ $tag->id }})">
                                         <x-heroicon-m-pencil class="w-4 h-4" />
-                                    </x-jet-button>
-                                    <x-jet-secondary-button class="tag-drag-handle">
+                                    </x-button>
+                                    <x-secondary-button class="tag-drag-handle">
                                         <x-heroicon-m-chevron-up-down class="w-4 h-4" />
-                                    </x-jet-secondary-button>
+                                    </x-secondary-button>
                                 </div>
                             </div>
                         @endforeach
@@ -93,19 +93,19 @@
     </x-admin.container>
 
     <!-- Edit Category Form Modal -->
-    <x-jet-modal wire:model="showEditCategory" persisted="true">
+    <x-modal wire:model.live="showEditCategory" persisted="true" id="CategoryUpdateModal{{$categoryIdBeingUpdated}}">
         @if ($categoryIdBeingUpdated)
             @livewire('admin.category-form', [$categoryIdBeingUpdated, 'editCategoryCancel'], key("CategoryUpdate-{$categoryIdBeingUpdated}"))
         @endif
-    </x-jet-modal>
+    </x-modal>
 
     <!-- Add Category Form Modal -->
-    <x-jet-modal wire:model="showAddCategory" persisted="true">
+    <x-modal wire:model.live="showAddCategory" persisted="true" id="CategoryAddModal{{$categoryAddIncrement}}">
         @livewire('admin.category-form', [null, 'addCategoryCancel'], key("categoryAdd-{$categoryAddIncrement}"))
-    </x-jet-modal>
+    </x-modal>
 
     <!-- Delete Category Confirmation Modal -->
-    <x-jet-confirmation-modal wire:model="confirmingCategoryDeletion">
+    <x-confirmation-modal wire:model.live="confirmingCategoryDeletion">
         <x-slot name="title">
             {{ __('Delete Category') }}
         </x-slot>
@@ -115,30 +115,30 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button wire:click="$toggle('confirmingCategoryDeletion')" wire:loading.attr="disabled">
+            <x-secondary-button wire:click="$toggle('confirmingCategoryDeletion')" wire:loading.attr="disabled">
                 {{ __('Cancel') }}
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-danger-button class="ml-3" wire:click="deleteCategory" wire:loading.attr="disabled">
+            <x-danger-button class="ml-3" wire:click="deleteCategory" wire:loading.attr="disabled">
                 {{ __('Delete') }}
-            </x-jet-danger-button>
+            </x-danger-button>
         </x-slot>
-    </x-jet-confirmation-modal>
+    </x-confirmation-modal>
 
      <!-- Edit Tag Form Modal -->
-     <x-jet-modal wire:model="showEditTag" persisted="true">
+     <x-modal wire:model.live="showEditTag" persisted="true" id="tagUpdateModal{{$tagIdBeingUpdated}}">
         @if ($tagIdBeingUpdated)
             @livewire('admin.tag-form', [$tagIdBeingUpdated, 'editTagCancel'], key("tagUpdate-{$tagIdBeingUpdated}"))
         @endif
-    </x-jet-modal>
+    </x-modal>
 
     <!-- Add Tag Form Modal -->
-    <x-jet-modal wire:model="showAddTag" persisted="true">
+    <x-modal wire:model.live="showAddTag" persisted="true" id="tagAddModal{{$tagAddIncrement}}">
         @livewire('admin.tag-form', [null, 'addTagCancel'], key("tagAdd-{$tagAddIncrement}"))
-    </x-jet-modal>
+    </x-modal>
 
     <!-- Delete Tag Confirmation Modal -->
-    <x-jet-confirmation-modal wire:model="confirmingTagDeletion">
+    <x-confirmation-modal wire:model.live="confirmingTagDeletion">
         <x-slot name="title">
             {{ __('Delete Tag') }}
         </x-slot>
@@ -148,13 +148,13 @@
         </x-slot>
 
         <x-slot name="footer">
-            <x-jet-secondary-button wire:click="$set('confirmingTagDeletion', false)" wire:loading.attr="disabled">
+            <x-secondary-button wire:click="$set('confirmingTagDeletion', false)" wire:loading.attr="disabled">
                 {{ __('Cancel') }}
-            </x-jet-secondary-button>
+            </x-secondary-button>
 
-            <x-jet-danger-button class="ml-3" wire:click="deleteTag" wire:loading.attr="disabled">
+            <x-danger-button class="ml-3" wire:click="deleteTag" wire:loading.attr="disabled">
                 {{ __('Delete') }}
-            </x-jet-danger-button>
+            </x-danger-button>
         </x-slot>
-    </x-jet-confirmation-modal>
+    </x-confirmation-modal>
 </div>

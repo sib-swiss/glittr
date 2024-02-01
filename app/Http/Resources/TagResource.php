@@ -17,6 +17,10 @@ class TagResource extends JsonResource
         return [
             'name' => $this->name,
             'category' => $this->category->name ?? '',
+            'ontology' => $this->ontology->name ?? '',
+            'ontology_class' => $this->ontology_class ?? '',
+            'link' => $this->link ?? '',
+            'api_url' => route('api.tags.show', $this->id),
         ];
     }
 }

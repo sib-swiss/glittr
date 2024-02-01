@@ -5,11 +5,14 @@ namespace App\Models;
 use App\Casts\Url;
 use App\Facades\Remote;
 use App\Jobs\UpdateRepositoryData;
+use Artesaos\SEOTools\JsonLd;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
+
 
 class Repository extends Model
 {
@@ -26,6 +29,10 @@ class Repository extends Model
         'url',
         'author_id',
         'refreshed_at',
+        'repository_created_at',
+        'repository_updated_at',
+        'version',
+        'version_published_at',
     ];
 
     /**
@@ -40,6 +47,9 @@ class Repository extends Model
         'enabled' => 'boolean',
         'last_push' => 'datetime:Y-m-d H:i:s',
         'refreshed_at' => 'datetime:Y-m-d H:i:s',
+        'repository_created_at' => 'datetime:Y-m-d H:i:s',
+        'repository_updated_at' => 'datetime:Y-m-d H:i:s',
+        'version_published_at' => 'datetime:Y-m-d H:i:s',
     ];
 
     public function author()
@@ -88,7 +98,7 @@ class Repository extends Model
                         ->orWhere('repositories.license', 'like', '%'.$term.'%')
                         ->orWhereHas('author', function (Builder $query) use ($term) {
                             $query->where('name', 'like', '%'.$term.'%')
-                            ->orWhere('display_name', 'like', '%'.$term.'%');
+                                ->orWhere('display_name', 'like', '%'.$term.'%');
                         })
                         ->orWhereHas('tags', function (Builder $query) use ($term) {
                             $query->where('name', 'like', '%'.$term.'%');
@@ -159,5 +169,87 @@ class Repository extends Model
                 UpdateRepositoryData::dispatch($repository);
             }
         });
+    }
+
+    public function getJsonLd()
+    {
+        $jsonLd = new JsonLd();
+
+        $jsonLd->setType('LearningResource');
+        $jsonLd->addValue('@id', (string) $this->url);
+        $jsonLd->addValue(
+            'http://purl.org/dc/terms/conformsTo',
+            [
+                '@id' => 'https://bioschemas.org/profiles/TrainingMaterial/1.0-RELEASE',
+                '@type' => 'CreativeWork',
+            ],
+        );
+        $jsonLd->addValue('description', $this->description);
+        $jsonLd->addValue('keywords', $this->tags->pluck('name')->join(', '));
+        $jsonLd->addValue('name', $this->name);
+
+        if ($this->author) {
+            $jsonLd->addValue('author', $this->author->getJsonLd());
+            $jsonLd->addValue('contributor', $this->author->getJsonLd());
+        }
+
+        $jsonLd->addValue('url', $this->website && $this->website != '' ? (string) $this->website : (string) $this->url);
+
+        if ($this->repository_created_at) {
+            $jsonLd->addValue('dateCreated', $this->repository_created_at->toIso8601String());
+        }
+        if ($this->repository_updated_at) {
+            $jsonLd->addValue('dateModified', $this->repository_updated_at->toIso8601String());
+        }
+        if ($this->version_published_at) {
+            $jsonLd->addValue('datePublished', $this->version_published_at->toIso8601String());
+        }
+
+        if ($this->version != '') {
+            $jsonLd->addValue('version', $this->version);
+        }
+
+        if ($this->license != '') {
+            if (isset(config('glittr.licences_url', [])[$this->license])) {
+                $jsonLd->addValue('license', [config('glittr.licences_url', [])[$this->license]]);
+            } else {
+                // do we add if not found?
+                $jsonLd->addValue('license', [$this->license]);
+            }
+        }
+
+        $about = [];
+        // Add tags ontology in about section.
+        foreach ($this->tags as $tag) {
+            if ($tag->link != "") {
+                $name = $tag->ontology_class != "" ? $tag->ontology_class : $tag->name;
+                $data = [];
+
+                if (($tag->ontology->term_set ?? '') != "" && $tag->term_code != '') {
+                    $data['@id'] = $tag->link;
+                    $data['@type'] = 'DefinedTerm';
+                    $data['inDefinedTermSet'] = $tag->ontology->term_set;
+
+                    $data['termCode'] = $tag->term_code;
+                    $data['url'] = $tag->link;
+                } else {
+                    $data['@id'] = $tag->link;
+                    /*
+                    $data['@type'] = 'Thing';
+                    // termCode is not a valid property for Thing
+                    if ($tag->term_code != "") {
+                        $data['termCode'] = $tag->term_code;
+                    }
+                    */
+                }
+                $data['name'] = $name;
+                $about[] = $data;
+            }
+        }
+        if (!empty($about)) {
+            $jsonLd->addValue('about', $about);
+        }
+
+        return $jsonLd;
     }
 }

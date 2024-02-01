@@ -1,9 +1,8 @@
 import './bootstrap';
+import { Livewire, Alpine } from '../../vendor/livewire/livewire/dist/livewire.esm';
 
-import Alpine from 'alpinejs';
 import Sortable from 'sortablejs';
 
-window.Alpine = Alpine;
 window.Sortable = Sortable;
 
-Alpine.start();
+Livewire.start()

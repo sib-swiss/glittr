@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Livewire;
 
-use App\Http\Livewire\SubmitForm;
+use App\Livewire\SubmitForm;
 use Livewire\Livewire;
 use Tests\TestCase;
 

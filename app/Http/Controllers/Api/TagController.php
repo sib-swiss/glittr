@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\TagFullResource;
 use App\Models\Category;
+use App\Models\Tag;
 
 class TagController extends Controller
 {
@@ -22,6 +24,11 @@ class TagController extends Controller
             foreach ($catetgory->tags as $tag) {
                 $tags[] = [
                     'name' => $tag->name,
+                    'ontology' => $tag->ontology->name ?? '',
+                    'ontology_class' => $tag->ontology_class ?? '',
+                    'link' => $tag->link ?? '',
+                    'api_url' => route('api.tags.show', $tag->id),
+                    'description' => $tag->description,
                     'repositories' => $tag->repositories_count,
                 ];
                 $repositories += $tag->repositories_count;
@@ -34,5 +41,13 @@ class TagController extends Controller
         }
 
         return $return;
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Tag $tag)
+    {
+        return new TagFullResource($tag->load(['repositories', 'repositories.tags', 'repositories.author']));
     }
 }

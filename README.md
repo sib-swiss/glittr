@@ -16,15 +16,21 @@ Copy `.env.example` to `.env` and set your access tokens and server configuratio
 
 ### Local
 
-You can run in local using [Laravel Sail](https://laravel.com/docs/9.x/sail) (Laravel's docker image).
+You can run in local using [DDEV](https://ddev.readthedocs.io/en/stable/).
 
 ```bash
-sail up
-sail composer install
-sail artisan migrate:fresh --seed
-sail artisan repo:import
-sail npm install
-sain npm run dev
+ddev start
+ddev composer install
+ddev artisan migrate:fresh --seed
+ddev artisan repo:import
+ddev npm install
+ddev npm run dev
+```
+
+To have repositories updated when added/modified you need to run the queue worker.
+
+```bash
+ddev artisan queue:work
 ```
 
 ### Production
@@ -96,6 +102,9 @@ GET /api/repositories?page[size]=10&page[number]=2
 
 There is an additional endpoint `/api/list` which returns the list of repositories grouped by their main category, as presented on the [sib-swiss/training-collection repository](https://github.com/sib-swiss/training-collection).
 
+### Bioschemas
+
+Endpoints `/api/bioschemas` is available to retrieve the list of repositories in [Bioschemas TrainingMaterial Profiles](https://bioschemas.org/profiles/TrainingMaterial/1.0-RELEASE) format. The endpoint is using the same filters, sorting ang pagination optiopns than `/api/repositories` endpoint.
 
 ## License
 

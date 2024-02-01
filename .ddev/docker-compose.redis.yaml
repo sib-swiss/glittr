@@ -1,0 +1,17 @@
+#ddev-generated
+services:
+  redis:
+    container_name: ddev-${DDEV_SITENAME}-redis
+    image: redis:6-bullseye
+    # These labels ensure this service is discoverable by ddev.
+    labels:
+      com.ddev.site-name: ${DDEV_SITENAME}
+      com.ddev.approot: $DDEV_APPROOT
+    volumes:
+    - ".:/mnt/ddev_config"
+    - "./redis:/usr/local/etc/redis"
+    - "redis:/data"
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+
+volumes:
+  redis:

@@ -2,7 +2,7 @@
 
 namespace Tests\Feature\Livewire\Admin;
 
-use App\Http\Livewire\Admin\TagsList;
+use App\Livewire\Admin\TagsList;
 use Livewire\Livewire;
 use Tests\TestCase;
 

@@ -37,7 +37,7 @@ class RemoteManager extends Manager
     /**
      * Resolve driver name based on repository url
      */
-    public function resolveAPI(Repository $repository = null, string $url = null): ?string
+    public function resolveAPI(?Repository $repository = null, ?string $url = null): ?string
     {
         $apis = $this->getConfiguredAPIs();
 

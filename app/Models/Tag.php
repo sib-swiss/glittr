@@ -20,8 +20,18 @@ class Tag extends Model implements Sortable
 
     protected $fillable = [
         'name',
+        'ontology_id',
+        'ontology_class',
+        'term_code',
+        'link',
+        'description',
         'category_id',
     ];
+
+    public function ontology()
+    {
+        return $this->belongsTo(Ontology::class);
+    }
 
     public function repositories()
     {
