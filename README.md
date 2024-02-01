@@ -102,6 +102,9 @@ GET /api/repositories?page[size]=10&page[number]=2
 
 There is an additional endpoint `/api/list` which returns the list of repositories grouped by their main category, as presented on the [sib-swiss/training-collection repository](https://github.com/sib-swiss/training-collection).
 
+### Bioschemas
+
+Endpoints `/api/bioschemas` is available to retrieve the list of repositories in [Bioschemas TrainingMaterial Profiles](https://bioschemas.org/profiles/TrainingMaterial/1.0-RELEASE) format. The endpoint is using the same filters, sorting ang pagination optiopns than `/api/repositories` endpoint.
 
 ## License
 
