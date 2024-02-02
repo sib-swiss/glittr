@@ -3,10 +3,12 @@
 namespace App\Livewire\Admin;
 
 use App\Concerns\InteractsWithNotifications;
+use App\Mail\SubmissionRefused;
 use App\Models\Repository;
 use App\Models\Submission;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -65,6 +67,11 @@ class PendingSubmissions extends Component
             $submission->save();
 
             $this->notify('Submission marked as declined.');
+
+            // Send email to the submitter
+            if ($submission->email && filter_var($submission->email, FILTER_VALIDATE_EMAIL)) {
+                Mail::to($submission->email)->bcc(config('glittr.notification_emails'))->send(new SubmissionRefused($submission));
+            }
 
             $this->showDecline = false;
             $this->declineComment = '';
