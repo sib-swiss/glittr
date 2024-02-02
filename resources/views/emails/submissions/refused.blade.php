@@ -11,7 +11,7 @@ Here's what the curator wrote:
 @endcomponent
 @endif
 
-Best wishes,
-Geert from Glittr.org
+Best wishes,<br />
+the Glittr team
 
 @endcomponent
