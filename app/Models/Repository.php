@@ -11,8 +11,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Str;
-
 
 class Repository extends Model
 {
@@ -184,7 +182,7 @@ class Repository extends Model
                 '@type' => 'CreativeWork',
             ],
         );
-        $jsonLd->addValue('description', $this->description);
+        $jsonLd->addValue('description', ($this->description && $this->description != '') ? $this->description : 'none');
         $jsonLd->addValue('keywords', $this->tags->pluck('name')->join(', '));
         $jsonLd->addValue('name', $this->name);
 
@@ -210,22 +208,20 @@ class Repository extends Model
         }
 
         if ($this->license != '') {
+            // Only add controled vocabulary if it exists
             if (isset(config('glittr.licences_url', [])[$this->license])) {
                 $jsonLd->addValue('license', [config('glittr.licences_url', [])[$this->license]]);
-            } else {
-                // do we add if not found?
-                $jsonLd->addValue('license', [$this->license]);
             }
         }
 
         $about = [];
         // Add tags ontology in about section.
         foreach ($this->tags as $tag) {
-            if ($tag->link != "") {
-                $name = $tag->ontology_class != "" ? $tag->ontology_class : $tag->name;
+            if ($tag->link != '') {
+                $name = $tag->ontology_class != '' ? $tag->ontology_class : $tag->name;
                 $data = [];
 
-                if (($tag->ontology->term_set ?? '') != "" && $tag->term_code != '') {
+                if (($tag->ontology->term_set ?? '') != '' && $tag->term_code != '') {
                     $data['@id'] = $tag->link;
                     $data['@type'] = 'DefinedTerm';
                     $data['inDefinedTermSet'] = $tag->ontology->term_set;
@@ -246,7 +242,7 @@ class Repository extends Model
                 $about[] = $data;
             }
         }
-        if (!empty($about)) {
+        if (! empty($about)) {
             $jsonLd->addValue('about', $about);
         }
 

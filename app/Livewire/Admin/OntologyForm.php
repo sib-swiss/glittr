@@ -57,7 +57,6 @@ class OntologyForm extends Component
         $this->cancelEvent = $cancelEvent;
     }
 
-
     public function save()
     {
         OntologyData::validate($this->ontology);
