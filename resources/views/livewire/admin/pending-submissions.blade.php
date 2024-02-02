@@ -74,19 +74,19 @@
        {{ $submissions->links() }}
 
        <!-- Add Repository Form Modal -->
-        <x-modal wire:model.live="showAccept" persisted="true">
+        <x-modal wire:model.live="showAccept" persisted="true" id="accept-{{time()}}">
             @if ($acceptingSubmissionId)
                 @livewire('admin.repository-form', [null, 'addRepositoryCancel', $acceptingSubmissionId], key("submissionAccept-{$acceptingSubmissionId}"))
             @endif
         </x-modal>
         <!-- Edit Repository Form Modal -->
-        <x-modal wire:model.live="showDecline" persisted="true">
+        <x-modal wire:model.live="showDecline" persisted="true" id="decline-{{time()}}">
             <x-modal.content title="Decline Submission">
                 <form wire:submit="decline">
                     <div class="space-y-4">
                         <div>
                             <x-label for="declineComment" value="{{ __('Comment')}}" />
-                            <x-textarea wire:model.live="declineComment" class="w-full" />
+                            <x-textarea wire:model="declineComment" class="w-full" />
                         </div>
                     </div>
                     <x-slot name="footer">

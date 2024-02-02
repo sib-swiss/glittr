@@ -6,11 +6,13 @@ namespace App\Livewire\Admin;
 
 use App\Concerns\InteractsWithNotifications;
 use App\Facades\Remote;
+use App\Mail\SubmissionAccepted;
 use App\Models\Repository;
 use App\Models\Submission;
 use Exception;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 use Livewire\Component;
 use Spatie\Url\Url;
@@ -217,6 +219,11 @@ class RepositoryForm extends Component
                     $submission->validated_by = Auth::user()->id;
                     $submission->validated_at = Carbon::now();
                     $submission->save();
+
+                    // Send email to the submitter
+                    if ($submission->email && filter_var($submission->email, FILTER_VALIDATE_EMAIL)) {
+                        Mail::to($submission->email)->bcc(config('glittr.notification_emails'))->send(new SubmissionAccepted($submission));
+                    }
                 }
 
                 $this->notify("Repository {$displayName} successfully added.");
