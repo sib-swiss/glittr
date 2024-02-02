@@ -114,7 +114,7 @@ return [
      * List of licences urls
      */
     'licences_url' => [
-        'agpl-3.0' => 'https://spdx.org/licenses/AGPL-3.0-or-later.html',
+        'agpl-3.0' => 'https://spdx.org/licenses/AGPL-3.0-only.html',
         'apache-2.0' => 'https://spdx.org/licenses/Apache-2.0.html',
         'artistic-2.0' => 'https://spdx.org/licenses/Artistic-2.0.html',
         'bsd-2-clause' => 'https://spdx.org/licenses/BSD-2-Clause.html',
@@ -124,9 +124,9 @@ return [
         'cc-by-sa-4.0' => 'https://spdx.org/licenses/CC-BY-SA-4.0.html',
         'cc0-1.0' => 'https://spdx.org/licenses/CC0-1.0.html',
         'epl-2.0' => 'https://spdx.org/licenses/EPL-2.0.html',
-        'gpl-2.0' => 'https://spdx.org/licenses/GPL-2.0-or-later.html',
-        'gpl-3.0' => 'https://spdx.org/licenses/GPL-3.0-or-later.html',
-        'lgpl-2.1' => 'https://spdx.org/licenses/LGPL-2.1-or-later.html',
+        'gpl-2.0' => 'https://spdx.org/licenses/GPL-2.0-only.html',
+        'gpl-3.0' => 'https://spdx.org/licenses/GPL-3.0-only.html',
+        'lgpl-2.1' => 'https://spdx.org/licenses/LGPL-2.1-only.html',
         'mit' => 'https://spdx.org/licenses/MIT.html',
         'mpl-2.0' => 'https://spdx.org/licenses/MPL-2.0.html',
         'unlicense' => 'https://spdx.org/licenses/Unlicense.html',
