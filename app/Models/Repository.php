@@ -182,7 +182,7 @@ class Repository extends Model
                 '@type' => 'CreativeWork',
             ],
         );
-        $jsonLd->addValue('description', $this->description && $this->description != '' ? $this->decription : 'none');
+        $jsonLd->addValue('description', ($this->description && $this->description != '') ? $this->description : 'none');
         $jsonLd->addValue('keywords', $this->tags->pluck('name')->join(', '));
         $jsonLd->addValue('name', $this->name);
 
