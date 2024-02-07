@@ -111,6 +111,11 @@ return [
     'tags_default_and_operator' => true,
 
     /**
+     * Email signature
+     */
+    'mail_signature' => 'Best wishes<br >The Glittr team',
+
+    /**
      * List of licences urls
      */
     'licences_url' => [
