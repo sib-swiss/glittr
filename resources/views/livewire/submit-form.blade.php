@@ -19,7 +19,7 @@
                         With this form you can request you can submit a new repository to be added to the collection or updates information for a repository.
                     </p>
                     <p>
-                        If you just want to send us a general question or remark, feel free to <a href="mailto:info@glittr.org">contact us by email</a>.
+                        If you just want to send us a general question or remark, feel free to <a href="mailto:{{ collect(config('glittr.notification_emails'))->first() }}">contact us by email</a>.
                     </p>
                 </div>
             </x-slot>

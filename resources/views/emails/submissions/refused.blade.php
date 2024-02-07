@@ -2,7 +2,7 @@
 
 Dear {{ $submission->name }},
 
-Thank you for adding **{{ $submission->url }}** to Glittr.org. Unfortunately, your submission did not pass our checks.
+Thank you for adding **{{ $submission->url }}** to {{ config('app.name') }}. Unfortunately, your submission did not pass our checks.
 
 @if ($submission->validation_message != "")
 Here's what the curator wrote:
@@ -11,7 +11,6 @@ Here's what the curator wrote:
 @endcomponent
 @endif
 
-Best wishes,
-Geert from Glittr.org
+{!! nl2br(config('glittr.mail_signature')) !!}
 
 @endcomponent
