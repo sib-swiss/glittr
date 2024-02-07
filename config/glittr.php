@@ -113,7 +113,8 @@ return [
     /**
      * Email signature
      */
-    'mail_signature' => 'Best wishes<br >The Glittr team',
+    'mail_signature' => 'Best wishes
+The Glittr team',
 
     /**
      * List of licences urls
