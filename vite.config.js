@@ -9,7 +9,7 @@ export default defineConfig({
         // respond to all hosts
         host: '0.0.0.0',
         strictPort: true,
-        port: 5173,
+        port: 51733,
         hmr: {
             // Force the Vite client to connect via SSL
             // This will also force a "https://" URL in the public/hot file
