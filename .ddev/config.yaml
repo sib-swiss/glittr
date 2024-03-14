@@ -9,9 +9,9 @@ additional_fqdns: []
 host_db_port: "33079"
 web_extra_exposed_ports:
   - name: vite
-    container_port: 5173
-    http_port: 5172
-    https_port: 5173
+    container_port: 51733
+    http_port: 51722
+    https_port: 51733
 database:
     type: mariadb
     version: "10.4"
