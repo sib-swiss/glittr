@@ -17,25 +17,36 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Frontend routes.
-Route::get('/', function () {
-    return view('homepage');
-})->name('homepage');
+Route::get(
+    '/',
+    function () {
+        return view('homepage');
+    }
+)->name('homepage');
 
-Route::get('contribute', function () {
-    return view('contribute');
-})->name('contribute');
+Route::get(
+    'contribute',
+    function () {
+        return view('contribute');
+    }
+)->name('contribute');
+
 
 // Admin routes.
-Route::middleware([
+Route::middleware(
+    [
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
-])
+    ]
+)
     ->prefix('admin')
     ->name('admin.')
-    ->group(function () {
-        Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
-        Route::get('repositories', [RepositoryController::class, 'index'])->name('repositories.index');
-        Route::get('tags', [TagController::class, 'index'])->name('tags.index');
-        Route::get('ontologies', [AdminController::class, 'ontologies'])->name('ontologies.index');
-    });
+    ->group(
+        function () {
+            Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
+            Route::get('repositories', [RepositoryController::class, 'index'])->name('repositories.index');
+            Route::get('tags', [TagController::class, 'index'])->name('tags.index');
+            Route::get('ontologies', [AdminController::class, 'ontologies'])->name('ontologies.index');
+        }
+    );

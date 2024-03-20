@@ -1,0 +1,6 @@
+{
+    "preset": "psr12",
+    "rules": {
+        "no_unused_imports": true
+    }
+}

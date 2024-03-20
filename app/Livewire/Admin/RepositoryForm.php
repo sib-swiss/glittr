@@ -227,7 +227,8 @@ class RepositoryForm extends Component
                 }
 
                 $this->notify("Repository {$displayName} successfully added.");
-                $this->dispatch('addRepositorySuccess',
+                $this->dispatch(
+                    'addRepositorySuccess',
                     repository: $repository->id,
                 );
             } else {
@@ -242,7 +243,8 @@ class RepositoryForm extends Component
 
             $this->notify("Repository {$displayName} successfully updated.");
 
-            $this->dispatch('editRepositorySuccess',
+            $this->dispatch(
+                'editRepositorySuccess',
                 repository: $repository->id,
             );
         }

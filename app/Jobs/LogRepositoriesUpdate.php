@@ -14,7 +14,11 @@ use Sammyjo20\LaravelHaystack\Contracts\StackableJob;
 
 class LogRepositoriesUpdate implements ShouldQueue, StackableJob
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, Stackable;
+    use Dispatchable;
+    use InteractsWithQueue;
+    use Queueable;
+    use SerializesModels;
+    use Stackable;
 
     /**
      * Total repositories to update
