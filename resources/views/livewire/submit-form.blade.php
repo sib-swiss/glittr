@@ -76,7 +76,7 @@
                     <x-input-error for="comment" class="mt-1" />
                 </div>
                 <div class="block col-span-6 mt-1 text-sm font-medium text-gray-700">
-                    By submitting a repository, you hereby acknowledge and confirm that you have read the <a href="{{ route('terms-of-use') }}" target="_blank" class="underline transition text-primary hover:text-primary/80">Glittr Terms of Use</a> and that you agree to comply with them.
+                    By submitting a repository, you hereby acknowledge and confirm that you have read the <a href="{{ route('terms-of-use') }}" target="_blank" class="inline-flex items-center mr-1 space-x-1 text-sm text-blue-500 underline hover:text-blue-700"><span>Glittr Terms of Use</span><x-heroicon-m-arrow-top-right-on-square class="w-3 h-3" /></a> and that you agree to comply with them.
                 </div>
             </x-slot>
 
