@@ -4,8 +4,8 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <title>{{ config('glittr.seo.title', config('app.name', 'Glittr')) }}</title>
-        <meta name="description" content="{{ config('glittr.seo.description') }}">
+        <title>{{ $title ?? $site_name }}</title>
+        <meta name="description" content="{{ $site_description }}">
 
         {{-- FAVICON --}}
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -17,9 +17,9 @@
         <meta name="theme-color" content="#ffffff">
 
         {{-- SOCIAL SHARING --}}
-        <meta property="og:title" content="{{ config('glittr.og.title', config('glittr.seo.title', config('app.name', 'Glittr'))) }}">
+        <meta property="og:title" content="{{ config('glittr.og.title', $title ?? $site_name) }}">
         <meta property="og:type" content="website" />
-        <meta property="og:description" content="{{ config('glittr.og.description', config('glittr.seo.description')) }}">
+        <meta property="og:description" content="{{ config('glittr.og.description', $site_description) }}">
         <meta property="og:image" content="{{ url('og.jpg') }}">
         <meta property="og:url" content="{{ url('/') }}">
         <meta name="twitter:card" content="summary_large_image">
@@ -67,8 +67,8 @@
         @livewireStyles
         @stack('head')
     </head>
-    <body class="font-sans antialiased scroll-smooth bg-white text-gray-800 min-h-screen flex flex-col text-sm lg:text-base">
-        <div class="flex-1 flex flex-col ">
+    <body class="flex flex-col min-h-screen font-sans text-sm antialiased text-gray-800 bg-white scroll-smooth lg:text-base">
+        <div class="flex flex-col flex-1 ">
             <div class="h-2 bg-glittr {{ $sidebar ? '2xl:mr-[360px]' : '' }}">
             </div>
             {{ $slot }}

@@ -51,13 +51,6 @@ return [
         '#FB5607', // orange
     ],
 
-    /**
-     * SEO tags
-     */
-    'seo' => [
-        'title' => 'Glittr.org | Git repositories with bioinformatics training material',
-        'description' => 'Glittr is a curated list of bioinformatics training material.',
-    ],
 
     /**
      * Open Graph tags for social media
@@ -110,11 +103,6 @@ return [
      */
     'tags_default_and_operator' => true,
 
-    /**
-     * Email signature
-     */
-    'mail_signature' => 'Best wishes
-The Glittr team',
 
     /**
      * List of licences urls

@@ -44,7 +44,8 @@ class CategoryForm extends Component
             $data->toArray()
         );
 
-        $this->dispatch("{$this->action}CategorySuccess",
+        $this->dispatch(
+            "{$this->action}CategorySuccess",
             category: $category->id,
         );
     }

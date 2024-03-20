@@ -88,7 +88,8 @@ class TagForm extends Component
             $tag->moveToStart();
         }
 
-        $this->dispatch("{$this->action}TagSuccess",
+        $this->dispatch(
+            "{$this->action}TagSuccess",
             tag: $tag->id,
         );
     }

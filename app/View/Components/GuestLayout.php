@@ -14,14 +14,19 @@ class GuestLayout extends Component
     public $sidebar = false;
 
     /**
-     * Create the component
+     * Page title
      *
-     * @param  bool  $sidebar
-     * @return void
+     * @var ?string
      */
-    public function __construct($sidebar = false)
-    {
-        $this->sidebar = $sidebar;
+    public $page_title;
+
+    /**
+     * Create the component
+     */
+    public function __construct(
+        public ?string $title = null,
+        public bool $show_header = true,
+    ) {
     }
 
     /**

@@ -15,4 +15,9 @@ class AdminController extends Controller
     {
         return view('admin.ontologies.index');
     }
+
+    public function settings()
+    {
+        return view('admin.settings');
+    }
 }

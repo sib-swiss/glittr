@@ -5,25 +5,19 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class () extends Migration {
-    /**
-     * Run the migrations.
-     */
-    public function up(): void
+    public function up()
     {
-        Schema::create('ontologies', function (Blueprint $table) {
+        Schema::create('settings', function (Blueprint $table): void {
             $table->id();
 
+            $table->string('group');
             $table->string('name');
+            $table->boolean('locked')->default(false);
+            $table->json('payload');
 
             $table->timestamps();
-        });
-    }
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('ontologies');
+            $table->unique(['group', 'name']);
+        });
     }
 };

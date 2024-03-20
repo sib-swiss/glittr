@@ -69,7 +69,8 @@ class OntologyForm extends Component
             $current = Ontology::create($data);
         }
 
-        $this->dispatch("{$this->action}OntologySuccess",
+        $this->dispatch(
+            "{$this->action}OntologySuccess",
             ontology: $current->id,
         );
     }

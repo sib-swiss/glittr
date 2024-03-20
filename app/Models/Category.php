@@ -10,7 +10,8 @@ use Spatie\EloquentSortable\SortableTrait;
 
 class Category extends Model implements Sortable
 {
-    use HasFactory, SortableTrait;
+    use HasFactory;
+    use SortableTrait;
 
     public $sortable = [
         'order_column_name' => 'order_column',

@@ -9,7 +9,8 @@ use Illuminate\Queue\SerializesModels;
 
 class RepositoriesUpdated extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     /**
      * The update status
@@ -37,7 +38,9 @@ class RepositoriesUpdated extends Mailable
     {
         return $this
             ->subject(($this->update->error == 0) ? 'Updated finished without error' : "Error updating ({$this->update->error} errors)")
-            ->markdown('emails.repositories.updated', [
+            ->markdown(
+                'emails.repositories.updated',
+                [
                 'update' => $this->update,
             ]
             );
