@@ -1,6 +1,6 @@
 # Glittr
 
-[Glitter](https://glittr.org/) is a web app to find bioinformatics training materials on GitHub and GitLab based on Laravel.
+[Glittr](https://glittr.org/) is a web app to find bioinformatics training materials on GitHub and GitLab based on Laravel.
 
 ## Requirement
 
