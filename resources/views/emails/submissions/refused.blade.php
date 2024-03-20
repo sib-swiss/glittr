@@ -11,6 +11,6 @@ Here's what the curator wrote:
 @endcomponent
 @endif
 
-{!! nl2br(config('glittr.mail_signature')) !!}
+{!! $mail_signature !!}
 
 @endcomponent

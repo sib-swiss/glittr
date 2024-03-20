@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Category;
 use App\Models\Repository;
 use App\Models\Tag;
+use App\Settings\GeneralSettings;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -12,6 +13,7 @@ use Illuminate\Support\Str;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Michelf\MarkdownExtra;
 
 class Repositories extends Component
 {
@@ -314,16 +316,18 @@ class Repositories extends Component
                 $sorting_columns[] = [
                     'column' => $column,
                     'direction' => $direction,
-                    'label' => Str::headline($column.' '.$direction),
+                    'label' => Str::headline($column . ' ' . $direction),
                     'selected' => ($this->sort_by == $column && $this->sort_direction == $direction),
                 ];
             }
         }
-
+        $parser = new MarkdownExtra();
+        $parser->hard_wrap = true;
         return view('livewire.repositories', [
             'repositories' => $repositories->paginate(intval($this->per_page)),
             'selected_tags' => $selected_tags,
             'sorting_columns' => $sorting_columns,
+            'header_text' => $parser->transform(app(GeneralSettings::class)->header_text),
         ]);
     }
 
@@ -351,12 +355,12 @@ class Repositories extends Component
             $repositories->search($this->search);
         }
         if ($this->name != '') {
-            $repositories->where('repositories.name', 'like', '%'.$this->name.'%');
+            $repositories->where('repositories.name', 'like', '%' . $this->name . '%');
         }
         if ($this->author != '') {
             $repositories->whereHas('author', function (Builder $query) {
-                $query->where('name', 'like', '%'.$this->author.'%')
-                    ->orWhere('display_name', 'like', '%'.$this->author.'%');
+                $query->where('name', 'like', '%' . $this->author . '%')
+                    ->orWhere('display_name', 'like', '%' . $this->author . '%');
             });
         }
         if ($this->minStars != '' && intval($this->minStars) > 0) {
