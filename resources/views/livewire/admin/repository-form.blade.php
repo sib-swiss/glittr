@@ -4,17 +4,17 @@
             <div>
                 <x-label for="url" value="{{ __('Repository Url') }}" />
                 <div class="flex items-center space-x-2">
-                    <x-input id="url" type="text" class="mt-1 block w-full" wire:model.live="repository.url" />
+                    <x-input id="url" type="text" class="block w-full mt-1" wire:model.live="repository.url" />
                     <x-secondary-button type="button" wire:loading.remove="testRemote" wire:click="testRemote">Test</x-secondary-button>
                 </div>
                 <x-input-error for="repository.url" class="mt-2" />
             </div>
             @if ($existingWarning)
-            <div class="text-sm font-bold p-2 border rounded bg-orange-100 border-orange-500 text-orange-500">
+            <div class="p-2 text-sm font-bold text-orange-500 bg-orange-100 border border-orange-500 rounded">
                 This repository already exists in the collection.
             </div>
             @endif
-            <div wire:loading.block wire:target="testRemote" class="block border text-sm bg-blue-50  border-blue-500 text-blue-500 p-2">
+            <div wire:loading.block wire:target="testRemote" class="block p-2 text-sm text-blue-500 border border-blue-500 bg-blue-50">
                 Testing remote status...
             </div>
             @if ($showTests)
@@ -24,7 +24,7 @@
                         <div class="flex-1 p-2"><strong>REPO:</strong> {{ $tests['repo'] ? 'ok':'no' }}</div>
                         <div class="flex-1 p-2"><strong>AUTHOR:</strong> {{ $tests['author'] ? 'ok':'no' }}</div>
                     </div>
-                    <ul class="list-disc pl-8">
+                    <ul class="pl-8 list-disc">
                         @foreach($tests['errors'] as $error)
                             <li>{{ $error }}</li>
                         @endforeach
@@ -35,9 +35,9 @@
             <div class="flex flex-wrap items-center space-x-1">
                 <x-label for="tags" value="{{ __('Tags') }}" />
                 @livewire('tag-select', ['values' => $repository['tags']])
-                <x-input-error for="repository.tags" class="mt-2 w-full" />
+                <x-input-error for="repository.tags" class="w-full mt-2" />
             </div>
-            {{--<div class="bg-orange-50 text-orange-500 text-sm p-4 border border-orange-500">
+            {{--<div class="p-4 text-sm text-orange-500 border border-orange-500 bg-orange-50">
                 ! All informations below will be updated with data from the API !
             </div>--}}
 
@@ -53,7 +53,7 @@
                 <x-secondary-button wire:click.prevent="$dispatch('{{ $cancelEvent }}')">{{ __('Cancel') }}</x-seconday-button>
             @endif
             @if (!$existingWarning)
-                <x-button wire:click.prevent="save">{{ Str::headline($action) }}</x-button>
+                <x-button type="submit" wire:click.prevent="save">{{ Str::headline($action) }}</x-button>
             @endif
         </x-slot>
     </form>
