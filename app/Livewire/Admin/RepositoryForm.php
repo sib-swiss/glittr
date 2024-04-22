@@ -142,13 +142,13 @@ class RepositoryForm extends Component
                     $repo = Remote::driver($api)->getData($url);
                     $this->tests['repo'] = true;
                 } catch (Exception $e) {
-                    $this->tests['errors'][] = 'REPO: '.$e->getMessage();
+                    $this->tests['errors'][] = 'REPO: ' . $e->getMessage();
                 }
                 try {
                     $author = Remote::driver($api)->getAuthorData($url);
                     $this->tests['author'] = true;
                 } catch (Exception $e) {
-                    $this->tests['errors'][] = 'AUTHOR: '.$e->getMessage();
+                    $this->tests['errors'][] = 'AUTHOR: ' . $e->getMessage();
                 }
                 if ($this->tests['repo'] && $this->tests['author']) {
                     $this->tests['class'] = 'bg-green-50 text-green-500 border-green-500';
@@ -262,7 +262,7 @@ class RepositoryForm extends Component
             'repository.url' => 'required|starts_with:https://',
             'repository.website' => 'nullable|starts_with:https://,http://',
             'repository.tags' => 'required|array|min:1',
-            'repository.author_id' => 'nullable|exists:App\Models\Author,id',
+            //'repository.author_id' => 'nullable|exists:App\Models\Author,id',
         ];
     }
 }
