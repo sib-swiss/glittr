@@ -28,7 +28,7 @@ class RepositoryForm extends Component
      */
     public $repository = [
         'url' => '',
-        'author_id' => null,
+        //'author_id' => null,
         'website' => '',
         'tags' => [],
     ];
@@ -93,7 +93,7 @@ class RepositoryForm extends Component
             $this->repository = [
                 'id' => $r->id,
                 'url' => (string) $r->url,
-                'author_id' => $r->author_id,
+                //'author_id' => $r->author_id,
                 'website' => (string) $r->website,
                 'tags' => $r->tags->pluck('id')->toArray(),
             ];
@@ -236,6 +236,10 @@ class RepositoryForm extends Component
             }
         } else {
             $repository = Repository::find($this->repository['id']);
+            // Url changed -> reset author
+            if ($validatedData['repository']['url'] != $repository->url) {
+                $validatedData['repository']['author_id'] = null;
+            }
             $repository->update($validatedData['repository']);
             //re-attach tags for ordering
             $repository->tags()->detach();
