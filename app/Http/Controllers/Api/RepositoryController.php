@@ -118,6 +118,6 @@ class RepositoryController extends Controller
                 'author.name',
             ])
             ->defaultSort('-stargazers')
-            ->with('author', 'tags', 'tags.category');
+            ->with('author', 'tags', 'tags.category', 'tags.ontology');
     }
 }
