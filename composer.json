@@ -30,7 +30,8 @@
         "spatie/url": "^2.1"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.7",
+        "barryvdh/laravel-debugbar": "^3.12",
+        "beyondcode/laravel-query-detector": "^1.8",
         "brianium/paratest": "^7.0",
         "fakerphp/faker": "^1.9.1",
         "laravel/pint": "^1.2",
