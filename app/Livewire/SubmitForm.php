@@ -6,9 +6,11 @@ use App\Actions\CreateSubmission;
 use App\Data\SubmissionData;
 use App\Models\Repository;
 use App\Models\Tag;
+use App\Settings\GeneralSettings;
 use Illuminate\Support\Facades\App;
 use Illuminate\View\View;
 use Livewire\Component;
+use Michelf\Markdown;
 
 class SubmitForm extends Component
 {
@@ -82,7 +84,9 @@ class SubmitForm extends Component
 
     public function render(): View
     {
-        return view('livewire.submit-form');
+        return view('livewire.submit-form', [
+            'text' => Markdown::defaultTransform(app(GeneralSettings::class)->contribute_text),
+        ]);
     }
 
     public function save(): void

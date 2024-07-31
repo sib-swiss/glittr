@@ -12,15 +12,7 @@
 
             <x-slot name="description">
                 <div class="prose-sm prose">
-                    <p>
-                        First of all, great that you're considering to contribute. Anything that you can contribute is highly appreciated!
-                    </p>
-                    <p>
-                        With this form you can request you can submit a new repository to be added to the collection or updates information for a repository.
-                    </p>
-                    <p>
-                        If you just want to send us a general question or remark, feel free to <a href="mailto:{{ collect(config('glittr.notification_emails'))->first() }}">contact us by email</a>.
-                    </p>
+                    {!! $text !!}
                 </div>
             </x-slot>
 
