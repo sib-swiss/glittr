@@ -85,7 +85,7 @@ class Ontologies extends Component
     public function render()
     {
         return view('livewire.admin.ontologies', [
-            'ontologies' => Ontology::orderBy('name')->get(),
+            'ontologies' => Ontology::with('tags')->orderBy('name')->get(),
         ]);
     }
 }
