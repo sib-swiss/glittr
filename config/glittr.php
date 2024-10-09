@@ -57,7 +57,7 @@ return [
      */
     'og' => [
         'title' => 'Glittr.org',
-        'description' => 'Git repositories with bioinformatics training material',
+        'description' => 'Git repositories with educational materials for the computational life sciences',
     ],
 
     /**

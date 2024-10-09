@@ -41,7 +41,7 @@ If you just want to send us a general message, you can leave the <strong>Reposit
 Interested in SIB courses? [Visit our website](https://www.sib.swiss/training).'
         );
 
-        $this->migrator->add('general.homepage_page_title', 'Glittr.org | Git repositories with bioinformatics training material');
+        $this->migrator->add('general.homepage_page_title', 'Glittr.org | Git repositories with educational materials for the computational life sciences');
 
         $this->migrator->add('general.show_repository_link', true);
         $this->migrator->add('general.repository_link', 'https://github.com/sib-swiss/glittr');
