@@ -50,6 +50,7 @@
                     <x-input-error for="tags" class="mt-1" />
                 </div>
 
+                @if ($apicuron_enabled)
                 <div class="col-span-6 bg-gradient-to-r from-[#4D194D] to-[#9A031E] p-4 md:p-6 rounded-lg my-4">
                     <div class="prose-sm prose text-white max-w-none prose-invert">
                         <h3>{{ $apicuron_title }}</h3>
@@ -72,6 +73,7 @@
                         </button>
                     @endif
                 </div>
+                @endif
 
                 <div class="col-span-6">
                     <div class="p-4 mt-1 text-sm text-blue-500 border border-blue-500 rounded bg-blue-50">

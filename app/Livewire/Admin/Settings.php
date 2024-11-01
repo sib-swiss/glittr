@@ -3,9 +3,11 @@
 namespace App\Livewire\Admin;
 
 use App\Concerns\InteractsWithNotifications;
+use App\Settings\ApicuronSettings;
 use App\Settings\GeneralSettings;
 use App\Settings\TermsSettings;
 use Livewire\Component;
+use Spatie\FlareClient\Api;
 
 class Settings extends Component
 {
@@ -29,6 +31,10 @@ class Settings extends Component
 
     public $terms;
 
+    public bool $apicuron_enabled;
+
+    public string $apicuron_submission_activity_term;
+
     public string $apicuron_title;
 
     public string $apicuron_introduction;
@@ -39,7 +45,7 @@ class Settings extends Component
 
     public string $apicuron_logout_btn;
 
-    public function mount(GeneralSettings $settings, TermsSettings $termsSettings)
+    public function mount(GeneralSettings $settings, TermsSettings $termsSettings, ApicuronSettings $apicuronSettings)
     {
         $this->site_name = $settings->site_name;
         $this->site_description = $settings->site_description;
@@ -49,11 +55,14 @@ class Settings extends Component
         $this->footer_text = $settings->footer_text;
         $this->contribute_text = $settings->contribute_text;
         $this->mail_signature = $settings->mail_signature;
-        $this->apicuron_title = $settings->apicuron_title;
-        $this->apicuron_introduction = $settings->apicuron_introduction;
-        $this->apicuron_login_btn = $settings->apicuron_login_btn;
-        $this->apicuron_logged_warning = $settings->apicuron_logged_warning;
-        $this->apicuron_logout_btn = $settings->apicuron_logout_btn;
+
+        $this->apicuron_enabled = $apicuronSettings->apicuron_enabled;
+        $this->apicuron_submission_activity_term = $apicuronSettings->apicuron_submission_activity_term;
+        $this->apicuron_title = $apicuronSettings->apicuron_title;
+        $this->apicuron_introduction = $apicuronSettings->apicuron_introduction;
+        $this->apicuron_login_btn = $apicuronSettings->apicuron_login_btn;
+        $this->apicuron_logged_warning = $apicuronSettings->apicuron_logged_warning;
+        $this->apicuron_logout_btn = $apicuronSettings->apicuron_logout_btn;
 
         $this->terms = $termsSettings->terms;
     }
@@ -63,7 +72,7 @@ class Settings extends Component
         return view('livewire.admin.settings');
     }
 
-    public function save(GeneralSettings $settings, TermsSettings $termsSettings)
+    public function save(GeneralSettings $settings, TermsSettings $termsSettings, ApicuronSettings $apicuronSettings)
     {
         $settings->site_name = $this->site_name;
         $settings->site_description = $this->site_description;
@@ -73,16 +82,20 @@ class Settings extends Component
         $settings->footer_text = $this->footer_text;
         $settings->contribute_text = $this->contribute_text;
         $settings->mail_signature = $this->mail_signature;
-        $settings->apicuron_title = $this->apicuron_title;
-        $settings->apicuron_introduction = $this->apicuron_introduction;
-        $settings->apicuron_login_btn = $this->apicuron_login_btn;
-        $settings->apicuron_logged_warning = $this->apicuron_logged_warning;
-        $settings->apicuron_logout_btn = $this->apicuron_logout_btn;
+
+        $apicuronSettings->apicuron_enabled = $this->apicuron_enabled;
+        $apicuronSettings->apicuron_submission_activity_term = $this->apicuron_submission_activity_term;
+        $apicuronSettings->apicuron_title = $this->apicuron_title;
+        $apicuronSettings->apicuron_introduction = $this->apicuron_introduction;
+        $apicuronSettings->apicuron_login_btn = $this->apicuron_login_btn;
+        $apicuronSettings->apicuron_logged_warning = $this->apicuron_logged_warning;
+        $apicuronSettings->apicuron_logout_btn = $this->apicuron_logout_btn;
 
         $termsSettings->terms = $this->terms;
 
         $settings->save();
         $termsSettings->save();
+        $apicuronSettings->save();
 
         $this->notify('Settings successfully updated.');
     }

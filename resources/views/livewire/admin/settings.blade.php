@@ -18,8 +18,59 @@
                 >
                     Terms
                 </button>
+                <button
+                    role="button"
+                    class="p-4 text-sm font-semibold tracking-wider text-white uppercase transition border rounded-t-lg hover:bg-gray-800"
+                    x-bind:class="{ 'bg-gray-900': show == 'apicuron', 'bg-gray-500': show != 'apicuron' }"
+                    x-on:click.prevent="show = 'apicuron'"
+                >
+                    APICURON
+                </button>
             </div>
 
+            <div class="space-y-4" x-cloack x-show="show == 'apicuron'">
+                <div>
+                    <label for="apicuron_enabled" class="flex items-center">
+                        <x-checkbox id="apicuron_enabled" name="apicuron_enabled" value="1" wire:model="apicuron_enabled" />
+                        <span class="ml-2 text-sm text-gray-600">{{ __('Enable APICURON') }}</span>
+                    </label>
+                </div>
+                <div>
+                    <x-label for="apicuron_submission_activity_term" value="{{ __('Repository submission activity term id') }}" />
+                    <x-input id="apicuron_submission_activity_term" type="text" class="block w-full mt-1" wire:model="apicuron_submission_activity_term" />
+                    <x-input-error for="apicuron_submission_activity_term" class="mt-1" />
+                    <div class="mt-1 text-sm text-gray-500">
+                        the term id created in APICURON for the repository submission activity
+                    </div>
+                </div>
+                <div>
+                    <x-label for="apicuron_title" value="{{ __('APICURON title') }}" />
+                    <x-input id="apicuron_title" type="text" class="block w-full mt-1" wire:model="apicuron_title" />
+                    <x-input-error for="apicuron_title" class="mt-1" />
+                </div>
+                <div>
+                    <x-label for="apicuron_introduction" value="{{ __('APICURON introduction text') }}" />
+                    <x-textarea id="apicuron_introduction" type="text" class="block w-full mt-1" rows="2"
+                        wire:model="apicuron_introduction" />
+                    <x-input-error for="apicuron_introduction" class="mt-1" />
+                </div>
+                <div>
+                    <x-label for="apicuron_login_btn" value="{{ __('APICURON login ORCID button text') }}" />
+                    <x-input id="apicuron_login_btn" type="text" class="block w-full mt-1" wire:model="apicuron_login_btn" />
+                    <x-input-error for="apicuron_login_btn" class="mt-1" />
+                </div>
+                <div>
+                    <x-label for="apicuron_logged_warning" value="{{ __('APICURON logged in warning') }}" />
+                    <x-textarea id="apicuron_logged_warning" type="text" class="block w-full mt-1" rows="2"
+                        wire:model="apicuron_logged_warning" />
+                    <x-input-error for="apicuron_logged_warning" class="mt-1" />
+                </div>
+                <div>
+                    <x-label for="apicuron_logout_btn" value="{{ __('APICURON logout ORCID button text') }}" />
+                    <x-input id="apicuron_logout_btn" type="text" class="block w-full mt-1" wire:model="apicuron_logout_btn" />
+                    <x-input-error for="apicuron_logout_btn" class="mt-1" />
+                </div>
+            </div>
             <div class="space-y-4" x-cloack x-show="show == 'terms'">
                 <div>
                     <x-label for="terms" value="{{ __('Terms of use') }}" />
@@ -75,33 +126,7 @@
                         wire:model="mail_signature" />
                     <x-input-error for="mail_signature" class="mt-1" />
                 </div>
-                <div>
-                    <x-label for="apicuron_login_btn" value="{{ __('APICURON title') }}" />
-                    <x-input id="apicuron_title" type="text" class="block w-full mt-1" wire:model="apicuron_title" />
-                    <x-input-error for="apicuron_title" class="mt-1" />
-                </div>
-                <div>
-                    <x-label for="apicuron_introduction" value="{{ __('APICURON introduction text') }}" />
-                    <x-textarea id="apicuron_introduction" type="text" class="block w-full mt-1" rows="2"
-                        wire:model="apicuron_introduction" />
-                    <x-input-error for="apicuron_introduction" class="mt-1" />
-                </div>
-                <div>
-                    <x-label for="apicuron_login_btn" value="{{ __('APICURON login ORCID button text') }}" />
-                    <x-input id="apicuron_login_btn" type="text" class="block w-full mt-1" wire:model="apicuron_login_btn" />
-                    <x-input-error for="apicuron_login_btn" class="mt-1" />
-                </div>
-                <div>
-                    <x-label for="apicuron_logged_warning" value="{{ __('APICURON logged in warning') }}" />
-                    <x-textarea id="apicuron_logged_warning" type="text" class="block w-full mt-1" rows="2"
-                        wire:model="apicuron_logged_warning" />
-                    <x-input-error for="apicuron_logged_warning" class="mt-1" />
-                </div>
-                <div>
-                    <x-label for="apicuron_logout_btn" value="{{ __('APICURON logout ORCID button text') }}" />
-                    <x-input id="apicuron_logout_btn" type="text" class="block w-full mt-1" wire:model="apicuron_logout_btn" />
-                    <x-input-error for="apicuron_logout_btn" class="mt-1" />
-                </div>
+
             </div>
             <div class="pt-4 border-t scroll-mt-4">
                 <x-button>

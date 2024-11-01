@@ -50,7 +50,13 @@ class SendApicuronSubmission implements ShouldQueue
         if ($this->submission->apicuron_orcid && $this->submission->apicuron_submit && $this->submission->repository && !$this->submission->apicuron_submitted_at) {
             // Send the submission to Apicuron .
             $client = new ApicuronClient();
-            $response = $client->sendNewSubmission($this->submission->apicuron_orcid, $this->submission->repository->url);
+            $response = $client->sendNewSubmission($this->submission);
+            if ($response->successful()) {
+                $this->submission->apicuron_submitted_at = now();
+                $this->submission->save();
+            } else {
+                $this->release(60);
+            }
         }
     }
 }
