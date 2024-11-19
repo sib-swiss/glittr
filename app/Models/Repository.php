@@ -57,7 +57,7 @@ class Repository extends Model
 
     public function tags()
     {
-        return $this->belongsToMany(Tag::class)->using(RepositoryTag::class);
+        return $this->belongsToMany(Tag::class)->using(RepositoryTag::class)->withPivot('order_column');
     }
 
     public function getPushStatusClass()
@@ -90,16 +90,16 @@ class Repository extends Model
             foreach ($terms as $term) {
                 $query->where(function ($query) use ($term) {
                     $query
-                        ->where('repositories.url', 'like', '%'.$term.'%')
-                        ->orwhere('repositories.name', 'like', '%'.$term.'%')
-                        ->orWhere('repositories.description', 'like', '%'.$term.'%')
-                        ->orWhere('repositories.license', 'like', '%'.$term.'%')
+                        ->where('repositories.url', 'like', '%' . $term . '%')
+                        ->orwhere('repositories.name', 'like', '%' . $term . '%')
+                        ->orWhere('repositories.description', 'like', '%' . $term . '%')
+                        ->orWhere('repositories.license', 'like', '%' . $term . '%')
                         ->orWhereHas('author', function (Builder $query) use ($term) {
-                            $query->where('name', 'like', '%'.$term.'%')
-                                ->orWhere('display_name', 'like', '%'.$term.'%');
+                            $query->where('name', 'like', '%' . $term . '%')
+                                ->orWhere('display_name', 'like', '%' . $term . '%');
                         })
                         ->orWhereHas('tags', function (Builder $query) use ($term) {
-                            $query->where('name', 'like', '%'.$term.'%');
+                            $query->where('name', 'like', '%' . $term . '%');
                         });
                 });
             }
