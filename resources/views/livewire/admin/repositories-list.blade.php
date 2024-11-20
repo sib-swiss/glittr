@@ -42,9 +42,8 @@
                         @endif
                     </x-table.cell>
                     <x-table.cell class="text-sm">
-                        {{ $repository->tags->implode('name', ', ') }}
+                        {{ $repository->tags->sortBy('pivot.order_column')->implode('name', ', ') }}
                     </x-table.cell>
-
                     <x-table.cell>{{ $repository->author ? $repository->author->display_name : '-' }}</x-table.cell>
                     <x-table.cell>
                         @if ($repository->refreshed_at)
