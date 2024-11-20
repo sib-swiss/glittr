@@ -16,8 +16,6 @@ class SubmissionData extends Data
         public string $name,
         public string $email,
         public ?string $comment,
-        public ?string $apicuron_orcid,
-        public bool $apicuron_submit = false,
     ) {
     }
 }

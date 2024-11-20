@@ -75,33 +75,6 @@
                         wire:model="mail_signature" />
                     <x-input-error for="mail_signature" class="mt-1" />
                 </div>
-                <div>
-                    <x-label for="apicuron_login_btn" value="{{ __('APICURON title') }}" />
-                    <x-input id="apicuron_title" type="text" class="block w-full mt-1" wire:model="apicuron_title" />
-                    <x-input-error for="apicuron_title" class="mt-1" />
-                </div>
-                <div>
-                    <x-label for="apicuron_introduction" value="{{ __('APICURON introduction text') }}" />
-                    <x-textarea id="apicuron_introduction" type="text" class="block w-full mt-1" rows="2"
-                        wire:model="apicuron_introduction" />
-                    <x-input-error for="apicuron_introduction" class="mt-1" />
-                </div>
-                <div>
-                    <x-label for="apicuron_login_btn" value="{{ __('APICURON login ORCID button text') }}" />
-                    <x-input id="apicuron_login_btn" type="text" class="block w-full mt-1" wire:model="apicuron_login_btn" />
-                    <x-input-error for="apicuron_login_btn" class="mt-1" />
-                </div>
-                <div>
-                    <x-label for="apicuron_logged_warning" value="{{ __('APICURON logged in warning') }}" />
-                    <x-textarea id="apicuron_logged_warning" type="text" class="block w-full mt-1" rows="2"
-                        wire:model="apicuron_logged_warning" />
-                    <x-input-error for="apicuron_logged_warning" class="mt-1" />
-                </div>
-                <div>
-                    <x-label for="apicuron_logout_btn" value="{{ __('APICURON logout ORCID button text') }}" />
-                    <x-input id="apicuron_logout_btn" type="text" class="block w-full mt-1" wire:model="apicuron_logout_btn" />
-                    <x-input-error for="apicuron_logout_btn" class="mt-1" />
-                </div>
             </div>
             <div class="pt-4 border-t scroll-mt-4">
                 <x-button>

@@ -26,16 +26,6 @@ class GeneralSettings extends Settings
 
     public string $mail_signature;
 
-    public string $apicuron_title;
-
-    public string $apicuron_introduction;
-
-    public string $apicuron_login_btn;
-
-    public string $apicuron_logged_warning;
-
-    public string $apicuron_logout_btn;
-
     public static function group(): string
     {
         return 'general';
