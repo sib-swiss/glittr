@@ -14,16 +14,24 @@ class RepositoryFullResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+        $data = [
             'name' => $this->name,
             'url' => (string) $this->url,
             'website' => (string) $this->website,
             'description' => $this->description,
             'author' => new AuthorResource($this->whenLoaded('author')),
-            'tags' => TagResource::collection($this->whenLoaded('tags')),
+        ];
+
+        if ($this->relationLoaded('tags')) {
+            $data['tags'] = TagResource::collection($this->tags->sortBy('pivot.order_column'));
+        }
+
+        $data += [
             'days_since_last_push' => $this->days_since_last_push,
             'stargazers' => $this->stargazers,
             'license' => $this->license,
         ];
+
+        return $data;
     }
 }
