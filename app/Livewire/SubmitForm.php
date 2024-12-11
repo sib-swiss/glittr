@@ -6,11 +6,13 @@ use App\Actions\CreateSubmission;
 use App\Data\SubmissionData;
 use App\Models\Repository;
 use App\Models\Tag;
+use App\Settings\ApicuronSettings;
 use App\Settings\GeneralSettings;
 use Illuminate\Support\Facades\App;
 use Illuminate\View\View;
 use Livewire\Component;
 use Michelf\Markdown;
+use Michelf\MarkdownExtra;
 
 class SubmitForm extends Component
 {
@@ -85,7 +87,13 @@ class SubmitForm extends Component
     public function render(): View
     {
         return view('livewire.submit-form', [
-            'text' => Markdown::defaultTransform(app(GeneralSettings::class)->contribute_text),
+            'text' => MarkdownExtra::defaultTransform(app(GeneralSettings::class)->contribute_text),
+            'apicuron_enabled' => app(ApicuronSettings::class)->apicuron_enabled,
+            'apicuron_title' => app(ApicuronSettings::class)->apicuron_title,
+            'apicuron_introduction' => MarkdownExtra::defaultTransform(app(ApicuronSettings::class)->apicuron_introduction),
+            'apicuron_login_btn' => app(ApicuronSettings::class)->apicuron_login_btn,
+            'apicuron_logged_warning' => Markdown::defaultTransform(app(ApicuronSettings::class)->apicuron_logged_warning),
+            'apicuron_logout_btn' => app(ApicuronSettings::class)->apicuron_logout_btn,
         ]);
     }
 

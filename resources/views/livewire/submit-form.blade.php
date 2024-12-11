@@ -41,6 +41,31 @@
                     <x-input-error for="tags" class="mt-1" />
                 </div>
 
+                @if ($apicuron_enabled)
+                <div class="col-span-6 bg-gradient-to-r from-[#4D194D] to-[#9A031E] p-4 md:p-6 rounded-lg my-4">
+                    <div class="prose-sm prose text-white max-w-none prose-invert">
+                        <h3>{{ $apicuron_title }}</h3>
+                        {!! $apicuron_introduction !!}
+                    </div>
+                    @if (session('orcid'))
+                        <div class="pt-2 mt-2 prose-sm prose border-t max-w-none border-white/20 prose-invert">
+                            <div class="flex flex-wrap space-x-2 item-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="text-green-500 size-6">
+                                    <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clip-rule="evenodd" />
+                                </svg>
+                                <div>Logged in as: {{ session('orcid.name') }} ({{ session('orcid.id') }})</div>
+                                <div>
+                                    <button role="button" wire:click.prevent="orcidLogout" class="font-bold text-white underline">Logout</button></div>
+                            </div>
+                        </div>
+                    @else
+                        <button role="button" wire:click.prevent="orcidLogin" class="w-full p-2 mt-4 bg-white hover:bg-white/90 transition rounded-lg text-[#4D194D]">
+                            {{ $apicuron_login_btn }}
+                        </button>
+                    @endif
+                </div>
+                @endif
+
                 <div class="col-span-6">
                     <div class="p-4 mt-1 text-sm text-blue-500 border border-blue-500 rounded bg-blue-50">
                         {{ __('Your name and email will only be used to keep you informed about these submit process.') }}

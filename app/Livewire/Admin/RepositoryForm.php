@@ -6,6 +6,7 @@ namespace App\Livewire\Admin;
 
 use App\Concerns\InteractsWithNotifications;
 use App\Facades\Remote;
+use App\Jobs\SendApicuronSubmission;
 use App\Mail\SubmissionAccepted;
 use App\Models\Repository;
 use App\Models\Submission;
@@ -223,6 +224,11 @@ class RepositoryForm extends Component
                     // Send email to the submitter
                     if ($submission->email && filter_var($submission->email, FILTER_VALIDATE_EMAIL)) {
                         Mail::to($submission->email)->bcc(config('glittr.notification_emails'))->send(new SubmissionAccepted($submission));
+                    }
+
+                    // Send submission to Apicuron
+                    if ($submission->apicuron_orcid && $submission->apicuron_submit && !$submission->apicuron_submitted_at) {
+                        SendApicuronSubmission::dispatch($submission);
                     }
                 }
 
