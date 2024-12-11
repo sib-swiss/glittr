@@ -10,6 +10,10 @@
     </x-admin.container>
 
     @push('modals')
-        <script src="https://apicuron.org/assets/widgets/apicuron-leaderboard.js"></script>
+        @if (config('apicuron.env') != 'production')
+            <script src="https://dev.apicuron.org/assets/widgets/apicuron-leaderboard.js"></script>
+        @else
+            <script src="https://apicuron.org/assets/widgets/apicuron-leaderboard.js"></script>
+        @endif
     @endpush
 </x-app-layout>
