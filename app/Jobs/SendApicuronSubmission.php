@@ -37,6 +37,7 @@ class SendApicuronSubmission implements ShouldQueue
      */
     public function __construct(Submission $submission)
     {
+        $this->submission = $submission;
     }
 
     /**
