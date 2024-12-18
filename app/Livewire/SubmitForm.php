@@ -10,6 +10,7 @@ use App\Settings\ApicuronSettings;
 use App\Settings\GeneralSettings;
 use Illuminate\Support\Facades\App;
 use Illuminate\View\View;
+use Laravel\Socialite\Facades\Socialite;
 use Livewire\Component;
 use Michelf\Markdown;
 use Michelf\MarkdownExtra;
@@ -69,6 +70,36 @@ class SubmitForm extends Component
         'tagsUpdated',
     ];
 
+    public function mount()
+    {
+        $submission = session('submission');
+        if ($submission) {
+            $this->tags = $submission['tags'];
+            $this->url = $submission['url'];
+            $this->email = $submission['email'];
+            $this->name = $submission['name'];
+            $this->comment = $submission['comment'];
+            session()->forget('submission');
+        }
+
+        $orcid = session('orcid');
+        if ($orcid && !$this->name) {
+            $this->name = $orcid['name'];
+        }
+        if ($orcid && !$this->email && $orcid['email']) {
+            $this->email = $orcid['email'];
+        }
+    }
+
+    public function resetForm()
+    {
+        $this->tags = [];
+        $this->url = '';
+        $this->comment = '';
+        $this->existingWarning = false;
+        $this->submitted = false;
+    }
+
     public function tagsUpdated(array $tagIds): void
     {
         $this->tags = $tagIds;
@@ -82,6 +113,27 @@ class SubmitForm extends Component
         } else {
             $this->existingWarning = false;
         }
+    }
+
+    public function orcidLogin()
+    {
+        // Store current form data in session
+        session()->put('submission', [
+            'tags' => $this->tags,
+            'url' => $this->url,
+            'email' => $this->email,
+            'name' => $this->name,
+            'comment' => $this->comment,
+        ]);
+
+        $this->redirectRoute('orcid.login');
+    }
+
+    public function orcidLogout()
+    {
+        session()->forget('orcid');
+        $this->name = '';
+        $this->email = '';
     }
 
     public function render(): View
@@ -112,6 +164,11 @@ class SubmitForm extends Component
             'tags' => $this->tags,
             'comment' => $this->comment,
         ]);
+
+        if (session('orcid.id')) {
+            $submissionData->apicuron_orcid = session('orcid.id');
+            $submissionData->apicuron_submit = true;
+        }
 
         /** @var CreateSubmission $createSumbissionAction */
         $createSumbissionAction = App::make(CreateSubmission::class);

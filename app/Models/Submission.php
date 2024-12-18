@@ -29,6 +29,8 @@ class Submission extends Model
         'name',
         'email',
         'comment',
+        'apicuron_orcid',
+        'apicuron_submit',
     ];
 
     public function validatedBy()

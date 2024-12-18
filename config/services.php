@@ -31,4 +31,11 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'orcid' => [
+        'client_id' => env('ORCID_CLIENT_ID'),
+        'client_secret' => env('ORCID_CLIENT_SECRET'),
+        'redirect' => env('ORCID_REDIRECT_URI') ,
+        'environment' => env('ORCID_ENVIRONMENT'), // Optional
+        'uid_fieldname' => env('ORCID_UID_FIELDNAME'), // Optional
+    ],
 ];
