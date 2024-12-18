@@ -7,6 +7,7 @@ use App\Models\Repository;
 use App\Settings\GeneralSettings;
 use App\Settings\TermsSettings;
 use Illuminate\Support\Facades\Route;
+use Laravel\Socialite\Facades\Socialite;
 use Michelf\MarkdownExtra;
 
 /*
@@ -58,7 +59,6 @@ Route::get(
     }
 )->name('contribute');
 
-
 Route::get(
     'terms-of-use',
     function () {
@@ -74,6 +74,38 @@ Route::get(
         );
     }
 )->name('terms-of-use');
+
+// ORCID OAuth routes.
+Route::get(
+    'orcid/login',
+    function () {
+        return Socialite::driver('orcid')
+            ->setScopes(['/authenticate'])
+            ->redirect();
+    }
+)->name('orcid.login');
+
+Route::get(
+    'orcid/callback',
+    function () {
+        $user = Socialite::driver('orcid')->user();
+        session(['orcid' => [
+            'id' => $user->getId(),
+            'name' => $user->getName(),
+            'email' => $user->getEmail(),
+            'token' => $user->token,
+        ]]);
+        return redirect()->route('contribute');
+    }
+)->name('orcid.callback');
+
+Route::get(
+    'orcid/logout',
+    function () {
+        session()->forget('orcid');
+        return redirect()->route('contribute');
+    }
+)->name('orcid.logout');
 
 // Admin routes.
 Route::middleware(

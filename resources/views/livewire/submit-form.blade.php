@@ -2,7 +2,16 @@
     @if ($submitted)
         <div class="my-8 text-center lg:my-12">
             <h1 class="text-xl font-bold tracking-tighter lg:text-2xl text-primary">{{ __('Thank you!') }}</h1>
-            <div class="mx-auto prose prose-lg">{{ __('Your submission was successfully sent.')}}</div>
+            <div class="space-y-4">
+                <div class="mx-auto prose prose-lg">{{ __('Your submission was successfully sent.')}}</div>
+                @if (session('orcid'))
+                    <div class="p-4 mx-auto prose rounded-lg bg-gray-50">
+                        {!! $apicuron_logged_warning !!}
+                        <p><x-secondary-button role="button" wire:click.prevent="orcidLogout">{{ $apicuron_logout_btn }}</x-secondary-button></p>
+                    </div>
+                @endif
+                <x-button role="button" wire:click="resetForm" class="mt-4">{{ __('Submit another repository') }}</x-button>
+            </div>
         </div>
     @else
         <x-form-section submit="save">
@@ -37,7 +46,7 @@
 
                 <div class="col-span-6">
                     <x-label for="tags" value="{{ __('Proposed topics') }}" />
-                    @livewire('tag-select')
+                    @livewire('tag-select', ['values' => $tags])
                     <x-input-error for="tags" class="mt-1" />
                 </div>
 
@@ -71,7 +80,6 @@
                         {{ __('Your name and email will only be used to keep you informed about these submit process.') }}
                     </div>
                 </div>
-
                 <div class="col-span-6 sm:col-span-3">
                     <div class="flex items-center">
                         <x-label for="name" value="{{ __('Name') }}" /> <span class="ml-1 text-red-500">*</span>
@@ -98,8 +106,6 @@
             </x-slot>
 
             <x-slot name="actions">
-
-
                 <x-button>
                     {{ __('Submit') }}
                 </x-button>
