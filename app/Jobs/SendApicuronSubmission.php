@@ -10,6 +10,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class SendApicuronSubmission implements ShouldQueue
 {
@@ -52,6 +53,9 @@ class SendApicuronSubmission implements ShouldQueue
             // Send the submission to Apicuron .
             $client = new ApicuronClient();
             $response = $client->sendNewSubmission($this->submission);
+            // log the response
+            Log::info('Apicuron submission response status', ['response' => $response->status(), 'submission' => $this->submission]);
+            Log::info('Apicuron submission response', ['response' => $response->json()]);
             if ($response->successful()) {
                 $this->submission->apicuron_submitted_at = now();
                 $this->submission->save();
