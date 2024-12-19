@@ -6,6 +6,7 @@ use App\Casts\Url;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Submission extends Model
 {
@@ -28,6 +29,8 @@ class Submission extends Model
         'name',
         'email',
         'comment',
+        'apicuron_orcid',
+        'apicuron_submit',
     ];
 
     public function validatedBy()
@@ -43,6 +46,11 @@ class Submission extends Model
     public function scopePending(Builder $query): void
     {
         $query->whereNull('validated_at');
+    }
+
+    public function repository()
+    {
+        return $this->belongsTo(Repository::class);
     }
 
     public function repositoryExists(): bool

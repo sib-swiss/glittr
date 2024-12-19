@@ -3,9 +3,11 @@
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\RepositoryController;
 use App\Http\Controllers\Admin\TagController;
+use App\Models\Repository;
 use App\Settings\GeneralSettings;
 use App\Settings\TermsSettings;
 use Illuminate\Support\Facades\Route;
+use Laravel\Socialite\Facades\Socialite;
 use Michelf\MarkdownExtra;
 
 /*
@@ -33,6 +35,19 @@ Route::get(
 )->name('homepage');
 
 Route::get(
+    '/repository/{repository}',
+    function (Repository $repository) {
+        return view(
+            'repository',
+            [
+            'title' => 'Repository | ' . $repository->name,
+            'repository' => $repository,
+            ]
+        );
+    }
+)->name('repository');
+
+Route::get(
     'contribute',
     function () {
         return view(
@@ -43,7 +58,6 @@ Route::get(
         );
     }
 )->name('contribute');
-
 
 Route::get(
     'terms-of-use',
@@ -61,6 +75,38 @@ Route::get(
     }
 )->name('terms-of-use');
 
+// ORCID OAuth routes.
+Route::get(
+    'orcid/login',
+    function () {
+        return Socialite::driver('orcid')
+            ->setScopes(['/authenticate'])
+            ->redirect();
+    }
+)->name('orcid.login');
+
+Route::get(
+    'orcid/callback',
+    function () {
+        $user = Socialite::driver('orcid')->user();
+        session(['orcid' => [
+            'id' => $user->getId(),
+            'name' => $user->getName(),
+            'email' => $user->getEmail(),
+            'token' => $user->token,
+        ]]);
+        return redirect()->route('contribute');
+    }
+)->name('orcid.callback');
+
+Route::get(
+    'orcid/logout',
+    function () {
+        session()->forget('orcid');
+        return redirect()->route('contribute');
+    }
+)->name('orcid.logout');
+
 // Admin routes.
 Route::middleware(
     [
@@ -74,6 +120,7 @@ Route::middleware(
     ->group(
         function () {
             Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
+            Route::get('apicuron', [AdminController::class, 'apicuron'])->name('apicuron-leaderboard');
             Route::get('repositories', [RepositoryController::class, 'index'])->name('repositories.index');
             Route::get('tags', [TagController::class, 'index'])->name('tags.index');
             Route::get('ontologies', [AdminController::class, 'ontologies'])->name('ontologies.index');

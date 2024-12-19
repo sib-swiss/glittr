@@ -15,6 +15,11 @@
                     <x-nav-link href="{{ route('admin.dashboard') }}" :active="request()->routeIs('admin.dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    @if (config('apicuron.resource_id'))
+                        <x-nav-link href="{{ route('admin.apicuron-leaderboard') }}" :active="request()->routeIs('admin.apicuron-leaderboard')">
+                            {{ __('APICURON Leaderboard') }}
+                        </x-nav-link>
+                    @endif
                     {{--<x-nav-link href="{{ route('admin.submissions.index') }}" :active="request()->routeIs('admin.submissions.*')">
                         {{ __('Submissions') }}
                     </x-nav-link>--}}
@@ -158,6 +163,11 @@
             {{-- <x-responsive-nav-link href="{{ route('admin.submissions.index') }}" :active="request()->routeIs('admin.submissions.*')">
                 {{ __('Submissions') }}
             </x-responsive-nav-link>--}}
+            @if (config('apicuron.resource_id'))
+                <x-responsive-nav-link href="{{ route('admin.apicuron-leaderboard') }}" :active="request()->routeIs('admin.apicuron-leaderboard')">
+                    {{ __('APICURON Leaderboard') }}
+                </x-responsive-nav-link>
+            @endif
             <x-responsive-nav-link href="{{ route('admin.repositories.index') }}" :active="(request()->routeIs('admin.repositories.*') || request()->routeIs('admin.authors.*'))">
                 {{ __('Repositories') }}
             </x-responsive-nav-link>
