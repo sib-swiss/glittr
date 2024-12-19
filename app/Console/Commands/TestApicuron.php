@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\ApicuronClient;
 use App\Models\Submission;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class TestApicuron extends Command
 {
@@ -40,6 +41,7 @@ class TestApicuron extends Command
             return;
         }
         $response = $client->sendNewSubmission($submission);
+        Log::info('Artisan Test APICURON submission response #' . $submission_id, ['response' => $response->json()]);
         dd($response->json());
     }
 }
