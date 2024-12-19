@@ -9,6 +9,10 @@
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
+    # redirect www.glittr.org to glittr.org
+    RewriteCond %{HTTP_HOST} ^www\.glittr\.org$ [NC]
+    RewriteRule ^(.*)$ https://glittr.org/$1 [R=301,L]
+
     # Redirect Trailing Slashes If Not A Folder...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$
