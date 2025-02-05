@@ -1,15 +1,22 @@
 @setup
-    require __DIR__.'/vendor/autoload.php';
-	$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-	$dotenv->load();
+require __DIR__.'/vendor/autoload.php';
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 
-    $server = isset($server) ? $server : 'dev' ;
+$server_dev = $_ENV['DEPLOY_DEV_HOST'] ?? null;
+$server_prod = $_ENV['DEPLOY_PROD_HOST'] ?? null;
 
-    $app_dir = $server == 'dev' ? '/var/vhosts/vital-it.ch/training-collection-dev/htdocs' : '/var/vhosts/vital-it.ch/training-collection-prod/htdocs';
+$deploy_path_dev = $_ENV['DEPLOY_DEV_PATH'] ?? null;
+$deploy_path_prod = $_ENV['DEPLOY_PROD_PATH'] ?? null;
+
+$app_dir = $server === 'prod' ?  $deploy_path_prod :  $deploy_path_dev ;
+
+$server = isset($server) ? $server : 'dev' ;
+
 @endsetup
 
 
-@servers(['dev' => 'webdev@training-collection-dev.vital-it.ch', 'prod' => 'webdev@training-collection-prod.vital-it.ch', 'localhost' => '127.0.0.1'])
+@servers(['dev' => $server_dev, 'prod' => $server_prod])
 
 @story('deploy', ['on' => $server])
     pull_repository
