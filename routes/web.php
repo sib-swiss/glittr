@@ -9,6 +9,8 @@ use App\Settings\TermsSettings;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
 use Michelf\MarkdownExtra;
+use Spatie\Health\Http\Controllers\HealthCheckResultsController;
+use Spatie\Health\Http\Controllers\SimpleHealthCheckController;
 
 /*
 |--------------------------------------------------------------------------
@@ -127,3 +129,11 @@ Route::middleware(
             Route::get('settings', [AdminController::class, 'settings'])->name('settings');
         }
     );
+
+// Health check routes.
+Route::get('simple-health-check', SimpleHealthCheckController::class);
+Route::get('full-health-check', HealthCheckResultsController::class)->middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+]);
