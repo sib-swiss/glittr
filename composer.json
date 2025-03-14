@@ -26,6 +26,7 @@
         "socialiteproviders/orcid": "^5.1",
         "spatie/eloquent-sortable": "^4.0",
         "spatie/laravel-data": "^3.0",
+        "spatie/laravel-health": "^1.32",
         "spatie/laravel-json-api-paginate": "^1.12",
         "spatie/laravel-query-builder": "^5.1",
         "spatie/laravel-settings": "^3.3",
