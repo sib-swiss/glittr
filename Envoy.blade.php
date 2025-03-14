@@ -23,6 +23,7 @@ $server = isset($server) ? $server : 'dev' ;
     run_composer
     migrate_database
     restart_queue_workers
+    optimize
 @endstory
 
 @task('pull_repository')
@@ -35,7 +36,7 @@ $server = isset($server) ? $server : 'dev' ;
 @task('run_composer')
     echo "Running composer"
     cd {{ $app_dir }}
-    composer install
+    composer install --no-dev -o
 @endtask
 
 @task('migrate_database')
@@ -48,4 +49,10 @@ $server = isset($server) ? $server : 'dev' ;
     echo "Restart Queue Workers"
     cd {{ $app_dir }}
     php artisan queue:restart
+@endtask
+
+@task('optimize')
+    echo "Optimizing"
+    cd {{ $app_dir }}
+    php artisan optimize
 @endtask
