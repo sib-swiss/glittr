@@ -57,13 +57,13 @@ class Repositories extends Component
     #[Url(except: '')]
     public $search = '';
 
-    #[Url(except: '')]
+    #[Url]
     public $per_page;
 
-    #[Url(except: '')]
+    #[Url]
     public $sort_by;
 
-    #[Url(except: '')]
+    #[Url]
     public $sort_direction;
 
     public $show_filters = false;
@@ -101,6 +101,15 @@ class Repositories extends Component
         'license',
     ];
 
+    protected function queryString(): array
+    {
+        return [
+            'per_page' => ['except' => ''],
+            'sort_by' => ['except' => ''],
+            'sort_direction' => ['except' => ''],
+        ];
+    }
+
     public function mount()
     {
         if (! $this->sort_by) {
@@ -110,7 +119,7 @@ class Repositories extends Component
             $this->sort_direction = config('glittr.default_sort_direction', 'asc');
         }
         if (! $this->per_page) {
-            $this->per_page = config('glittr.default_per_page', 20);
+            $this->per_page = (string) config('glittr.default_per_page', 20);
         }
 
         if (! $this->tags_and) {
