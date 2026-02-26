@@ -25,7 +25,7 @@
         <meta name="twitter:card" content="summary_large_image">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="https://fonts.bunny.net/css?family=source-sans-3:200,400,600,700&display=swap">
+        @googlefonts
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
