@@ -24,58 +24,62 @@ use Spatie\Health\Http\Controllers\SimpleHealthCheckController;
 */
 
 // Frontend routes.
-Route::get(
-    '/',
+Route::middleware('early.hints')->group(
     function () {
-        return view(
-            'homepage',
-            [
-            'title' => app(GeneralSettings::class)->homepage_page_title,
-            ]
-        );
-    }
-)->name('homepage');
+        Route::get(
+            '/',
+            function () {
+                return view(
+                    'homepage',
+                    [
+                    'title' => app(GeneralSettings::class)->homepage_page_title,
+                    ]
+                );
+            }
+        )->name('homepage');
 
-Route::get(
-    '/repository/{repository}',
-    function (Repository $repository) {
-        return view(
-            'repository',
-            [
-            'title' => 'Repository | ' . $repository->name,
-            'repository' => $repository,
-            ]
-        );
-    }
-)->name('repository');
+        Route::get(
+            '/repository/{repository}',
+            function (Repository $repository) {
+                return view(
+                    'repository',
+                    [
+                    'title' => 'Repository | ' . $repository->name,
+                    'repository' => $repository,
+                    ]
+                );
+            }
+        )->name('repository');
 
-Route::get(
-    'contribute',
-    function () {
-        return view(
+        Route::get(
             'contribute',
-            [
-            'title' => 'Contribute | ' . app(GeneralSettings::class)->site_name,
-            ]
-        );
-    }
-)->name('contribute');
+            function () {
+                return view(
+                    'contribute',
+                    [
+                    'title' => 'Contribute | ' . app(GeneralSettings::class)->site_name,
+                    ]
+                );
+            }
+        )->name('contribute');
 
-Route::get(
-    'terms-of-use',
-    function () {
-        $terms = app(TermsSettings::class)->terms;
-        $parser = new MarkdownExtra();
-        $parser->hard_wrap = true;
-        return view(
+        Route::get(
             'terms-of-use',
-            [
-            'title' => 'Terms of use | ' . app(GeneralSettings::class)->site_name,
-            'terms' => $parser->transform($terms),
-            ]
-        );
+            function () {
+                $terms = app(TermsSettings::class)->terms;
+                $parser = new MarkdownExtra();
+                $parser->hard_wrap = true;
+                return view(
+                    'terms-of-use',
+                    [
+                    'title' => 'Terms of use | ' . app(GeneralSettings::class)->site_name,
+                    'terms' => $parser->transform($terms),
+                    ]
+                );
+            }
+        )->name('terms-of-use');
     }
-)->name('terms-of-use');
+);
 
 // ORCID OAuth routes.
 Route::get(
