@@ -299,7 +299,7 @@
                     <span>{{ __('Topics') }}</span>
                 </div>
                 <div class="ml-auto 2xl:hidden">
-                    <button @click="toggleFilter">
+                    <button type="button" @click="toggleFilter" aria-label="{{ __('Close filters') }}">
                         <x-heroicon-o-x-mark class="w-6 h-6" />
                     </button>
                 </div>

@@ -64,7 +64,7 @@
         </div>
         <div class="flex flex-col items-center justify-center pt-4 mt-8 leading-tight text-center border-t lg:text-right lg:flex-row">
             <a href="https://www.sib.swiss" class="mb-4 lg:order-2 lg:ml-4 lg:mb-0">
-                <img src="{{ url('/sib-web-logo.svg') }}" class="h-16 max-w-full" alt="Swiss Institute of Bioinformatics" />
+                <img src="{{ url('/sib-web-logo.svg') }}" class="h-16 w-auto max-w-full" width="118" height="64" loading="lazy" decoding="async" alt="Swiss Institute of Bioinformatics" />
             </a>
             <div class="leading-snug prose-sm prose">
                 {!! $footer_text !!}
