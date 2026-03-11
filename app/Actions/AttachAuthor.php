@@ -17,6 +17,8 @@ class AttachAuthor
                 ...$data->toArray(),
                 'api' => $repository->api,
             ]);
+        } else {
+            $author->update($data->toArray());
         }
 
         $repository->author_id = $author->id;
