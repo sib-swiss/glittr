@@ -5,6 +5,7 @@ namespace App\Actions;
 use App\Data\RemoteData;
 use App\Facades\Remote;
 use App\Models\Repository;
+use App\Remote\Helpers;
 use Illuminate\Support\Carbon;
 
 class RemoteUpdateRepository
@@ -41,8 +42,10 @@ class RemoteUpdateRepository
                     'refreshed_at' => Carbon::now(),
                 ]);
             }
+            [$urlUsername] = Helpers::getRepositoryUserAndName($repository->url);
             if (! $repository->author ||
-                ($data->author_id && $repository->author && $data->author_id != $repository->author->remote_id)
+                ($data->author_id && $repository->author && $data->author_id != $repository->author->remote_id) ||
+                ($repository->author && strtolower($urlUsername) !== strtolower($repository->author->name))
             ) {
                 // Attach author if not linked.
                 $authorData = Remote::for($repository)->getAuthorData();
