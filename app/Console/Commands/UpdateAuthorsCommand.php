@@ -37,7 +37,7 @@ class UpdateAuthorsCommand extends Command
 
         $failures = [];
 
-        foreach (Author::whereNotNull('api')->get() as $author) {
+        foreach (Author::whereNotNull('api')->has('repositories')->get() as $author) {
             $this->comment("Updating author {$author->name} with api {$author->api}.");
             try {
                 $authorData = Remote::for($author)->getAuthorData();
