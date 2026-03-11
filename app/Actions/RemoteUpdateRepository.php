@@ -41,7 +41,7 @@ class RemoteUpdateRepository
                     'refreshed_at' => Carbon::now(),
                 ]);
             }
-            if (! $repository->auhtor ||
+            if (! $repository->author ||
                 ($data->author_id && $repository->author && $data->author_id != $repository->author->remote_id)
             ) {
                 // Attach author if not linked.
