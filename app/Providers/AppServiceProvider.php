@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Settings\GeneralSettings;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Michelf\MarkdownExtra;
 
@@ -25,6 +27,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        RateLimiter::for('github_contributors', function (object $job) {
+            return Limit::perHour(4500);
+        });
+
+        RateLimiter::for('github_scraping', function (object $job) {
+            return Limit::perMinute(4);
+        });
+
         view()->composer(
             ['layouts.guest'],
             function ($view) {

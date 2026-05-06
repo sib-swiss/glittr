@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Author;
 use App\Models\Category;
 use App\Models\Repository;
 use App\Models\Tag;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -67,6 +69,10 @@ class Repositories extends Component
     public $sort_direction;
 
     public $show_filters = false;
+
+    /** When set, the list is locked to this author and cannot be changed by URL params. */
+    #[Locked]
+    public ?int $locked_author_id = null;
 
     // Columns filters
     #[Url(except: null)]
@@ -337,6 +343,7 @@ class Repositories extends Component
             'selected_tags' => $selected_tags,
             'sorting_columns' => $sorting_columns,
             'header_text' => $parser->transform(app(GeneralSettings::class)->header_text),
+            'locked_author' => $this->locked_author_id ? Author::find($this->locked_author_id) : null,
         ]);
     }
 
@@ -360,6 +367,10 @@ class Repositories extends Component
 
     protected function filterRepositories($repositories)
     {
+        if ($this->locked_author_id !== null) {
+            $repositories->where('repositories.author_id', $this->locked_author_id);
+        }
+
         if ($this->search != '') {
             $repositories->search($this->search);
         }
@@ -393,6 +404,7 @@ class Repositories extends Component
     protected function updateGroupedTags()
     {
         $searchMeta = implode('.', [
+            $this->locked_author_id ?? '',
             $this->search,
             $this->name,
             $this->author,

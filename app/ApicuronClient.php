@@ -37,7 +37,7 @@ class ApicuronClient
         $data = [
             'activity_term' => $term_id,
             'curator_orcid' => $submission->apicuron_orcid,
-            'entity_uri' => route('repository', $submission->repository),
+            'entity_uri' => route('repository.legacy', $submission->repository),
             'timestamp' => $submission->created_at->toISOString(),
             'resource_id' => $this->resourceId,
         ];

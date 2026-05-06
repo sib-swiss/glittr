@@ -43,6 +43,31 @@
                 </x-slot>
             </x-page-header>
             <div id="items-list" class="p-4 mt-4 border-t border-b bg-gray-50">
+                {{-- Locked-author info box --}}
+                @if ($locked_author)
+                    <div class="flex items-center justify-between gap-4 mb-4 px-4 py-3 bg-white rounded-xl border border-gray-200">
+                        <div class="flex items-center gap-3 min-w-0">
+                            @if ($locked_author->avatar_url)
+                                <img src="{{ $locked_author->avatar_url }}"
+                                     alt="{{ $locked_author->display_name ?: $locked_author->name }}"
+                                     class="w-9 h-9 rounded-full flex-shrink-0 ring-1 ring-gray-100" />
+                            @endif
+                            <div class="min-w-0">
+                                <div class="text-xs font-medium tracking-wide uppercase text-gray-400 leading-none mb-0.5">
+                                    {{ __('Displaying repositories of') }}
+                                </div>
+                                <div class="font-bold text-gray-900 truncate">
+                                    {{ $locked_author->display_name ?: $locked_author->name }}
+                                </div>
+                            </div>
+                        </div>
+                        <a href="{{ route('homepage') }}"
+                           class="inline-flex items-center gap-1 text-sm text-blue-500 hover:text-blue-700 transition-colors flex-shrink-0">
+                            <x-heroicon-m-arrow-left class="w-3.5 h-3.5" />
+                            {{ __('All repositories') }}
+                        </a>
+                    </div>
+                @endif
                 <div x-data @keydown.window="handleFocus" class="relative">
                     <input class="w-full py-4 border-gray-400 rounded pl-14 pr-14 h-14 lg:text-lg focus:border-blue-500" type="text" placeholder="{{ __('Global search ("/" to focus)') }}" x-ref="input" wire:model.live.debounce.500ms="search" />
                     <div class="absolute top-0 left-0 flex items-center justify-center text-gray-400 w-14 h-14">
@@ -138,6 +163,7 @@
                         <x-list.header title="{{ __('Stargazers') }}" sort_by='stargazers' sortable current_sort_by="{{ $sort_by }}" current_sort_direction="{{ $sort_direction }}" />
                         <x-list.header title="{{ __('Days since last push') }}" sort_by='last_push' sortable current_sort_by="{{ $sort_by }}" current_sort_direction="{{ $sort_direction }}" />
                         <x-list.header title="{{ __('License') }}" sort_by='license' sortable current_sort_by="{{ $sort_by }}" current_sort_direction="{{ $sort_direction }}" />
+                        <x-list.header title="" class="lg:w-10" />
                     </div>
                     <button class="flex items-center justify-center w-full px-4 py-2 space-x-2 text-sm font-semibold tracking-widest text-white uppercase transition bg-gray-800 border border-transparent rounded-md lg:hidden hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25" x-on:click="show_filters = !show_filters">
                         <span>{{ __('Advanced search') }}</span>
@@ -156,8 +182,10 @@
                         </div>
                         <div class="hidden p-2 lg:table-cell bg-gray-50 lg:border-b"></div>
                         <div class="col-span-2 p-2 lg:table-cell bg-gray-50 lg:border-b">
-                            <label for="filterName" class="text-sm font-semibold tracking-wide uppercase lg:hidden">{{ __('Search by author') }}</label>
-                            <input type="text" id="filterAuthor" wire:model.live.debounce.300ms="author" class="w-full p-2 border border-gray-300 rounded" placeholder="{{ __('Search by author') }}" />
+                            @if (!$locked_author_id)
+                                <label for="filterName" class="text-sm font-semibold tracking-wide uppercase lg:hidden">{{ __('Search by author') }}</label>
+                                <input type="text" id="filterAuthor" wire:model.live.debounce.300ms="author" class="w-full p-2 border border-gray-300 rounded" placeholder="{{ __('Search by author') }}" />
+                            @endif
                         </div>
                         <div class="hidden p-2 lg:table-cell bg-gray-50 lg:border-b"></div>
                         <div class="p-2 lg:table-cell bg-gray-50 lg:border-b">
@@ -177,39 +205,52 @@
                                 @endforeach
                             </select>
                         </div>
+                        <div class="hidden p-2 lg:table-cell bg-gray-50 lg:border-b"></div>
                     </div>
                     @foreach($repositories as $repository)
-                        <div class="lg:table-row border lg:border-b hover:bg-gray-50 bg-white grid grid-cols-2 {{ $loop->first ? 'mt-4' : 'mt-8' }}  lg:mt-0">
-                            <div class="order-1 col-span-2 p-2 pt-4 leading-tight lg:table-cell lg:order-none lg:col-span-1 lg:pt-2 lg:border-b lg:border-gray-200 lg:align-middle">
-                                <div class="flex justify-between">
-                                    <a class="mr-1 text-base font-bold tracking-tight text-blue-500 underline hover:text-blue-600 lg:text-lg lg:mr-0" href="{{ $repository->url }}" target="_blank" rel="noopener">
-                                        <span>{{ $repository->name }}</span>
-                                        <x-heroicon-m-arrow-top-right-on-square class="inline w-3 h-3" />
-                                    </a>
+                        <div
+                            class="lg:table-row border lg:border-b hover:bg-gray-50 bg-white grid grid-cols-2 {{ $loop->first ? 'mt-4' : 'mt-8' }} lg:mt-0 lg:cursor-pointer"
+                            @click="if (!$event.target.closest('a, button')) window.location.href='{{ route('repository', $repository->route_params) }}'"
+                        >
+                            <div class="order-1 col-span-2 p-2 pt-4 leading-tight lg:table-cell lg:order-none lg:col-span-1 lg:pt-2 lg:border-b lg:border-gray-200 lg:align-middle lg:max-w-xs xl:max-w-sm overflow-hidden">
+                                <div class="flex justify-between min-w-0">
+                                    <div class="flex items-center gap-2 min-w-0 mr-1 lg:mr-0">
+                                        <a class="text-base font-bold tracking-tight text-blue-500 underline hover:text-blue-600 lg:text-lg truncate" href="{{ $repository->url }}" target="_blank" rel="noopener">
+                                            {{ $repository->name }}
+                                        </a>
+                                    </div>
                                     @if ($repository->stargazers)
-                                    <div class="flex items-center justify-end space-x-1 lg:hidden">
+                                    <div class="flex items-center justify-end space-x-1 lg:hidden flex-shrink-0">
                                         <span class="text-sm font-semibold">{{ $repository->stargazers }}</span>
                                         <x-heroicon-o-star class="w-4 h-4 text-yellow-500" />
                                     </div>
                                     @endif
                                 </div>
-                                <div class="flex justify-between text-sm text-gray-600 xl:text-base">
-                                    <div>{{ $repository->description }}</div>
-
+                                <div class="text-sm text-gray-600 xl:text-base mt-1 line-clamp-3">
+                                    {{ $repository->description }}
                                 </div>
                             </div>
-                            <div class="@if(!$repository->website || $repository->website == '') hidden @endif mb-2 lg:mb-0 lg:table-cell order-4 lg:order-none col-span-2 lg:col-span-1 p-2 lg:border-b lg:align-middle">
-                                @if ($repository->website != "")
-                                    <a class="block px-4 py-2 text-sm tracking-wider text-center text-white uppercase bg-blue-500 rounded lg:inline-block hover:bg-blue-700" href="{{ $repository->website }}" target="_blank" rel="noopener">
-                                        <span>{{ __('Website') }}</span>
+                            <div class="mb-2 lg:mb-0 lg:table-cell order-4 lg:order-none col-span-2 lg:col-span-1 p-2 lg:border-b lg:align-middle">
+                                <div class="flex flex-col gap-1.5">
+                                    <a class="inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold tracking-wide uppercase text-white bg-gray-700 rounded hover:bg-gray-900 transition-colors" href="{{ $repository->url }}" target="_blank" rel="noopener">
+                                        <x-heroicon-m-code-bracket class="w-3.5 h-3.5" />
+                                        {{ __('Repository') }}
                                     </a>
-                                @endif
+                                    @if ($repository->website && (string) $repository->website !== '')
+                                        <a class="inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold tracking-wide uppercase text-white bg-blue-500 rounded hover:bg-blue-700 transition-colors" href="{{ $repository->website }}" target="_blank" rel="noopener">
+                                            <x-heroicon-m-arrow-top-right-on-square class="w-3.5 h-3.5" />
+                                            {{ __('Website') }}
+                                        </a>
+                                    @endif
+                                </div>
                             </div>
                             <div class="@if(!$repository->author) hidden @endif  border-t border-b  lg:table-cell order-last lg:order-none col-span-2 lg:col-span-1 py-4 lg:py-2 px-2  lg:border-t-0 lg:align-middle bg-gray-50 lg:bg-transparent">
                                 @if ($repository->author)
                                     <div class="mb-1 text-xs font-medium tracking-wide text-gray-600 uppercase lg:hidden">{{ __('Author') }}</div>
                                     <div class="font-bold tracking-tight">
-                                        {{ $repository->author->display_name }}
+                                        <a href="{{ route('author', ['slug' => $repository->author->slug]) }}" class="hover:text-blue-600 transition-colors">
+                                            {{ $repository->author->display_name }}
+                                        </a>
                                     </div>
                                     <div class="flex space-x-2">
                                         @if ($repository->author->url != "")
@@ -265,15 +306,28 @@
                                 <div class="text-xs font-medium tracking-wide text-gray-400 uppercase lg:hidden">{{ __('License') }}</div>
                                 {{ $repository->license ?? '-' }}
                             </div>
+                            {{-- Mobile: details link --}}
+                            <div class="lg:hidden order-last col-span-2 px-2 pb-3 flex justify-end">
+                                <a href="{{ route('repository', $repository->route_params) }}" class="inline-flex items-center gap-1 text-sm font-medium text-gray-500 hover:text-blue-600 transition-colors">
+                                    {{ __('Details') }}
+                                    <x-heroicon-m-chevron-right class="w-3.5 h-3.5" />
+                                </a>
+                            </div>
+                            {{-- Desktop: detail chevron cell --}}
+                            <div class="hidden lg:table-cell lg:w-10 lg:border-b lg:align-middle">
+                                <a href="{{ route('repository', $repository->route_params) }}" title="{{ __('View details') }}" class="flex items-center justify-center text-gray-400 hover:text-blue-500 transition-colors px-2 py-2">
+                                    <x-heroicon-m-chevron-right class="w-4 h-4" />
+                                </a>
+                            </div>
                         </div>
                     @endforeach
                 </div>
-                <div class="mt-4">
+                <div class="my-4">
                     {{ $repositories->links() }}
                 </div>
 
                 @if (count($repositories) == 0)
-                    <div class="p-4 mt-8 text-center text-orange-600 bg-orange-100 border border-orange-600">
+                    <div class="p-4 my-8 text-center text-orange-600 bg-orange-100 border border-orange-600">
                         {{ __('No results matched your search: ') }}<strong>{{ $search }}</strong>
                         <p>
                             <button type="button" class="mt-2 font-bold underline" @click.prevent="$wire.set('search', '')">

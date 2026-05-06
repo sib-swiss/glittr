@@ -10,7 +10,6 @@ use App\Settings\ApicuronSettings;
 use App\Settings\GeneralSettings;
 use Illuminate\Support\Facades\App;
 use Illuminate\View\View;
-use Laravel\Socialite\Facades\Socialite;
 use Livewire\Component;
 use Michelf\Markdown;
 use Michelf\MarkdownExtra;

@@ -45,6 +45,20 @@ class GitLabDriver extends Driver
                     $repoData['version'] = $releases[0]['name'];
                     $repoData['version_published_at'] = $releases[0]['commit']['created_at'];
                 }
+
+                try {
+                    $defaultBranch = $repoData['default_branch'] ?? 'main';
+                    $readmeFile = $this->getClient()->repositoryFiles()->getFile(
+                        $repoData['id'],
+                        'README.md',
+                        $defaultBranch
+                    );
+                    if (isset($readmeFile['content'])) {
+                        $repoData['readme'] = base64_decode(str_replace("\n", '', $readmeFile['content']));
+                    }
+                } catch (\Exception $e) {
+                    // No README found
+                }
             }
 
             return RemoteData::fromGitLab($repoData);

@@ -16,6 +16,7 @@ class RemoteData extends Data
         public int|Optional $stargazers,
         public string|Optional $title,
         public string|Optional $description,
+        public string|Optional $readme,
         public string|Optional $license,
         public string|Optional $author_id,
         #[Date]
@@ -41,6 +42,7 @@ class RemoteData extends Data
             stargazers: isset($repoData['stargazers_count']) ? intval($repoData['stargazers_count']) : Optional::create(),
             title: $repoData['name'] ?? '',
             description: $repoData['description'] ?? '',
+            readme: isset($repoData['readme']) ? $repoData['readme'] : Optional::create(),
             license: isset($repoData['license']['key']) && $repoData['license']['key'] ? $repoData['license']['key'] : Optional::create(),
             author_id: isset($repoData['owner']['id']) ? $repoData['owner']['id'] : Optional::create(),
             last_push: isset($repoData['pushed_at']) && $repoData['pushed_at'] ? CarbonImmutable::parse($repoData['pushed_at']) : Optional::create(),
@@ -62,6 +64,7 @@ class RemoteData extends Data
             stargazers: isset($repoData['star_count']) ? intval($repoData['star_count']) : Optional::create(),
             title: $repoData['name'] ?? '',
             description: $repoData['description'] ?? '',
+            readme: isset($repoData['readme']) ? $repoData['readme'] : Optional::create(),
             license: Optional::create(),
             author_id: isset($repoData['owner']['id']) ? $repoData['owner']['id'] : Optional::create(),
             last_push: isset($repoData['last_activity_at']) && $repoData['last_activity_at'] ? CarbonImmutable::parse($repoData['last_activity_at']) : Optional::create(), //last activity? not found better...

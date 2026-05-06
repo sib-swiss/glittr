@@ -25,6 +25,7 @@ class GuestLayout extends Component
      */
     public function __construct(
         public ?string $title = null,
+        public ?string $description = null,
         public bool $show_header = true,
     ) {
     }

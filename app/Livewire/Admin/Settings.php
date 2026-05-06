@@ -7,7 +7,6 @@ use App\Settings\ApicuronSettings;
 use App\Settings\GeneralSettings;
 use App\Settings\TermsSettings;
 use Livewire\Component;
-use Spatie\FlareClient\Api;
 
 class Settings extends Component
 {

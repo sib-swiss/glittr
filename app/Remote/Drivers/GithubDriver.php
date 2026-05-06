@@ -3,8 +3,10 @@
 namespace App\Remote\Drivers;
 
 use App\Data\AuthorData;
+use App\Data\ContributorData;
 use App\Data\RemoteData;
 use App\Remote\Helpers;
+use Github\HttpClient\Message\ResponseMediator;
 use GrahamCampbell\GitHub\GitHubManager;
 use Spatie\Url\Url;
 
@@ -48,6 +50,15 @@ class GithubDriver extends Driver
                 // No release found
             }
 
+            try {
+                $readmeData = $this->getClient()->repo()->contents()->readme($username, $repository_name);
+                if (isset($readmeData['content'])) {
+                    $repoData['readme'] = base64_decode(str_replace("\n", '', $readmeData['content']));
+                }
+            } catch (\Exception $e) {
+                // No README found
+            }
+
             return RemoteData::fromGithub($repoData);
         }
 
@@ -73,6 +84,55 @@ class GithubDriver extends Driver
         }
 
         return null;
+    }
+
+    /**
+     * Retrieve all contributors for the repository, handling pagination.
+     *
+     * @return array<ContributorData>
+     */
+    public function getContributors(): array
+    {
+        $contributors = [];
+        $page = 1;
+
+        do {
+            $pageContributors = $this->getContributorsPage($page);
+            $contributors = array_merge($contributors, $pageContributors);
+            $page++;
+        } while (! empty($pageContributors));
+
+        return $contributors;
+    }
+
+    /**
+     * Retrieve a single page of contributors.
+     *
+     * @return array<ContributorData>
+     */
+    public function getContributorsPage(int $page): array
+    {
+        [$username, $repositoryName] = Helpers::getRepositoryUserAndName($this->repository->url);
+
+        $path = '/repos/' . rawurlencode($username) . '/' . rawurlencode($repositoryName) . '/contributors?'
+            . http_build_query(['per_page' => 100, 'page' => $page], '', '&', PHP_QUERY_RFC3986);
+
+        $response = $this->getClient()->getHttpClient()->get($path);
+        $pageData = ResponseMediator::getContent($response);
+
+        if (empty($pageData) || ! is_array($pageData)) {
+            return [];
+        }
+        $contributors = [];
+
+        foreach ($pageData as $item) {
+            if (empty($item['id']) || empty($item['login']) || ($item['type'] ?? '') === 'Bot') {
+                continue;
+            }
+            $contributors[] = ContributorData::fromGithub($item);
+        }
+
+        return $contributors;
     }
 
     /**
