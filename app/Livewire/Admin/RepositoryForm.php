@@ -7,6 +7,7 @@ namespace App\Livewire\Admin;
 use App\Concerns\InteractsWithNotifications;
 use App\Facades\Remote;
 use App\Jobs\SendApicuronSubmission;
+use App\Jobs\SyncRepositoryContributors;
 use App\Mail\SubmissionAccepted;
 use App\Models\Repository;
 use App\Models\Submission;
@@ -230,6 +231,10 @@ class RepositoryForm extends Component
                     if ($submission->apicuron_orcid && $submission->apicuron_submit && !$submission->apicuron_submitted_at) {
                         SendApicuronSubmission::dispatch($submission);
                     }
+                }
+
+                if ($repository->api === 'github') {
+                    SyncRepositoryContributors::dispatch($repository);
                 }
 
                 $this->notify("Repository {$displayName} successfully added.");
