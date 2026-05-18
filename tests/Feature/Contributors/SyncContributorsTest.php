@@ -471,6 +471,49 @@ class SyncContributorsTest extends TestCase
     }
 
     /** @test */
+    public function fetch_orcids_command_dispatches_jobs_only_for_unfetched_contributors(): void
+    {
+        Queue::fake();
+
+        Contributor::factory()->create(['username' => 'unfetched', 'orcid_fetched_at' => null]);
+        Contributor::factory()->create(['username' => 'already-fetched', 'orcid_fetched_at' => now()]);
+
+        $this->artisan('contributors:fetch-orcids')->assertExitCode(0);
+
+        Queue::assertPushed(FetchContributorOrcid::class, 1);
+        Queue::assertPushed(FetchContributorOrcid::class, fn ($job) => $job->contributor->username === 'unfetched');
+        Queue::assertNotPushed(FetchContributorOrcid::class, fn ($job) => $job->contributor->username === 'already-fetched');
+    }
+
+    /** @test */
+    public function fetch_orcids_command_skips_bots(): void
+    {
+        Queue::fake();
+
+        Contributor::factory()->create([
+            'username' => 'dependabot',
+            'profile_url' => 'https://github.com/apps/dependabot',
+            'orcid_fetched_at' => null,
+        ]);
+
+        $this->artisan('contributors:fetch-orcids')->assertExitCode(0);
+
+        Queue::assertNotPushed(FetchContributorOrcid::class);
+    }
+
+    /** @test */
+    public function fetch_orcids_command_dispatches_nothing_when_all_already_fetched(): void
+    {
+        Queue::fake();
+
+        Contributor::factory()->create(['orcid_fetched_at' => now()]);
+
+        $this->artisan('contributors:fetch-orcids')->assertExitCode(0);
+
+        Queue::assertNotPushed(FetchContributorOrcid::class);
+    }
+
+    /** @test */
     public function get_contributors_skips_anonymous_and_bot_entries(): void
     {
         Queue::fake();
