@@ -35,6 +35,15 @@ class FinalizeContributorsSync implements ShouldQueue
 
         $this->repository->contributors()->syncWithoutDetaching($syncData);
 
+        $this->repository->update([
+            'contributor_names' => $this->repository->contributors()
+                ->excludingBots()
+                ->orderByPivot('contributions', 'desc')
+                ->get()
+                ->map(fn (Contributor $c) => $c->full_name ?: $c->username)
+                ->implode(', ') ?: null,
+        ]);
+
         Cache::forget($this->repository->jsonLdCacheKey());
 
         Contributor::whereIn('id', array_keys($this->accumulated))

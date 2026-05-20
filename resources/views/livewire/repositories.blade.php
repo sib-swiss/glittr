@@ -158,11 +158,11 @@
                     <div class="hidden lg:table-header-group">
                         <x-list.header title="{{ __('Repository') }}" sort_by='name' sortable current_sort_by="{{ $sort_by }}" current_sort_direction="{{ $sort_direction }}" />
                         <x-list.header title="" />
-                        <x-list.header title="{{ __('Author') }}" sort_by='author' sortable current_sort_by="{{ $sort_by }}" current_sort_direction="{{ $sort_direction }}" />
+                        <x-list.header title="{{ __('Owner') }}" sort_by='author' sortable current_sort_by="{{ $sort_by }}" current_sort_direction="{{ $sort_direction }}" />
+                        <x-list.header title="{{ __('Contributors') }}" />
                         <x-list.header title="{{ __('Topics') }}"  />
                         <x-list.header title="{{ __('Stargazers') }}" sort_by='stargazers' sortable current_sort_by="{{ $sort_by }}" current_sort_direction="{{ $sort_direction }}" />
                         <x-list.header title="{{ __('Days since last push') }}" sort_by='last_push' sortable current_sort_by="{{ $sort_by }}" current_sort_direction="{{ $sort_direction }}" />
-                        <x-list.header title="{{ __('License') }}" sort_by='license' sortable current_sort_by="{{ $sort_by }}" current_sort_direction="{{ $sort_direction }}" />
                         <x-list.header title="" class="lg:w-10" />
                     </div>
                     <button class="flex items-center justify-center w-full px-4 py-2 space-x-2 text-sm font-semibold tracking-widest text-white uppercase transition bg-gray-800 border border-transparent rounded-md lg:hidden hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25" x-on:click="show_filters = !show_filters">
@@ -183,9 +183,13 @@
                         <div class="hidden p-2 lg:table-cell bg-gray-50 lg:border-b"></div>
                         <div class="col-span-2 p-2 lg:table-cell bg-gray-50 lg:border-b">
                             @if (!$locked_author_id)
-                                <label for="filterName" class="text-sm font-semibold tracking-wide uppercase lg:hidden">{{ __('Search by author') }}</label>
-                                <input type="text" id="filterAuthor" wire:model.live.debounce.300ms="author" class="w-full p-2 border border-gray-300 rounded" placeholder="{{ __('Search by author') }}" />
+                                <label for="filterName" class="text-sm font-semibold tracking-wide uppercase lg:hidden">{{ __('Search by owner') }}</label>
+                                <input type="text" id="filterAuthor" wire:model.live.debounce.300ms="author" class="w-full p-2 border border-gray-300 rounded" placeholder="{{ __('Search by owner') }}" />
                             @endif
+                        </div>
+                        <div class="col-span-2 p-2 lg:table-cell bg-gray-50 lg:border-b">
+                            <label for="filterContributor" class="text-sm font-semibold tracking-wide uppercase lg:hidden">{{ __('Search by contributor') }}</label>
+                            <input type="text" id="filterContributor" wire:model.live.debounce.300ms="contributor" class="w-full p-2 border border-gray-300 rounded" placeholder="{{ __('Search by contributor') }}" />
                         </div>
                         <div class="hidden p-2 lg:table-cell bg-gray-50 lg:border-b"></div>
                         <div class="p-2 lg:table-cell bg-gray-50 lg:border-b">
@@ -196,8 +200,8 @@
                             <label for="filterMaxPush" class="text-sm font-semibold tracking-wide uppercase lg:hidden">{{ __('Maximum days since last push') }}</label>
                             <input type="number" id="filterMaxPush" wire:model.live.debounce.300ms="maxPush" min="0" class="w-24 p-2 border border-gray-300 rounded" placeholder="{{ __('Max.') }}" />
                         </div>
-                        <div class="col-span-2 p-2 lg:table-cell bg-gray-50 lg:border-b">
-                            <label for="filterLicense" class="text-sm font-semibold tracking-wide uppercase lg:hidden">{{ __('License') }}</label>
+                        <div class="col-span-2 p-2 bg-gray-50 lg:hidden">
+                            <label for="filterLicense" class="text-sm font-semibold tracking-wide uppercase">{{ __('License') }}</label>
                             <select wire:model.live="license" class="w-full p-2 border border-gray-300 rounded">
                                 <option value="">{{ __('All') }}</option>
                                 @foreach ($licenses as $license)
@@ -229,6 +233,12 @@
                                 <div class="text-sm text-gray-600 xl:text-base mt-1 line-clamp-3">
                                     {{ $repository->description }}
                                 </div>
+                                @if ($repository->license && strtolower($repository->license) !== 'other')
+                                    <div class="hidden lg:flex items-center gap-1 mt-1.5" title="{{ __('License') }}">
+                                        <x-heroicon-o-scale class="w-4 h-4 text-gray-400 flex-shrink-0" />
+                                        <span class="text-sm text-gray-500">{{ $repository->license }}</span>
+                                    </div>
+                                @endif
                             </div>
                             <div class="mb-2 lg:mb-0 lg:table-cell order-4 lg:order-none col-span-2 lg:col-span-1 p-2 lg:border-b lg:align-middle">
                                 <div class="flex flex-col gap-1.5">
@@ -246,7 +256,7 @@
                             </div>
                             <div class="@if(!$repository->author) hidden @endif  border-t border-b  lg:table-cell order-last lg:order-none col-span-2 lg:col-span-1 py-4 lg:py-2 px-2  lg:border-t-0 lg:align-middle bg-gray-50 lg:bg-transparent">
                                 @if ($repository->author)
-                                    <div class="mb-1 text-xs font-medium tracking-wide text-gray-600 uppercase lg:hidden">{{ __('Author') }}</div>
+                                    <div class="mb-1 text-xs font-medium tracking-wide text-gray-600 uppercase lg:hidden">{{ __('Owner') }}</div>
                                     <div class="font-bold tracking-tight">
                                         <a href="{{ route('author', ['slug' => $repository->author->slug]) }}" class="hover:text-blue-600 transition-colors">
                                             {{ $repository->author->display_name }}
@@ -264,6 +274,29 @@
                                                 <span>{{ __('Website') }}</span>
                                                 <x-heroicon-m-arrow-top-right-on-square class="w-3 h-3" />
                                             </a>
+                                        @endif
+                                    </div>
+                                @endif
+                            </div>
+                            {{-- Contributors column --}}
+                            <div class="@if($repository->contributors->isEmpty()) hidden @endif lg:table-cell order-last lg:order-none col-span-2 lg:col-span-1 py-4 lg:py-2 px-2 lg:border-b lg:align-middle bg-gray-50 lg:bg-transparent">
+                                @if ($repository->contributors->isNotEmpty())
+                                    <div class="mb-1 text-xs font-medium tracking-wide text-gray-600 uppercase lg:hidden">{{ __('Contributors') }}</div>
+                                    <div class="flex flex-col gap-1.5">
+                                        @foreach ($repository->contributors->take(5) as $contributor)
+                                            <div class="flex items-center gap-1.5">
+                                                @if ($contributor->avatar_url)
+                                                    <img src="{{ $contributor->avatar_url }}"
+                                                         alt="{{ $contributor->full_name ?: $contributor->username }}"
+                                                         class="w-5 h-5 rounded-full ring-1 ring-gray-200 flex-shrink-0" />
+                                                @endif
+                                                <span class="text-xs text-gray-600 truncate">{{ $contributor->full_name ?: $contributor->username }}</span>
+                                            </div>
+                                        @endforeach
+                                        @if ($repository->contributors->count() > 5)
+                                            <span class="mt-0.5 inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-500">
+                                                + {{ $repository->contributors->count() - 5 }} {{ __('more') }}
+                                            </span>
                                         @endif
                                     </div>
                                 @endif
@@ -302,8 +335,8 @@
                                     -
                                 @endif
                             </div>
-                            <div class="order-3 p-2 font-semibold text-right lg:table-cell lg:w-32 lg:order-none lg:border-b lg:align-middle lg:text-left">
-                                <div class="text-xs font-medium tracking-wide text-gray-400 uppercase lg:hidden">{{ __('License') }}</div>
+                            <div class="order-3 p-2 font-semibold text-right lg:hidden">
+                                <div class="text-xs font-medium tracking-wide text-gray-400 uppercase">{{ __('License') }}</div>
                                 {{ $repository->license ?? '-' }}
                             </div>
                             {{-- Mobile: details link --}}

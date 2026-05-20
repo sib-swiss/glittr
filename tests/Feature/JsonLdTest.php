@@ -65,15 +65,162 @@ class JsonLdTest extends TestCase
         $contributors = $jsonLd['contributor'];
         $this->assertCount(2, $contributors);
 
-        $alice = collect($contributors)->firstWhere('@id', 'https://github.com/alice');
+        $alice = collect($contributors)->firstWhere('@id', 'https://orcid.org/0000-0002-1825-0097');
         $this->assertEquals('Person', $alice['@type']);
         $this->assertEquals('Alice Smith', $alice['name']);
-        $this->assertEquals('https://orcid.org/0000-0002-1825-0097', $alice['sameAs']);
+        $this->assertEquals('https://github.com/alice', $alice['sameAs']);
 
         $bob = collect($contributors)->firstWhere('@id', 'https://github.com/bob');
         $this->assertEquals('Person', $bob['@type']);
         $this->assertEquals('bob', $bob['name']);
         $this->assertArrayNotHasKey('sameAs', $bob);
+    }
+
+    /** @test */
+    public function contributor_image_and_affiliation_are_included_in_json_ld(): void
+    {
+        Queue::fake();
+        $repository = $this->makeRepository();
+
+        $contributor = Contributor::factory()->create([
+            'username' => 'alice',
+            'full_name' => 'Alice Smith',
+            'profile_url' => 'https://github.com/alice',
+            'avatar_url' => 'https://avatars.github.com/alice',
+            'company' => 'ACME Corp',
+            'orcid' => null,
+        ]);
+        $repository->contributors()->attach([$contributor->id => ['contributions' => 5]]);
+
+        $contributors = $repository->getJsonLdArray()['contributor'];
+        $alice = $contributors[0];
+
+        $this->assertEquals('https://avatars.github.com/alice', $alice['image']);
+        $this->assertEquals('Organization', $alice['affiliation']['@type']);
+        $this->assertEquals('ACME Corp', $alice['affiliation']['name']);
+    }
+
+    /** @test */
+    public function contributor_without_avatar_or_company_omits_image_and_affiliation(): void
+    {
+        Queue::fake();
+        $repository = $this->makeRepository();
+
+        $contributor = Contributor::factory()->create([
+            'username' => 'bob',
+            'profile_url' => 'https://github.com/bob',
+            'avatar_url' => null,
+            'company' => null,
+            'orcid' => null,
+        ]);
+        $repository->contributors()->attach([$contributor->id => ['contributions' => 5]]);
+
+        $contributors = $repository->getJsonLdArray()['contributor'];
+        $bob = $contributors[0];
+
+        $this->assertArrayNotHasKey('image', $bob);
+        $this->assertArrayNotHasKey('affiliation', $bob);
+    }
+
+    /** @test */
+    public function contributors_are_ordered_by_contributions_descending(): void
+    {
+        Queue::fake();
+        $repository = $this->makeRepository();
+
+        $c1 = Contributor::factory()->create(['username' => 'low', 'profile_url' => 'https://github.com/low', 'orcid' => null]);
+        $c2 = Contributor::factory()->create(['username' => 'high', 'profile_url' => 'https://github.com/high', 'orcid' => null]);
+        $c3 = Contributor::factory()->create(['username' => 'mid', 'profile_url' => 'https://github.com/mid', 'orcid' => null]);
+
+        $repository->contributors()->attach([
+            $c1->id => ['contributions' => 1],
+            $c2->id => ['contributions' => 100],
+            $c3->id => ['contributions' => 50],
+        ]);
+
+        $contributors = $repository->getJsonLdArray()['contributor'];
+
+        $this->assertEquals('https://github.com/high', $contributors[0]['@id']);
+        $this->assertEquals('https://github.com/mid', $contributors[1]['@id']);
+        $this->assertEquals('https://github.com/low', $contributors[2]['@id']);
+    }
+
+    /** @test */
+    public function bots_are_excluded_from_contributors(): void
+    {
+        Queue::fake();
+        $repository = $this->makeRepository();
+
+        $human = Contributor::factory()->create(['username' => 'alice', 'profile_url' => 'https://github.com/alice', 'orcid' => null]);
+        $bot = Contributor::factory()->create(['username' => 'dependabot', 'profile_url' => 'https://github.com/apps/dependabot', 'orcid' => null]);
+
+        $repository->contributors()->attach([
+            $human->id => ['contributions' => 5],
+            $bot->id   => ['contributions' => 3],
+        ]);
+
+        $contributors = $repository->getJsonLdArray()['contributor'];
+
+        $this->assertCount(1, $contributors);
+        $this->assertEquals('https://github.com/alice', $contributors[0]['@id']);
+    }
+
+    /** @test */
+    public function author_with_matching_contributor_orcid_uses_orcid_as_id(): void
+    {
+        Queue::fake();
+
+        $author = Author::factory()->create([
+            'type' => 'Person',
+            'name' => 'alice',
+            'display_name' => 'Alice Smith',
+            'url' => 'https://github.com/alice',
+        ]);
+        $repository = $this->makeRepository();
+        $repository->author()->associate($author)->save();
+
+        $contributor = Contributor::factory()->create([
+            'username' => 'alice',
+            'profile_url' => 'https://github.com/alice',
+            'orcid' => '0000-0002-1825-0097',
+        ]);
+        $repository->contributors()->attach([$contributor->id => ['contributions' => 10]]);
+
+        Cache::forget($repository->jsonLdCacheKey());
+        $jsonLd = $repository->getJsonLdArray();
+
+        $this->assertArrayHasKey('author', $jsonLd);
+        $authorNode = $jsonLd['author'][0];
+        $this->assertEquals('https://orcid.org/0000-0002-1825-0097', $authorNode['@id']);
+        $this->assertContains('https://github.com/alice', (array) $authorNode['sameAs']);
+    }
+
+    /** @test */
+    public function author_without_contributor_orcid_keeps_github_url_as_id(): void
+    {
+        Queue::fake();
+
+        $author = Author::factory()->create([
+            'type' => 'Person',
+            'name' => 'bob',
+            'url' => 'https://github.com/bob',
+        ]);
+        $repository = $this->makeRepository();
+        $repository->author()->associate($author)->save();
+
+        $contributor = Contributor::factory()->create([
+            'username' => 'bob',
+            'profile_url' => 'https://github.com/bob',
+            'orcid' => null,
+        ]);
+        $repository->contributors()->attach([$contributor->id => ['contributions' => 5]]);
+
+        Cache::forget($repository->jsonLdCacheKey());
+        $jsonLd = $repository->getJsonLdArray();
+
+        $authorNode = $jsonLd['author'][0];
+        $this->assertEquals('https://github.com/bob', $authorNode['@id']);
+        $this->assertArrayNotHasKey('sameAs', $authorNode);
     }
 
     /** @test */

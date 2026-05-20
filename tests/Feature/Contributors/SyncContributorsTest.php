@@ -277,6 +277,75 @@ class SyncContributorsTest extends TestCase
     }
 
     /** @test */
+    public function fetch_orcid_job_extracts_company_from_profile(): void
+    {
+        $contributor = Contributor::factory()->create([
+            'username' => 'octocat',
+            'company' => null,
+            'orcid_fetched_at' => null,
+        ]);
+
+        Http::fake([
+            'https://github.com/octocat' => Http::response(
+                '<html><span class="p-org"><span>ACME Corp</span></span></html>',
+                200,
+            ),
+        ]);
+
+        (new FetchContributorOrcid($contributor))->handle();
+
+        $this->assertDatabaseHas('contributors', [
+            'id' => $contributor->id,
+            'company' => 'ACME Corp',
+        ]);
+    }
+
+    /** @test */
+    public function fetch_orcid_job_strips_at_prefix_from_github_org_company(): void
+    {
+        $contributor = Contributor::factory()->create([
+            'username' => 'octocat',
+            'company' => null,
+            'orcid_fetched_at' => null,
+        ]);
+
+        Http::fake([
+            'https://github.com/octocat' => Http::response(
+                '<html><span class="p-org">@SomeOrg</span></html>',
+                200,
+            ),
+        ]);
+
+        (new FetchContributorOrcid($contributor))->handle();
+
+        $this->assertDatabaseHas('contributors', [
+            'id' => $contributor->id,
+            'company' => 'SomeOrg',
+        ]);
+    }
+
+    /** @test */
+    public function fetch_orcid_job_sets_company_to_null_when_not_found(): void
+    {
+        $contributor = Contributor::factory()->create([
+            'username' => 'octocat',
+            'company' => null,
+            'orcid_fetched_at' => null,
+        ]);
+
+        Http::fake([
+            'https://github.com/octocat' => Http::response('<html>No company here</html>', 200),
+        ]);
+
+        (new FetchContributorOrcid($contributor))->handle();
+
+        $this->assertDatabaseHas('contributors', [
+            'id' => $contributor->id,
+            'company' => null,
+        ]);
+    }
+
+    /** @test */
     public function sync_contributors_does_not_overwrite_fetched_full_name_with_null(): void
     {
         Queue::fake();
@@ -539,5 +608,101 @@ class SyncContributorsTest extends TestCase
 
         $this->assertCount(1, $contributors);
         $this->assertEquals('octocat', $contributors[0]->username);
+    }
+
+    /** @test */
+    public function finalize_contributors_sync_populates_contributor_names_ordered_by_contributions(): void
+    {
+        Queue::fake();
+
+        $repository = $this->makeGithubRepository();
+
+        $c1 = Contributor::factory()->create([
+            'username' => 'alice',
+            'full_name' => 'Alice Smith',
+            'profile_url' => 'https://github.com/alice',
+            'orcid_fetched_at' => now(),
+        ]);
+        $c2 = Contributor::factory()->create([
+            'username' => 'bob',
+            'full_name' => null,
+            'profile_url' => 'https://github.com/bob',
+            'orcid_fetched_at' => now(),
+        ]);
+
+        $accumulated = [$c1->id => 5, $c2->id => 20];
+
+        (new FinalizeContributorsSync($repository, $accumulated))->handle();
+
+        $this->assertDatabaseHas('repositories', [
+            'id' => $repository->id,
+            'contributor_names' => 'bob, Alice Smith',
+        ]);
+    }
+
+    /** @test */
+    public function finalize_contributors_sync_excludes_bots_from_contributor_names(): void
+    {
+        Queue::fake();
+
+        $repository = $this->makeGithubRepository();
+
+        $human = Contributor::factory()->create([
+            'username' => 'alice',
+            'full_name' => 'Alice Smith',
+            'profile_url' => 'https://github.com/alice',
+            'orcid_fetched_at' => now(),
+        ]);
+        $bot = Contributor::factory()->create([
+            'username' => 'dependabot',
+            'full_name' => null,
+            'profile_url' => 'https://github.com/apps/dependabot',
+            'orcid_fetched_at' => now(),
+        ]);
+
+        $accumulated = [$human->id => 10, $bot->id => 50];
+
+        (new FinalizeContributorsSync($repository, $accumulated))->handle();
+
+        $this->assertDatabaseHas('repositories', [
+            'id' => $repository->id,
+            'contributor_names' => 'Alice Smith',
+        ]);
+    }
+
+    /** @test */
+    public function sync_contributors_action_populates_contributor_names(): void
+    {
+        Queue::fake();
+
+        $repository = $this->makeGithubRepository();
+
+        $this->mockDriverForRepository($repository, [
+            $this->makeContributorData(['username' => 'alice', 'full_name' => 'Alice Smith', 'contributions' => 42]),
+        ]);
+
+        app(SyncContributors::class)->execute($repository);
+
+        $this->assertDatabaseHas('repositories', [
+            'id' => $repository->id,
+            'contributor_names' => 'Alice Smith',
+        ]);
+    }
+
+    /** @test */
+    public function repository_search_scope_matches_contributor_names(): void
+    {
+        Queue::fake();
+
+        $repository = $this->makeGithubRepository();
+        $repository->update(['contributor_names' => 'Alice Smith, Bob Jones']);
+
+        $other = $this->makeGithubRepository();
+        $other->update(['contributor_names' => 'Charlie Brown']);
+
+        $results = \App\Models\Repository::enabled()->search('alice')->get();
+
+        $this->assertTrue($results->contains($repository));
+        $this->assertFalse($results->contains($other));
     }
 }

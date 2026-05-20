@@ -47,5 +47,14 @@ class SyncContributors
                 FetchContributorOrcid::dispatch($contributor);
             }
         }
+
+        $repository->update([
+            'contributor_names' => $repository->contributors()
+                ->excludingBots()
+                ->orderByPivot('contributions', 'desc')
+                ->get()
+                ->map(fn (Contributor $c) => $c->full_name ?: $c->username)
+                ->implode(', ') ?: null,
+        ]);
     }
 }

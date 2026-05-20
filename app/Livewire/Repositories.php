@@ -82,6 +82,9 @@ class Repositories extends Component
     public $author;
 
     #[Url(except: null)]
+    public $contributor;
+
+    #[Url(except: null)]
     public $minStars;
 
     #[Url(except: null)]
@@ -305,14 +308,18 @@ class Repositories extends Component
 
     public function render()
     {
-        $repositories = Repository::with(['tags', 'author'])->enabled();
+        $repositories = Repository::with([
+            'tags',
+            'author',
+            'contributors' => fn ($q) => $q->excludingBots()->orderByPivot('contributions', 'desc'),
+        ])->enabled();
         $repositories = $this->filterRepositories($repositories);
 
         $selected_tags = collect($this->tags)
             ->filter(fn ($tag) => $tag['selected']);
 
         // Display filters if any is set.
-        if ($this->name != '' || $this->author != '' || $this->minStars != '' || $this->maxStars != '' || $this->minPush != '' || $this->maxPush != '' || $this->license != '') {
+        if ($this->name != '' || $this->author != '' || $this->contributor != '' || $this->minStars != '' || $this->maxStars != '' || $this->minPush != '' || $this->maxPush != '' || $this->license != '') {
             $this->show_filters = true;
         }
 
@@ -382,6 +389,9 @@ class Repositories extends Component
                 $query->where('name', 'like', '%' . $this->author . '%')
                     ->orWhere('display_name', 'like', '%' . $this->author . '%');
             });
+        }
+        if ($this->contributor != '') {
+            $repositories->where('contributor_names', 'like', '%' . $this->contributor . '%');
         }
         if ($this->minStars != '' && intval($this->minStars) > 0) {
             $repositories->where('stargazers', '>=', intval($this->minStars));

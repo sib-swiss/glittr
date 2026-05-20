@@ -129,11 +129,11 @@
                 {{-- Left: Author + Details ──────────────────────────── --}}
                 <div class="space-y-6">
 
-                    {{-- Author --}}
+                    {{-- Owner --}}
                     @if ($repository->author)
                         <div>
                             <h2 class="text-xs font-semibold tracking-widest uppercase text-gray-400 mb-3">
-                                {{ __('Author') }}
+                                {{ __('Owner') }}
                             </h2>
                             <div class="p-4 bg-gray-50 rounded-xl border border-gray-100">
 

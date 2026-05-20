@@ -26,6 +26,7 @@ class Repository extends Model
         'description',
         'readme',
         'license',
+        'contributor_names',
         'last_push',
         'url',
         'author_id',
@@ -108,7 +109,8 @@ class Repository extends Model
                         })
                         ->orWhereHas('tags', function (Builder $query) use ($term) {
                             $query->where('name', 'like', '%' . $term . '%');
-                        });
+                        })
+                        ->orWhere('repositories.contributor_names', 'like', '%' . $term . '%');
                 });
             }
         });
@@ -300,6 +302,30 @@ class Repository extends Model
                 $data['contributor'] = $contributors;
             }
 
+            if ($this->author && (string) $this->author->url !== '') {
+                $authorContributor = $this->contributors
+                    ->where('profile_url', (string) $this->author->url)
+                    ->first();
+
+                if ($authorContributor?->orcid) {
+                    $orcidUrl = 'https://orcid.org/' . $authorContributor->orcid;
+                    $authorNodes = array_map(
+                        fn ($node) => $node->convertToArray(),
+                        $this->author->getJsonLd(),
+                    );
+                    foreach ($authorNodes as &$node) {
+                        if (isset($node['@id'])) {
+                            $githubUrl = $node['@id'];
+                            $existing = isset($node['sameAs']) ? (array) $node['sameAs'] : [];
+                            $node['@id'] = $orcidUrl;
+                            $node['sameAs'] = array_values(array_unique(array_merge([$githubUrl], $existing)));
+                        }
+                    }
+                    unset($node);
+                    $data['author'] = $authorNodes;
+                }
+            }
+
             return $data;
         });
     }
@@ -311,20 +337,31 @@ class Repository extends Model
     {
         return $this->contributors
             ->filter(fn (Contributor $contributor) => ! str_starts_with((string) $contributor->profile_url, 'https://github.com/apps/'))
+            ->sortByDesc(fn (Contributor $contributor) => $contributor->pivot->contributions)
+            ->values()
             ->map(function (Contributor $contributor) {
-                $node = [
-                    '@type' => 'Person',
-                    '@id'   => $contributor->profile_url,
-                    'name'  => $contributor->full_name ?: $contributor->username,
-                ];
+                $node = ['@type' => 'Person'];
+
+                $node['@id'] = $contributor->orcid
+                    ? 'https://orcid.org/' . $contributor->orcid
+                    : (string) $contributor->profile_url;
+
+                $node['name'] = $contributor->full_name ?: $contributor->username;
 
                 if ($contributor->orcid) {
-                    $node['sameAs'] = 'https://orcid.org/' . $contributor->orcid;
+                    $node['sameAs'] = (string) $contributor->profile_url;
+                }
+
+                if ($contributor->avatar_url) {
+                    $node['image'] = $contributor->avatar_url;
+                }
+
+                if ($contributor->company) {
+                    $node['affiliation'] = ['@type' => 'Organization', 'name' => $contributor->company];
                 }
 
                 return $node;
             })
-            ->values()
             ->all();
     }
 }

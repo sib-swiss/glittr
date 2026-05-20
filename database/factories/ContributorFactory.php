@@ -23,6 +23,7 @@ class ContributorFactory extends Factory
             'full_name' => fake()->optional(0.7)->name(),
             'profile_url' => fake()->url(),
             'avatar_url' => fake()->optional(0.8)->imageUrl(),
+            'company' => null,
             'orcid' => null,
             'orcid_fetched_at' => null,
         ];

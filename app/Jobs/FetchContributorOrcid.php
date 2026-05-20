@@ -90,6 +90,11 @@ class FetchContributorOrcid implements ShouldQueue
             }
         }
 
+        if (preg_match('/<span[^>]+class=["\'][^"\']*p-org[^"\']*["\'][^>]*>(.*?)<\/span>/si', $response->body(), $companyMatches)) {
+            $company = ltrim(trim(strip_tags($companyMatches[1])), '@');
+            $updateData['company'] = $company !== '' ? $company : null;
+        }
+
         $this->contributor->update($updateData);
     }
 }

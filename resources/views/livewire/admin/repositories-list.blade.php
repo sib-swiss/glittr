@@ -17,7 +17,7 @@
                 <x-table.header>{{ __('API') }}</x-table.header>
                 <x-table.header>{{ __('URL') }}</x-table.header>
                 <x-table.header>{{ __('Tags') }}</x-table.header>
-                <x-table.header>{{ __('Author') }}</x-table.header>
+                <x-table.header>{{ __('Owner') }}</x-table.header>
                 <x-table.header>{{ __('Updated') }}</x-table.header>
                 <x-table.header></x-table.header>
             </thead>

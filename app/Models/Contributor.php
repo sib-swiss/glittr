@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Cache;
 
 class Contributor extends Model
 {
@@ -18,6 +19,7 @@ class Contributor extends Model
         'full_name',
         'profile_url',
         'avatar_url',
+        'company',
         'orcid',
         'orcid_fetched_at',
     ];
@@ -34,6 +36,17 @@ class Contributor extends Model
     public function repositories(): BelongsToMany
     {
         return $this->belongsToMany(Repository::class)->withPivot('contributions');
+    }
+
+    protected static function booted(): void
+    {
+        static::saved(function (Contributor $contributor) {
+            if ($contributor->wasChanged('orcid')) {
+                $contributor->repositories()->select('id')->each(
+                    fn (Repository $repository) => Cache::forget($repository->jsonLdCacheKey())
+                );
+            }
+        });
     }
 
     public function scopeExcludingBots(Builder $query): void
