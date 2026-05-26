@@ -22,6 +22,7 @@ class Contributor extends Model
         'company',
         'orcid',
         'orcid_fetched_at',
+        'is_bot',
     ];
 
     /**
@@ -31,6 +32,7 @@ class Contributor extends Model
      */
     protected $casts = [
         'orcid_fetched_at' => 'datetime',
+        'is_bot' => 'boolean',
     ];
 
     public function repositories(): BelongsToMany
@@ -51,6 +53,7 @@ class Contributor extends Model
 
     public function scopeExcludingBots(Builder $query): void
     {
-        $query->where('profile_url', 'not like', 'https://github.com/apps/%');
+        $query->where('is_bot', false)
+            ->where('profile_url', 'not like', 'https://github.com/apps/%');
     }
 }

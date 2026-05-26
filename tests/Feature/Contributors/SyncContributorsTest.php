@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Contributors;
 
+use App\Actions\FetchContributorInfo;
 use App\Actions\SyncContributors;
 use App\Data\ContributorData;
 use App\Jobs\FetchContributorOrcid;
@@ -197,7 +198,7 @@ class SyncContributorsTest extends TestCase
             ),
         ]);
 
-        (new FetchContributorOrcid($contributor))->handle();
+        (new FetchContributorOrcid($contributor))->handle(new FetchContributorInfo());
 
         $this->assertDatabaseHas('contributors', [
             'id' => $contributor->id,
@@ -219,7 +220,7 @@ class SyncContributorsTest extends TestCase
             'https://github.com/noctocat' => Http::response('<html>No ORCID here</html>', 200),
         ]);
 
-        (new FetchContributorOrcid($contributor))->handle();
+        (new FetchContributorOrcid($contributor))->handle(new FetchContributorInfo());
 
         $this->assertDatabaseHas('contributors', [
             'id' => $contributor->id,
@@ -244,7 +245,7 @@ class SyncContributorsTest extends TestCase
             ),
         ]);
 
-        (new FetchContributorOrcid($contributor))->handle();
+        (new FetchContributorOrcid($contributor))->handle(new FetchContributorInfo());
 
         $this->assertDatabaseHas('contributors', [
             'id' => $contributor->id,
@@ -268,7 +269,7 @@ class SyncContributorsTest extends TestCase
             ),
         ]);
 
-        (new FetchContributorOrcid($contributor))->handle();
+        (new FetchContributorOrcid($contributor))->handle(new FetchContributorInfo());
 
         $this->assertDatabaseHas('contributors', [
             'id' => $contributor->id,
@@ -292,7 +293,7 @@ class SyncContributorsTest extends TestCase
             ),
         ]);
 
-        (new FetchContributorOrcid($contributor))->handle();
+        (new FetchContributorOrcid($contributor))->handle(new FetchContributorInfo());
 
         $this->assertDatabaseHas('contributors', [
             'id' => $contributor->id,
@@ -316,7 +317,7 @@ class SyncContributorsTest extends TestCase
             ),
         ]);
 
-        (new FetchContributorOrcid($contributor))->handle();
+        (new FetchContributorOrcid($contributor))->handle(new FetchContributorInfo());
 
         $this->assertDatabaseHas('contributors', [
             'id' => $contributor->id,
@@ -337,7 +338,7 @@ class SyncContributorsTest extends TestCase
             'https://github.com/octocat' => Http::response('<html>No company here</html>', 200),
         ]);
 
-        (new FetchContributorOrcid($contributor))->handle();
+        (new FetchContributorOrcid($contributor))->handle(new FetchContributorInfo());
 
         $this->assertDatabaseHas('contributors', [
             'id' => $contributor->id,
@@ -390,7 +391,7 @@ class SyncContributorsTest extends TestCase
 
         $job->expects($this->once())->method('release')->with(120);
 
-        $job->handle();
+        $job->handle(new FetchContributorInfo());
 
         $this->assertNull($contributor->fresh()->orcid_fetched_at);
     }

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Contributors;
 
+use App\Actions\FetchContributorInfo;
 use App\Jobs\FetchContributorOrcid;
 use App\Models\Contributor;
 use App\Models\Repository;
@@ -34,7 +35,7 @@ class FetchContributorOrcidTest extends TestCase
             ),
         ]);
 
-        (new FetchContributorOrcid($contributor))->handle();
+        (new FetchContributorOrcid($contributor))->handle(new FetchContributorInfo());
 
         $this->assertNull(Cache::get($repository->jsonLdCacheKey()));
     }
@@ -56,7 +57,7 @@ class FetchContributorOrcidTest extends TestCase
             'https://github.com/noctocat' => Http::response('<html>No ORCID here</html>', 200),
         ]);
 
-        (new FetchContributorOrcid($contributor))->handle();
+        (new FetchContributorOrcid($contributor))->handle(new FetchContributorInfo());
 
         $this->assertEquals(['cached' => 'schema'], Cache::get($repository->jsonLdCacheKey()));
     }

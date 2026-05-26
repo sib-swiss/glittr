@@ -31,7 +31,7 @@
                         </div>
                     </x-table.cell>
                     <x-table.cell>
-                        <a href="{{ $repository->url }}" class="underline" target="_blank">{{ $repository->url }}</a>
+                        <a href="{{ route('repository', $repository->route_params) }}" class="underline">{{ $repository->name }}</a>
                         <div class="text-sm text-gray-600">
                             {{ $repository->description }}
                         </div>

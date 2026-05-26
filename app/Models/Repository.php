@@ -336,7 +336,7 @@ class Repository extends Model
     public function getContributorsJsonLd(): array
     {
         return $this->contributors
-            ->filter(fn (Contributor $contributor) => ! str_starts_with((string) $contributor->profile_url, 'https://github.com/apps/'))
+            ->filter(fn (Contributor $contributor) => ! $contributor->is_bot && ! str_starts_with((string) $contributor->profile_url, 'https://github.com/apps/'))
             ->sortByDesc(fn (Contributor $contributor) => $contributor->pivot->contributions)
             ->values()
             ->map(function (Contributor $contributor) {

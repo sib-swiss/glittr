@@ -219,7 +219,7 @@
                             <div class="order-1 col-span-2 p-2 pt-4 leading-tight lg:table-cell lg:order-none lg:col-span-1 lg:pt-2 lg:border-b lg:border-gray-200 lg:align-middle lg:max-w-xs xl:max-w-sm overflow-hidden">
                                 <div class="flex justify-between min-w-0">
                                     <div class="flex items-center gap-2 min-w-0 mr-1 lg:mr-0">
-                                        <a class="text-base font-bold tracking-tight text-blue-500 underline hover:text-blue-600 lg:text-lg truncate" href="{{ $repository->url }}" target="_blank" rel="noopener">
+                                        <a class="text-base font-bold tracking-tight text-blue-500 underline hover:text-blue-600 lg:text-lg truncate" href="{{ route('repository', $repository->route_params) }}">
                                             {{ $repository->name }}
                                         </a>
                                     </div>

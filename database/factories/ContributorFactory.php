@@ -26,6 +26,7 @@ class ContributorFactory extends Factory
             'company' => null,
             'orcid' => null,
             'orcid_fetched_at' => null,
+            'is_bot' => false,
         ];
     }
 }

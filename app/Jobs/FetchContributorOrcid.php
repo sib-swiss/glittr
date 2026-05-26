@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Actions\FetchContributorInfo;
 use App\Models\Contributor;
 use DateTime;
 use Illuminate\Bus\Queueable;
@@ -10,7 +11,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\Middleware\RateLimited;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -53,13 +53,11 @@ class FetchContributorOrcid implements ShouldQueue
         ]);
     }
 
-    public function handle(): void
+    public function handle(FetchContributorInfo $action): void
     {
-        $response = Http::withHeaders([
-            'User-Agent' => 'Mozilla/5.0 (compatible; training-collection-bot/1.0)',
-        ])->get('https://github.com/' . $this->contributor->username);
+        $fetched = $action->execute($this->contributor);
 
-        if ($response->status() === 429) {
+        if (! $fetched) {
             Log::warning('FetchContributorOrcid: rate limited by GitHub, releasing for 120s', [
                 'contributor_id' => $this->contributor->id,
                 'username' => $this->contributor->username,
@@ -67,34 +65,6 @@ class FetchContributorOrcid implements ShouldQueue
             ]);
 
             $this->release(120);
-
-            return;
         }
-
-        $orcid = null;
-        if (preg_match('/href="https:\/\/orcid\.org\/([\d]{4}-[\d]{4}-[\d]{4}-[\d]{3}[\dX])"/i', $response->body(), $matches)) {
-            $orcid = $matches[1];
-        }
-
-        $updateData = [
-            'orcid' => $orcid,
-            'orcid_fetched_at' => now(),
-        ];
-
-        if ($this->contributor->full_name === null) {
-            if (preg_match('/<span[^>]+itemprop=["\']name["\'][^>]*>\s*(.*?)\s*<\/span>/si', $response->body(), $nameMatches)) {
-                $name = trim(strip_tags($nameMatches[1]));
-                if ($name !== '') {
-                    $updateData['full_name'] = $name;
-                }
-            }
-        }
-
-        if (preg_match('/<span[^>]+class=["\'][^"\']*p-org[^"\']*["\'][^>]*>(.*?)<\/span>/si', $response->body(), $companyMatches)) {
-            $company = ltrim(trim(strip_tags($companyMatches[1])), '@');
-            $updateData['company'] = $company !== '' ? $company : null;
-        }
-
-        $this->contributor->update($updateData);
     }
 }

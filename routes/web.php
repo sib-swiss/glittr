@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\ContributorController;
 use App\Http\Controllers\Admin\RepositoryController;
 use App\Http\Controllers\Admin\TagController;
 use App\Http\Controllers\SitemapController;
@@ -40,6 +41,7 @@ Route::middleware(
             Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
             Route::get('apicuron', [AdminController::class, 'apicuron'])->name('apicuron-leaderboard');
             Route::get('repositories', [RepositoryController::class, 'index'])->name('repositories.index');
+            Route::get('contributors', [ContributorController::class, 'index'])->name('contributors.index');
             Route::get('tags', [TagController::class, 'index'])->name('tags.index');
             Route::get('ontologies', [AdminController::class, 'ontologies'])->name('ontologies.index');
             Route::get('settings', [AdminController::class, 'settings'])->name('settings');
@@ -168,7 +170,7 @@ Route::middleware('early.hints')->get(
             ->firstOrFail();
 
         $repository->load(['author', 'tags', 'tags.category', 'tags.ontology']);
-        $repository->loadCount('contributors');
+        $repository->loadCount(['contributors' => fn ($q) => $q->excludingBots()]);
 
         $readmeHtml = null;
         if ($repository->readme) {
