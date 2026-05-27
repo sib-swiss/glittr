@@ -6,11 +6,11 @@ use App\Jobs\FetchContributorOrcid;
 use App\Models\Contributor;
 use Illuminate\Console\Command;
 
-class FetchContributorOrcidsCommand extends Command
+class RefreshContributorsCommand extends Command
 {
-    protected $signature = 'contributors:fetch-orcids';
+    protected $signature = 'contributors:refresh';
 
-    protected $description = 'Dispatch ORCID fetch jobs for contributors whose ORCID has not been fetched yet';
+    protected $description = 'Dispatch info refresh jobs for all non-bot contributors';
 
     public function handle(): int
     {
@@ -18,7 +18,6 @@ class FetchContributorOrcidsCommand extends Command
 
         Contributor::query()
             ->excludingBots()
-            ->whereNull('orcid_fetched_at')
             ->chunk(500, function ($contributors) use (&$count) {
                 foreach ($contributors as $contributor) {
                     FetchContributorOrcid::dispatch($contributor);
@@ -26,7 +25,7 @@ class FetchContributorOrcidsCommand extends Command
                 }
             });
 
-        $this->comment("Dispatched {$count} ORCID fetch jobs.");
+        $this->comment("Dispatched {$count} contributor refresh jobs.");
 
         return 0;
     }

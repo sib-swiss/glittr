@@ -43,9 +43,7 @@ class SyncContributors
                 $contributor->id => ['contributions' => $data->contributions],
             ]);
 
-            if ($contributor->orcid_fetched_at === null) {
-                FetchContributorOrcid::dispatch($contributor);
-            }
+            FetchContributorOrcid::dispatch($contributor);
         }
 
         $repository->update([

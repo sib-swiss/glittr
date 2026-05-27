@@ -146,7 +146,7 @@ class SyncContributorsTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_dispatch_fetch_orcid_job_when_already_fetched(): void
+    public function it_dispatches_fetch_orcid_job_even_when_already_fetched(): void
     {
         Queue::fake();
 
@@ -163,7 +163,7 @@ class SyncContributorsTest extends TestCase
 
         app(SyncContributors::class)->execute($repository);
 
-        Queue::assertNotPushed(FetchContributorOrcid::class);
+        Queue::assertPushed(FetchContributorOrcid::class);
     }
 
     /** @test */
@@ -254,7 +254,7 @@ class SyncContributorsTest extends TestCase
     }
 
     /** @test */
-    public function fetch_orcid_job_does_not_overwrite_existing_full_name(): void
+    public function fetch_orcid_job_overwrites_existing_full_name_with_updated_profile_name(): void
     {
         $contributor = Contributor::factory()->create([
             'username' => 'octocat',
@@ -264,9 +264,30 @@ class SyncContributorsTest extends TestCase
 
         Http::fake([
             'https://github.com/octocat' => Http::response(
-                '<html><span itemprop="name">Different Name</span></html>',
+                '<html><span itemprop="name">Updated Name</span></html>',
                 200,
             ),
+        ]);
+
+        (new FetchContributorOrcid($contributor))->handle(new FetchContributorInfo());
+
+        $this->assertDatabaseHas('contributors', [
+            'id' => $contributor->id,
+            'full_name' => 'Updated Name',
+        ]);
+    }
+
+    /** @test */
+    public function fetch_orcid_job_keeps_existing_full_name_when_no_name_span_found_in_profile(): void
+    {
+        $contributor = Contributor::factory()->create([
+            'username' => 'octocat',
+            'full_name' => 'Original Name',
+            'orcid_fetched_at' => null,
+        ]);
+
+        Http::fake([
+            'https://github.com/octocat' => Http::response('<html>No name span here</html>', 200),
         ]);
 
         (new FetchContributorOrcid($contributor))->handle(new FetchContributorInfo());
@@ -535,28 +556,28 @@ class SyncContributorsTest extends TestCase
         $this->assertEquals(20, $repository->contributors()->find($c1->id)->pivot->contributions);
         $this->assertEquals(5, $repository->contributors()->find($c2->id)->pivot->contributions);
 
-        Queue::assertPushed(FetchContributorOrcid::class, 1);
+        Queue::assertPushed(FetchContributorOrcid::class, 2);
         Queue::assertPushed(FetchContributorOrcid::class, fn ($job) => $job->contributor->is($c1));
-        Queue::assertNotPushed(FetchContributorOrcid::class, fn ($job) => $job->contributor->is($c2));
+        Queue::assertPushed(FetchContributorOrcid::class, fn ($job) => $job->contributor->is($c2));
     }
 
     /** @test */
-    public function fetch_orcids_command_dispatches_jobs_only_for_unfetched_contributors(): void
+    public function refresh_command_dispatches_jobs_for_all_non_bot_contributors(): void
     {
         Queue::fake();
 
         Contributor::factory()->create(['username' => 'unfetched', 'orcid_fetched_at' => null]);
         Contributor::factory()->create(['username' => 'already-fetched', 'orcid_fetched_at' => now()]);
 
-        $this->artisan('contributors:fetch-orcids')->assertExitCode(0);
+        $this->artisan('contributors:refresh')->assertExitCode(0);
 
-        Queue::assertPushed(FetchContributorOrcid::class, 1);
+        Queue::assertPushed(FetchContributorOrcid::class, 2);
         Queue::assertPushed(FetchContributorOrcid::class, fn ($job) => $job->contributor->username === 'unfetched');
-        Queue::assertNotPushed(FetchContributorOrcid::class, fn ($job) => $job->contributor->username === 'already-fetched');
+        Queue::assertPushed(FetchContributorOrcid::class, fn ($job) => $job->contributor->username === 'already-fetched');
     }
 
     /** @test */
-    public function fetch_orcids_command_skips_bots(): void
+    public function refresh_command_skips_bots(): void
     {
         Queue::fake();
 
@@ -566,21 +587,24 @@ class SyncContributorsTest extends TestCase
             'orcid_fetched_at' => null,
         ]);
 
-        $this->artisan('contributors:fetch-orcids')->assertExitCode(0);
+        $this->artisan('contributors:refresh')->assertExitCode(0);
 
         Queue::assertNotPushed(FetchContributorOrcid::class);
     }
 
     /** @test */
-    public function fetch_orcids_command_dispatches_nothing_when_all_already_fetched(): void
+    public function refresh_command_dispatches_jobs_for_all_contributors_regardless_of_fetch_status(): void
     {
         Queue::fake();
 
-        Contributor::factory()->create(['orcid_fetched_at' => now()]);
+        $c1 = Contributor::factory()->create(['orcid_fetched_at' => now()]);
+        $c2 = Contributor::factory()->create(['orcid_fetched_at' => now()]);
 
-        $this->artisan('contributors:fetch-orcids')->assertExitCode(0);
+        $this->artisan('contributors:refresh')->assertExitCode(0);
 
-        Queue::assertNotPushed(FetchContributorOrcid::class);
+        Queue::assertPushed(FetchContributorOrcid::class, 2);
+        Queue::assertPushed(FetchContributorOrcid::class, fn ($job) => $job->contributor->is($c1));
+        Queue::assertPushed(FetchContributorOrcid::class, fn ($job) => $job->contributor->is($c2));
     }
 
     /** @test */

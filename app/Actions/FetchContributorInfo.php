@@ -37,13 +37,9 @@ class FetchContributorInfo
             $updateData['orcid'] = $matches[1];
         }
 
-        if ($contributor->full_name === null) {
-            if (preg_match('/<span[^>]+itemprop=["\']name["\'][^>]*>\s*(.*?)\s*<\/span>/si', $body, $nameMatches)) {
-                $name = trim(strip_tags($nameMatches[1]));
-                if ($name !== '') {
-                    $updateData['full_name'] = $name;
-                }
-            }
+        if (preg_match('/<span[^>]+itemprop=["\']name["\'][^>]*>\s*(.*?)\s*<\/span>/si', $body, $nameMatches)) {
+            $name = trim(strip_tags($nameMatches[1]));
+            $updateData['full_name'] = $name !== '' ? $name : null;
         }
 
         if (preg_match('/<span[^>]+class=["\'][^"\']*p-org[^"\']*["\'][^>]*>(.*?)<\/span>/si', $body, $companyMatches)) {
