@@ -38,12 +38,12 @@ class FetchContributorInfo
         }
 
         if (preg_match('/<span[^>]+itemprop=["\']name["\'][^>]*>\s*(.*?)\s*<\/span>/si', $body, $nameMatches)) {
-            $name = trim(strip_tags($nameMatches[1]));
+            $name = html_entity_decode(trim(strip_tags($nameMatches[1])), ENT_QUOTES | ENT_HTML5, 'UTF-8');
             $updateData['full_name'] = $name !== '' ? $name : null;
         }
 
         if (preg_match('/<span[^>]+class=["\'][^"\']*p-org[^"\']*["\'][^>]*>(.*?)<\/span>/si', $body, $companyMatches)) {
-            $company = ltrim(trim(strip_tags($companyMatches[1])), '@');
+            $company = ltrim(html_entity_decode(trim(strip_tags($companyMatches[1])), ENT_QUOTES | ENT_HTML5, 'UTF-8'), '@');
             $updateData['company'] = $company !== '' ? $company : null;
         }
 

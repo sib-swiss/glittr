@@ -31,7 +31,11 @@
                         </div>
                     </x-table.cell>
                     <x-table.cell>
+                        @if ($repository->name)
                         <a href="{{ route('repository', $repository->route_params) }}" class="underline">{{ $repository->name }}</a>
+                        @else
+                        <span class="text-gray-400 italic">{{ $repository->url }}</span>
+                        @endif
                         <div class="text-sm text-gray-600">
                             {{ $repository->description }}
                         </div>

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
+
 class FetchContributorOrcidTest extends TestCase
 {
     use RefreshDatabase;
@@ -38,6 +39,27 @@ class FetchContributorOrcidTest extends TestCase
         (new FetchContributorOrcid($contributor))->handle(new FetchContributorInfo());
 
         $this->assertNull(Cache::get($repository->jsonLdCacheKey()));
+    }
+
+    /** @test */
+    public function it_decodes_html_entities_in_full_name(): void
+    {
+        $contributor = Contributor::factory()->create([
+            'username' => 'aaronol',
+            'full_name' => null,
+            'orcid_fetched_at' => null,
+        ]);
+
+        Http::fake([
+            'https://github.com/aaronol' => Http::response(
+                '<html><span itemprop="name">Aaron O&#39;Leary</span></html>',
+                200,
+            ),
+        ]);
+
+        (new FetchContributorOrcid($contributor))->handle(new FetchContributorInfo());
+
+        $this->assertSame("Aaron O'Leary", $contributor->fresh()->full_name);
     }
 
     /** @test */
