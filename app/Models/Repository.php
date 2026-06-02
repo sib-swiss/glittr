@@ -4,11 +4,13 @@ namespace App\Models;
 
 use App\Casts\Url;
 use App\Facades\Remote;
+use App\Jobs\SyncRepositoryContributors;
 use App\Jobs\UpdateRepositoryData;
 use Artesaos\SEOTools\JsonLd;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 
@@ -22,7 +24,9 @@ class Repository extends Model
         'stargazers',
         'title',
         'description',
+        'readme',
         'license',
+        'contributor_names',
         'last_push',
         'url',
         'author_id',
@@ -60,6 +64,11 @@ class Repository extends Model
         return $this->belongsToMany(Tag::class)->using(RepositoryTag::class)->withPivot('order_column');
     }
 
+    public function contributors(): BelongsToMany
+    {
+        return $this->belongsToMany(Contributor::class)->withPivot('contributions');
+    }
+
     public function getPushStatusClass()
     {
         if ($this->last_push) {
@@ -80,7 +89,7 @@ class Repository extends Model
 
     public function scopeEnabled(Builder $query): void
     {
-        $query->where('enabled', true);
+        $query->where('enabled', true)->whereNotNull('name');
     }
 
     public function scopeSearch(Builder $query, string $search): void
@@ -100,7 +109,8 @@ class Repository extends Model
                         })
                         ->orWhereHas('tags', function (Builder $query) use ($term) {
                             $query->where('name', 'like', '%' . $term . '%');
-                        });
+                        })
+                        ->orWhere('repositories.contributor_names', 'like', '%' . $term . '%');
                 });
             }
         });
@@ -120,6 +130,18 @@ class Repository extends Model
         }
 
         $query->orderBy($column, $direction);
+    }
+
+    /**
+     * Returns the named route parameters for generating slug-based URLs.
+     *
+     * @return array{username: string, reponame: string}
+     */
+    public function getRouteParamsAttribute(): array
+    {
+        [$username, $reponame] = array_pad(explode('/', $this->name, 2), 2, '');
+
+        return ['username' => $username, 'reponame' => $reponame];
     }
 
     public function getMainCategoryAttribute(): ?Tag
@@ -150,10 +172,14 @@ class Repository extends Model
 
         static::created(function (Repository $repository) {
             UpdateRepositoryData::dispatch($repository);
+            if ($repository->api === 'github') {
+                SyncRepositoryContributors::dispatch($repository)->delay(now()->addMinutes(2));
+            }
         });
 
         static::saved(function (Repository $repository) {
             Cache::tags('repositories')->flush();
+            Cache::forget($repository->jsonLdCacheKey());
         });
 
         /**
@@ -247,5 +273,95 @@ class Repository extends Model
         }
 
         return $jsonLd;
+    }
+
+    public function jsonLdCacheKey(): string
+    {
+        return "repository.jsonld.{$this->id}";
+    }
+
+    /**
+     * Build the full JSON-LD array for the repository detail page, including
+     * contributors. The result is cached indefinitely and invalidated on save
+     * or after a contributor sync completes.
+     *
+     * @return array<string, mixed>
+     */
+    public function getJsonLdArray(): array
+    {
+        return Cache::rememberForever($this->jsonLdCacheKey(), function () {
+            $this->loadMissing(['tags', 'tags.ontology', 'author', 'contributors']);
+
+            $data = array_merge(
+                ['@context' => 'https://schema.org'],
+                $this->getJsonLd()->convertToArray(),
+            );
+
+            $contributors = $this->getContributorsJsonLd();
+            if (! empty($contributors)) {
+                $data['contributor'] = $contributors;
+            }
+
+            if ($this->author && (string) $this->author->url !== '') {
+                $authorContributor = $this->contributors
+                    ->where('profile_url', (string) $this->author->url)
+                    ->first();
+
+                if ($authorContributor?->orcid) {
+                    $orcidUrl = 'https://orcid.org/' . $authorContributor->orcid;
+                    $authorNodes = array_map(
+                        fn ($node) => $node->convertToArray(),
+                        $this->author->getJsonLd(),
+                    );
+                    foreach ($authorNodes as &$node) {
+                        if (isset($node['@id'])) {
+                            $githubUrl = $node['@id'];
+                            $existing = isset($node['sameAs']) ? (array) $node['sameAs'] : [];
+                            $node['@id'] = $orcidUrl;
+                            $node['sameAs'] = array_values(array_unique(array_merge([$githubUrl], $existing)));
+                        }
+                    }
+                    unset($node);
+                    $data['author'] = $authorNodes;
+                }
+            }
+
+            return $data;
+        });
+    }
+
+    /**
+     * @return array<int, array<string, string>>
+     */
+    public function getContributorsJsonLd(): array
+    {
+        return $this->contributors
+            ->filter(fn (Contributor $contributor) => ! $contributor->is_bot && ! str_starts_with((string) $contributor->profile_url, 'https://github.com/apps/'))
+            ->sortByDesc(fn (Contributor $contributor) => $contributor->pivot->contributions)
+            ->values()
+            ->map(function (Contributor $contributor) {
+                $node = ['@type' => 'Person'];
+
+                $node['@id'] = $contributor->orcid
+                    ? 'https://orcid.org/' . $contributor->orcid
+                    : (string) $contributor->profile_url;
+
+                $node['name'] = $contributor->full_name ?: $contributor->username;
+
+                if ($contributor->orcid) {
+                    $node['sameAs'] = (string) $contributor->profile_url;
+                }
+
+                if ($contributor->avatar_url) {
+                    $node['image'] = $contributor->avatar_url;
+                }
+
+                if ($contributor->company) {
+                    $node['affiliation'] = ['@type' => 'Organization', 'name' => $contributor->company];
+                }
+
+                return $node;
+            })
+            ->all();
     }
 }

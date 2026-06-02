@@ -7,7 +7,6 @@ use App\Http\Resources\RepositoryFullResource;
 use App\Http\Resources\RepositoryResource;
 use App\Models\Category;
 use App\Models\Repository;
-use Artesaos\SEOTools\Contracts\JsonLd;
 use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
 
@@ -31,28 +30,40 @@ class RepositoryController extends Controller
     }
 
     /**
-     * Repositories bioschemas endpoint.
+     * Repositories bioschemas endpoint with pagination.
      *
-     * @return \Illuminate\Http\Response
+     * Accepts ?per_page= (default 25, max 50) and ?page=.
+     *
+     * @return \Illuminate\Http\JsonResponse
      */
     public function bioschemas()
     {
-        $queryBuilder = $this->getQueryBuilder();
-        $jsonLd = [];
+        $perPage = min(50, max(1, (int) request()->input('per_page', 25)));
 
-        /** @var Repository $repository */
-        foreach ($queryBuilder->get() as $repository) {
-            $jsonLd[] = array_merge(
-                [
-                    '@context' => 'https://schema.org',
-                ],
-                $repository->getJsonLd()->convertToArray(),
-            );
-        }
+        $repositories = $this->getQueryBuilder()
+            ->with('contributors')
+            ->paginate($perPage);
 
-        return Response($jsonLd, 200, [
-            'Content-Type' => 'application/ld+json',
-        ]); // get the JsonLd group as a json string
+        $data = $repositories->getCollection()
+            ->map(fn (Repository $repository) => $repository->getJsonLdArray())
+            ->values()
+            ->all();
+
+        return response()->json([
+            'data'  => $data,
+            'meta'  => [
+                'current_page' => $repositories->currentPage(),
+                'per_page'     => $repositories->perPage(),
+                'total'        => $repositories->total(),
+                'last_page'    => $repositories->lastPage(),
+            ],
+            'links' => [
+                'first' => $repositories->url(1),
+                'last'  => $repositories->url($repositories->lastPage()),
+                'prev'  => $repositories->previousPageUrl(),
+                'next'  => $repositories->nextPageUrl(),
+            ],
+        ]);
     }
 
     /**

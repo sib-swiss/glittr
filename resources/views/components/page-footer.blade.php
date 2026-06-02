@@ -1,4 +1,4 @@
-<footer {!! $attributes->merge(['class' => 'bg-gray-100 border-t py-4 mt-4']) !!}>
+<footer {!! $attributes->merge(['class' => 'bg-gray-100 border-t py-4']) !!}>
     <div class="container py-8 lg:py-12">
         <div class="flex flex-wrap items-center justify-between space-y-8 lg:space-y-0">
             <div class="lg:mr-8">

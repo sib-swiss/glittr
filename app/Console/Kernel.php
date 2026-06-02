@@ -21,6 +21,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('repo:update')->dailyAt('13:00');
         $schedule->command('repo:update-authors')->dailyAt('13:30');
 
+        $schedule->command('repo:sync-contributors')->weekly()->sundays()->at('02:00');
+        $schedule->command('contributors:refresh')->weekly()->sundays()->at('04:00');
+
         $schedule->command('cache:prune-stale-tags')->hourly();
 
         $schedule->command(DispatchQueueCheckJobsCommand::class)->everyMinute();

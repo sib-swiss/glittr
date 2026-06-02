@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\Author;
 use App\Models\Category;
 use App\Models\Repository;
 use App\Models\Tag;
@@ -10,6 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -68,12 +70,19 @@ class Repositories extends Component
 
     public $show_filters = false;
 
+    /** When set, the list is locked to this author and cannot be changed by URL params. */
+    #[Locked]
+    public ?int $locked_author_id = null;
+
     // Columns filters
     #[Url(except: null)]
     public $name;
 
     #[Url(except: null)]
     public $author;
+
+    #[Url(except: null)]
+    public $contributor;
 
     #[Url(except: null)]
     public $minStars;
@@ -299,14 +308,18 @@ class Repositories extends Component
 
     public function render()
     {
-        $repositories = Repository::with(['tags', 'author'])->enabled();
+        $repositories = Repository::with([
+            'tags',
+            'author',
+            'contributors' => fn ($q) => $q->excludingBots()->orderByPivot('contributions', 'desc'),
+        ])->enabled();
         $repositories = $this->filterRepositories($repositories);
 
         $selected_tags = collect($this->tags)
             ->filter(fn ($tag) => $tag['selected']);
 
         // Display filters if any is set.
-        if ($this->name != '' || $this->author != '' || $this->minStars != '' || $this->maxStars != '' || $this->minPush != '' || $this->maxPush != '' || $this->license != '') {
+        if ($this->name != '' || $this->author != '' || $this->contributor != '' || $this->minStars != '' || $this->maxStars != '' || $this->minPush != '' || $this->maxPush != '' || $this->license != '') {
             $this->show_filters = true;
         }
 
@@ -337,6 +350,7 @@ class Repositories extends Component
             'selected_tags' => $selected_tags,
             'sorting_columns' => $sorting_columns,
             'header_text' => $parser->transform(app(GeneralSettings::class)->header_text),
+            'locked_author' => $this->locked_author_id ? Author::find($this->locked_author_id) : null,
         ]);
     }
 
@@ -360,6 +374,10 @@ class Repositories extends Component
 
     protected function filterRepositories($repositories)
     {
+        if ($this->locked_author_id !== null) {
+            $repositories->where('repositories.author_id', $this->locked_author_id);
+        }
+
         if ($this->search != '') {
             $repositories->search($this->search);
         }
@@ -371,6 +389,9 @@ class Repositories extends Component
                 $query->where('name', 'like', '%' . $this->author . '%')
                     ->orWhere('display_name', 'like', '%' . $this->author . '%');
             });
+        }
+        if ($this->contributor != '') {
+            $repositories->where('contributor_names', 'like', '%' . $this->contributor . '%');
         }
         if ($this->minStars != '' && intval($this->minStars) > 0) {
             $repositories->where('stargazers', '>=', intval($this->minStars));
@@ -393,6 +414,7 @@ class Repositories extends Component
     protected function updateGroupedTags()
     {
         $searchMeta = implode('.', [
+            $this->locked_author_id ?? '',
             $this->search,
             $this->name,
             $this->author,

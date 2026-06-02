@@ -17,7 +17,7 @@
                 <x-table.header>{{ __('API') }}</x-table.header>
                 <x-table.header>{{ __('URL') }}</x-table.header>
                 <x-table.header>{{ __('Tags') }}</x-table.header>
-                <x-table.header>{{ __('Author') }}</x-table.header>
+                <x-table.header>{{ __('Owner') }}</x-table.header>
                 <x-table.header>{{ __('Updated') }}</x-table.header>
                 <x-table.header></x-table.header>
             </thead>
@@ -31,7 +31,11 @@
                         </div>
                     </x-table.cell>
                     <x-table.cell>
-                        <a href="{{ $repository->url }}" class="underline" target="_blank">{{ $repository->url }}</a>
+                        @if ($repository->name)
+                        <a href="{{ route('repository', $repository->route_params) }}" class="underline">{{ $repository->name }}</a>
+                        @else
+                        <span class="text-gray-400 italic">{{ $repository->url }}</span>
+                        @endif
                         <div class="text-sm text-gray-600">
                             {{ $repository->description }}
                         </div>

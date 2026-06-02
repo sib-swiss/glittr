@@ -26,6 +26,9 @@
                     <x-nav-link href="{{ route('admin.repositories.index') }}" :active="(request()->routeIs('admin.repositories.*') || request()->routeIs('admin.authors.*'))">
                         {{ __('Repositories') }}
                     </x-nav-link>
+                    <x-nav-link href="{{ route('admin.contributors.index') }}" :active="request()->routeIs('admin.contributors.*')">
+                        {{ __('Contributors') }}
+                    </x-nav-link>
                     <x-nav-link href="{{ route('admin.tags.index') }}" :active="(request()->routeIs('admin.tags.*') || request()->routeIs('admin.categories.*'))">
                         {{ __('Tags') }}
                     </x-nav-link>
@@ -170,6 +173,9 @@
             @endif
             <x-responsive-nav-link href="{{ route('admin.repositories.index') }}" :active="(request()->routeIs('admin.repositories.*') || request()->routeIs('admin.authors.*'))">
                 {{ __('Repositories') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link href="{{ route('admin.contributors.index') }}" :active="request()->routeIs('admin.contributors.*')">
+                {{ __('Contributors') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link href="{{ route('admin.tags.index') }}" :active="(request()->routeIs('admin.tags.*') || request()->routeIs('admin.categories.*'))">
                 {{ __('Tags') }}

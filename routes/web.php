@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\ContributorController;
 use App\Http\Controllers\Admin\RepositoryController;
 use App\Http\Controllers\Admin\TagController;
+use App\Http\Controllers\SitemapController;
+use App\Models\Author;
 use App\Models\Repository;
 use App\Settings\GeneralSettings;
 use App\Settings\TermsSettings;
@@ -23,6 +26,39 @@ use Spatie\Health\Http\Controllers\SimpleHealthCheckController;
 |
 */
 
+// Admin routes.
+Route::middleware(
+    [
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+    ]
+)
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(
+        function () {
+            Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
+            Route::get('apicuron', [AdminController::class, 'apicuron'])->name('apicuron-leaderboard');
+            Route::get('repositories', [RepositoryController::class, 'index'])->name('repositories.index');
+            Route::get('contributors', [ContributorController::class, 'index'])->name('contributors.index');
+            Route::get('tags', [TagController::class, 'index'])->name('tags.index');
+            Route::get('ontologies', [AdminController::class, 'ontologies'])->name('ontologies.index');
+            Route::get('settings', [AdminController::class, 'settings'])->name('settings');
+        }
+    );
+
+// Sitemap.
+Route::get('sitemap.xml', SitemapController::class)->name('sitemap');
+
+// Health check routes.
+Route::get('simple-health-check', SimpleHealthCheckController::class);
+Route::get('full-health-check', HealthCheckResultsController::class)->middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+]);
+
 // Frontend routes.
 Route::middleware('early.hints')->group(
     function () {
@@ -41,15 +77,9 @@ Route::middleware('early.hints')->group(
         Route::get(
             '/repository/{repository}',
             function (Repository $repository) {
-                return view(
-                    'repository',
-                    [
-                    'title' => 'Repository | ' . $repository->name,
-                    'repository' => $repository,
-                    ]
-                );
+                return redirect()->route('repository', $repository->route_params, 301);
             }
-        )->name('repository');
+        )->name('repository.legacy');
 
         Route::get(
             'contribute',
@@ -78,6 +108,24 @@ Route::middleware('early.hints')->group(
                 );
             }
         )->name('terms-of-use');
+
+        Route::get(
+            '/{slug}',
+            function (string $slug) {
+                $author = Author::findBySlug($slug);
+                if (! $author) {
+                    abort(404);
+                }
+
+                return view(
+                    'author',
+                    [
+                    'title' => ($author->display_name ?: $author->name) . ' | ' . app(GeneralSettings::class)->site_name,
+                    'author' => $author,
+                    ]
+                );
+            }
+        )->where('slug', '[a-zA-Z0-9][a-zA-Z0-9_-]*')->name('author');
     }
 );
 
@@ -113,31 +161,33 @@ Route::get(
     }
 )->name('orcid.logout');
 
-// Admin routes.
-Route::middleware(
-    [
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-    ]
-)
-    ->prefix('admin')
-    ->name('admin.')
-    ->group(
-        function () {
-            Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
-            Route::get('apicuron', [AdminController::class, 'apicuron'])->name('apicuron-leaderboard');
-            Route::get('repositories', [RepositoryController::class, 'index'])->name('repositories.index');
-            Route::get('tags', [TagController::class, 'index'])->name('tags.index');
-            Route::get('ontologies', [AdminController::class, 'ontologies'])->name('ontologies.index');
-            Route::get('settings', [AdminController::class, 'settings'])->name('settings');
-        }
-    );
+// Repository slug route — must be last to avoid capturing explicit routes above.
+Route::middleware('early.hints')->get(
+    '/{username}/{reponame}',
+    function (string $username, string $reponame) {
+        $repository = Repository::where('name', $username . '/' . $reponame)
+            ->enabled()
+            ->firstOrFail();
 
-// Health check routes.
-Route::get('simple-health-check', SimpleHealthCheckController::class);
-Route::get('full-health-check', HealthCheckResultsController::class)->middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-]);
+        $repository->load(['author', 'tags', 'tags.category', 'tags.ontology']);
+        $repository->loadCount(['contributors' => fn ($q) => $q->excludingBots()]);
+
+        $readmeHtml = null;
+        if ($repository->readme) {
+            $parser = new MarkdownExtra();
+            $parser->hard_wrap = true;
+            $readmeHtml = $parser->transform($repository->readme);
+        }
+
+        return view(
+            'repository',
+            [
+            'title' => $repository->name . ' | Glittr',
+            'description' => $repository->description ?: null,
+            'repository' => $repository,
+            'readme_html' => $readmeHtml,
+            'jsonLd' => $repository->getJsonLdArray(),
+            ]
+        );
+    }
+)->where('reponame', '.+')->name('repository');
