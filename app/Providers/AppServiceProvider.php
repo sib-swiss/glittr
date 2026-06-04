@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         RateLimiter::for('github_scraping', function (object $job) {
-            return Limit::perMinute(4);
+            return Limit::perMinute(20);
         });
 
         view()->composer(

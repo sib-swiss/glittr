@@ -31,7 +31,7 @@ class FetchContributorOrcid implements ShouldQueue
      */
     public function retryUntil(): DateTime
     {
-        return now()->addHours(6);
+        return now()->addHours(48);
     }
 
     /**
