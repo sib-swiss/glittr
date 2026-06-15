@@ -70,6 +70,16 @@
                                     <x-heroicon-m-eye class="w-4 h-4" />
                                 </x-secondary-button>
                             @endif
+                            @if ($repository->api === 'github')
+                                <x-secondary-button
+                                    title="{{ __('Sync contributors') }}"
+                                    wire:click="syncContributors({{ $repository->id }})"
+                                    wire:confirm="{{ __('Re-dispatch the contributor sync for this repository?') }}"
+                                >
+                                    <x-heroicon-m-arrow-path class="w-4 h-4" wire:loading.remove wire:target="syncContributors({{ $repository->id }})" />
+                                    <x-heroicon-m-arrow-path class="w-4 h-4 animate-spin" wire:loading wire:target="syncContributors({{ $repository->id }})" />
+                                </x-secondary-button>
+                            @endif
                             <x-button title="{{ __('Edit repository') }}" wire:click="editRepository({{ $repository->id }})">
                                 <x-heroicon-m-pencil class="w-4 h-4" />
                             </x-button>

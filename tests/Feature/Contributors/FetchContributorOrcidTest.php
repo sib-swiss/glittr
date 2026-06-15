@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
-
 class FetchContributorOrcidTest extends TestCase
 {
     use RefreshDatabase;

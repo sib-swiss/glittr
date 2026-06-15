@@ -418,6 +418,79 @@ class SyncContributorsTest extends TestCase
     }
 
     /** @test */
+    public function adding_a_repository_dispatches_contributor_sync_on_the_default_queue(): void
+    {
+        Queue::fake();
+
+        $repository = Repository::factory()->create([
+            'api' => 'github',
+            'url' => 'https://github.com/test/repo',
+        ]);
+
+        Queue::assertPushed(
+            SyncRepositoryContributors::class,
+            fn ($job) => $job->repository->is($repository) && $job->queue === null,
+        );
+    }
+
+    /** @test */
+    public function weekly_sync_command_dispatches_on_the_contributors_queue(): void
+    {
+        Queue::fake();
+
+        $repository = $this->makeGithubRepository();
+
+        $this->artisan('repo:sync-contributors', ['repository' => $repository->id])->assertExitCode(0);
+
+        Queue::assertPushed(
+            SyncRepositoryContributors::class,
+            fn ($job) => $job->repository->is($repository) && $job->queue === config('queue.contributors_queue'),
+        );
+    }
+
+    /** @test */
+    public function weekly_refresh_command_dispatches_orcid_jobs_on_the_contributors_queue(): void
+    {
+        Queue::fake();
+
+        Contributor::factory()->create(['orcid_fetched_at' => null]);
+
+        $this->artisan('contributors:refresh')->assertExitCode(0);
+
+        Queue::assertPushed(
+            FetchContributorOrcid::class,
+            fn ($job) => $job->queue === config('queue.contributors_queue'),
+        );
+    }
+
+    /** @test */
+    public function the_contributor_pipeline_propagates_its_queue_down_the_chain(): void
+    {
+        Queue::fake();
+
+        $repository = $this->makeGithubRepository();
+        $contributor = Contributor::factory()->create(['orcid_fetched_at' => null]);
+
+        $sync = new SyncRepositoryContributors($repository);
+        $sync->onQueue('contributors');
+        $sync->handle();
+
+        Queue::assertPushed(
+            FetchContributorsPage::class,
+            fn ($job) => $job->queue === 'contributors',
+        );
+
+        $finalize = new FinalizeContributorsSync($repository, [$contributor->id => 7]);
+        $finalize->onQueue('contributors');
+        $finalize->handle();
+
+        Queue::assertPushed(
+            FetchContributorOrcid::class,
+            fn ($job) => $job->queue === 'contributors',
+        );
+    }
+
+    /** @test */
     public function fetch_contributors_page_job_has_rate_limited_middleware(): void
     {
         Queue::fake();

@@ -26,6 +26,6 @@ class SyncRepositoryContributors implements ShouldQueue
     {
         $this->repository->refresh();
 
-        FetchContributorsPage::dispatch($this->repository, 1);
+        FetchContributorsPage::dispatch($this->repository, 1)->onQueue($this->queue);
     }
 }

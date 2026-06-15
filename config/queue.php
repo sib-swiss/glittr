@@ -17,6 +17,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Contributors Queue
+    |--------------------------------------------------------------------------
+    |
+    | The contributor fetching pipeline (repository contributor sync and ORCID
+    | scraping) is heavily rate-limited and self-releases jobs far into the
+    | future. It runs on a dedicated queue so a separate worker can process it
+    | without starving the default queue.
+    |
+    */
+
+    'contributors_queue' => env('CONTRIBUTORS_QUEUE', 'contributors'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Queue Connections
     |--------------------------------------------------------------------------
     |

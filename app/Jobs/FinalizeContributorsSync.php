@@ -47,6 +47,6 @@ class FinalizeContributorsSync implements ShouldQueue
         Cache::forget($this->repository->jsonLdCacheKey());
 
         Contributor::whereIn('id', array_keys($this->accumulated))
-            ->each(fn (Contributor $contributor) => FetchContributorOrcid::dispatch($contributor));
+            ->each(fn (Contributor $contributor) => FetchContributorOrcid::dispatch($contributor)->onQueue($this->queue));
     }
 }

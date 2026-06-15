@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin;
 
 use App\Concerns\InteractsWithNotifications;
+use App\Jobs\SyncRepositoryContributors;
 use App\Models\Repository;
 use Illuminate\View\View;
 use Livewire\Component;
@@ -107,6 +108,19 @@ class RepositoriesList extends Component
         if ($repository->save()) {
             $this->notify("Repository {$repository->url} successfully enabled");
         }
+    }
+
+    public function syncContributors(Repository $repository): void
+    {
+        if ($repository->api !== 'github') {
+            $this->errorNotification('Contributor sync is only available for GitHub repositories.');
+
+            return;
+        }
+
+        SyncRepositoryContributors::dispatch($repository);
+
+        $this->notify("Contributor sync dispatched for {$repository->url}");
     }
 
     public function confirmRepositoryDeletion(int $repositoryId)
