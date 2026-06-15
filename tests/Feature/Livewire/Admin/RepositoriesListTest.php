@@ -3,6 +3,7 @@
 namespace Tests\Feature\Livewire\Admin;
 
 use App\Jobs\SyncRepositoryContributors;
+use App\Jobs\UpdateRepositoryData;
 use App\Livewire\Admin\RepositoriesList;
 use App\Models\Repository;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -34,16 +35,20 @@ class RepositoriesListTest extends TestCase
     }
 
     /** @test */
-    public function it_dispatches_contributor_sync_for_a_github_repository()
+    public function it_dispatches_repository_update_and_contributor_sync_for_a_github_repository()
     {
         Queue::fake();
         $repository = Repository::factory()->create(['name' => null, 'url' => 'https://github.com/test/repo']);
         Queue::fake();
 
         Livewire::test(RepositoriesList::class)
-            ->call('syncContributors', $repository->id)
+            ->call('updateRepository', $repository->id)
             ->assertHasNoErrors();
 
+        Queue::assertPushed(
+            UpdateRepositoryData::class,
+            fn ($job) => $job->repository->is($repository),
+        );
         Queue::assertPushed(
             SyncRepositoryContributors::class,
             fn ($job) => $job->repository->is($repository),
@@ -51,14 +56,19 @@ class RepositoriesListTest extends TestCase
     }
 
     /** @test */
-    public function it_does_not_dispatch_contributor_sync_for_a_non_github_repository()
+    public function it_dispatches_only_repository_update_for_a_non_github_repository()
     {
         Queue::fake();
         $repository = Repository::factory()->create(['name' => null, 'url' => 'https://gitlab.com/test/repo']);
+        Queue::fake();
 
         Livewire::test(RepositoriesList::class)
-            ->call('syncContributors', $repository->id);
+            ->call('updateRepository', $repository->id);
 
+        Queue::assertPushed(
+            UpdateRepositoryData::class,
+            fn ($job) => $job->repository->is($repository),
+        );
         Queue::assertNotPushed(SyncRepositoryContributors::class);
     }
 }
