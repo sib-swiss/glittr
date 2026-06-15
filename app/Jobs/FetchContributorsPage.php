@@ -58,7 +58,7 @@ class FetchContributorsPage implements ShouldQueue
         $contributors = $driver->getContributorsPage($this->page);
 
         if (empty($contributors)) {
-            FinalizeContributorsSync::dispatch($this->repository, $this->accumulated);
+            FinalizeContributorsSync::dispatch($this->repository, $this->accumulated)->onQueue($this->queue);
 
             return;
         }
@@ -84,6 +84,6 @@ class FetchContributorsPage implements ShouldQueue
             $accumulated[$contributor->id] = $data->contributions;
         }
 
-        self::dispatch($this->repository, $this->page + 1, $accumulated);
+        self::dispatch($this->repository, $this->page + 1, $accumulated)->onQueue($this->queue);
     }
 }

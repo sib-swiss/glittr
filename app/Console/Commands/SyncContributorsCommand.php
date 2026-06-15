@@ -24,7 +24,7 @@ class SyncContributorsCommand extends Command
             }
 
             $this->comment("Dispatching contributor sync for {$repository->url}");
-            SyncRepositoryContributors::dispatch($repository);
+            SyncRepositoryContributors::dispatch($repository)->onQueue(config('queue.contributors_queue'));
         } else {
             $this->comment('Dispatching contributor sync for all GitHub repositories.');
 
@@ -34,7 +34,7 @@ class SyncContributorsCommand extends Command
                 ->chunk(500, function ($repositories) {
                     foreach ($repositories as $repository) {
                         $this->comment("Dispatching sync for {$repository->url}");
-                        SyncRepositoryContributors::dispatch($repository);
+                        SyncRepositoryContributors::dispatch($repository)->onQueue(config('queue.contributors_queue'));
                     }
                 });
         }

@@ -21,7 +21,7 @@ class RefreshContributorsCommand extends Command
             ->when($this->option('unfetched'), fn ($q) => $q->whereNull('orcid_fetched_at'))
             ->chunk(500, function ($contributors) use (&$count) {
                 foreach ($contributors as $contributor) {
-                    FetchContributorOrcid::dispatch($contributor);
+                    FetchContributorOrcid::dispatch($contributor)->onQueue(config('queue.contributors_queue'));
                     $count++;
                 }
             });
