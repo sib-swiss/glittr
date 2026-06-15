@@ -4,6 +4,7 @@ namespace App\Livewire\Admin;
 
 use App\Concerns\InteractsWithNotifications;
 use App\Jobs\SyncRepositoryContributors;
+use App\Jobs\UpdateRepositoryData;
 use App\Models\Repository;
 use Illuminate\View\View;
 use Livewire\Component;
@@ -110,17 +111,15 @@ class RepositoriesList extends Component
         }
     }
 
-    public function syncContributors(Repository $repository): void
+    public function updateRepository(Repository $repository): void
     {
-        if ($repository->api !== 'github') {
-            $this->errorNotification('Contributor sync is only available for GitHub repositories.');
+        UpdateRepositoryData::dispatch($repository);
 
-            return;
+        if ($repository->api === 'github') {
+            SyncRepositoryContributors::dispatch($repository)->delay(now()->addMinutes(2));
         }
 
-        SyncRepositoryContributors::dispatch($repository);
-
-        $this->notify("Contributor sync dispatched for {$repository->url}");
+        $this->notify("Repository update dispatched for {$repository->url}");
     }
 
     public function confirmRepositoryDeletion(int $repositoryId)
