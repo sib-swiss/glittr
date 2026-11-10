@@ -1,6 +1,6 @@
 # Glittr
 
-[Glitter](https://glittr.org/) is a web app to find bioinformatics training materials on GitHub and GitLab based on Laravel.
+[Glittr](https://glittr.org/) is a web app to find bioinformatics training materials on GitHub and GitLab based on Laravel.
 
 ## Requirement
 
@@ -104,7 +104,7 @@ There is an additional endpoint `/api/list` which returns the list of repositori
 
 ### Bioschemas
 
-Endpoints `/api/bioschemas` is available to retrieve the list of repositories in [Bioschemas TrainingMaterial Profiles](https://bioschemas.org/profiles/TrainingMaterial/1.0-RELEASE) format. The endpoint is using the same filters, sorting ang pagination optiopns than `/api/repositories` endpoint.
+Endpoints `/api/bioschemas` is available to retrieve the list of repositories in [Bioschemas TrainingMaterial Profiles](https://bioschemas.org/profiles/TrainingMaterial/1.0-RELEASE) format. The endpoint is using the same filters, sorting and pagination options as the `/api/repositories` endpoint.
 
 ## License
 
